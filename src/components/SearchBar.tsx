@@ -1,4 +1,5 @@
-import MagnifyingGlassIcon from "@heroicons/react/20/solid/MagnifyingGlassIcon";
+// import MagnifyingGlassIcon from "@heroicons/react/20/solid/MagnifyingGlassIcon";
+import icon from "@/public/icon.png";
 import { ListType } from "@/machine/searchList";
 
 function Chip({ value }: { value: string }) {
@@ -96,7 +97,7 @@ export default function SearchBar({
   return (
     <div className="flex items-center p-2 space-x-2 bg-gray-800">
       <span>
-        <MagnifyingGlassIcon className="size-5" />
+        <img className="size-6" src={icon} />
       </span>
       {type !== "all" && <TypeTag type={type} />}
       <input
