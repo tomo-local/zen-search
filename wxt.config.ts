@@ -13,6 +13,13 @@ export default defineConfig({
     name: "Zen Search",
     description: "Search your bookmarks and history",
     version: "1.0.0",
+    icons: {
+      16: "icon/16.png",
+      32: "icon/32.png",
+      48: "icon/48.png",
+      96: "icon/96.png",
+      128: "icon/128.png",
+    },
     permissions: ["tabs", "history", "activeTab", "bookmarks"],
     commands: {
       openPopup: {
