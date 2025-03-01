@@ -50,22 +50,23 @@ function ResultLine({
   return (
     <li key={key}>
       <button
+        type="button"
         key={item.type === "tab" ? item.id : item.url}
         className={`${
           selectedIndex === index && "bg-gray-700"
-        } border-gray-700 rounded-lg flex w-full space-x-3 space-y-1 p-3 text-left hover:bg-gray-700 flex items-center justify-center justify-items-center`}
+        } border-gray-700 rounded-lg flex w-full space-x-3 my-1 p-3 text-left hover:bg-gray-700 flex items-center justify-center justify-items-center`}
         onMouseEnter={() => onMouseEnter(index)}
         onClick={onClick}
       >
-        <div className="flex items-center justify-center flex-none h-full justify-items-center">
+        <div className="flex flex-none justify-center justify-items-center items-center h-full">
           <LeftIcon item={item} />
         </div>
         <div className="text-left truncate grow text-nowrap">{item.title}</div>
         {item.type === "tab" && (
-          <div className="flex items-center justify-between flex-none w-28">
+          <div className="flex flex-none justify-between items-center w-28">
             <div className="text-left truncate text-nowrap">Switch to Tab</div>
             <span>
-              <div className="flex items-center justify-center p-1 bg-gray-900 rounded-lg">
+              <div className="flex justify-center items-center p-1 bg-gray-900 rounded-lg">
                 <ArrowLongRightIcon className="size-4" />
               </div>
             </span>
@@ -80,8 +81,8 @@ function ResultLine({
         )}
 
         {item.type === "bookmark" && (
-          <div className="flex items-center justify-between flex-none ml-auto">
-            <div className="flex items-center justify-center p-1 bg-gray-900 rounded-lg">
+          <div className="flex flex-none justify-between items-center ml-auto">
+            <div className="flex justify-center items-center p-1 bg-gray-900 rounded-lg">
               <BookmarkIcon className="size-4" />
             </div>
           </div>
