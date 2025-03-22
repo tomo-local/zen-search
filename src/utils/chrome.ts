@@ -4,8 +4,9 @@ const actionRuntimeContent = (
   message: MessageType.OPEN_POPUP | MessageType.CLOSE_POPUP
 ) =>
   chrome.runtime.sendMessage({ type: message }).catch((e) => {
-    console.log(e);
-    actionPopupContent();
+    if (e) {
+      actionPopupContent();
+    }
   });
 
 const actionTabsContent = async (
@@ -15,8 +16,9 @@ const actionTabsContent = async (
     const tabId = tabs[0].id;
     if (tabId) {
       return chrome.tabs.sendMessage(tabId, { type: message }).catch((e) => {
-        console.log(e);
-        actionPopupContent();
+        if (e) {
+          actionPopupContent();
+        }
       });
     }
   });
