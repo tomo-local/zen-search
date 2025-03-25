@@ -1,10 +1,14 @@
 import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
-import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
+import StarIcon from "@heroicons/react/16/solid/StarIcon";
 import CommonItem from "@/components/common/result/CommonItem";
 import SquareIcon from "@/components/common/icon/SquareIcon";
-import { Tab } from "@/types/chrome";
+import { Bookmark } from "@/types/chrome";
 
-export default function TabItem({
+const getFavicon = (url: string) => {
+  const urlObj = new URL(url);
+  return `https://www.google.com/s2/favicons?domain=${urlObj.hostname}`;
+};
+export default function BookmarkItem({
   key,
   className,
   item,
@@ -13,7 +17,7 @@ export default function TabItem({
 }: {
   key: number;
   className?: string;
-  item: Tab;
+  item: Bookmark;
   onClick?: (event: React.MouseEvent) => void;
   isSelected: boolean;
 }) {
@@ -26,16 +30,12 @@ export default function TabItem({
         onClick={onClick}
         leftContent={
           <SquareIcon className={isSelected ? "bg-gray-300" : ""}>
-            {item.icon ? (
-              <img src={item.icon} alt="favicon" className="size-5" />
-            ) : (
-              <WindowIcon className="text-gray-500 size-5" />
-            )}
+            <img src={getFavicon(item.url)} alt="favicon" className="size-5" />
           </SquareIcon>
         }
         rightContent={
           <div className="flex items-center space-x-2">
-            <span className="text-xs text-gray-300">Go to Tab</span>
+            <span className="text-xs text-gray-300">Go to Page</span>
             <SquareIcon className={isSelected ? "bg-gray-300" : ""}>
               <ArrowLongRightIcon
                 className={`size-5 ${
@@ -49,7 +49,7 @@ export default function TabItem({
       >
         <div className="relative flex-col items-center justify-center inline-block max-w-fit">
           <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
-            {item.title}
+            {item.title || item.url}
           </div>
         </div>
       </CommonItem>

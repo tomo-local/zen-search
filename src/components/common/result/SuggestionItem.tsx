@@ -6,11 +6,15 @@ import { Suggestion } from "@/types/google";
 
 export default function SuggestionItem({
   key,
+  className,
   item,
+  onClick,
   isSelected,
 }: {
   key: number;
+  className?: string;
   item: Suggestion;
+  onClick?: (event: React.MouseEvent) => void;
   isSelected: boolean;
 }) {
   return (
@@ -18,7 +22,8 @@ export default function SuggestionItem({
       <CommonItem
         className={`text-gray-200 bg-gray-800 border-sky-500 ${
           isSelected && "bg-sky-500"
-        } `}
+        } ${className}`}
+        onClick={onClick}
         leftContent={
           <SquareIcon className={isSelected ? "bg-gray-300" : ""}>
             <MagnifyingGlassIcon className="text-gray-500 size-5" />

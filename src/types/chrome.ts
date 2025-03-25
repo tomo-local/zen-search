@@ -8,6 +8,7 @@ export enum MessageType {
   UPDATE_TAB = "UPDATE_TAB",
   REMOVE_TAB = "REMOVE_TAB",
   QUERY_HISTORY = "QUERY_HISTORY",
+  QUERY_BOOKMARK = "QUERY_BOOKMARK",
 }
 
 export enum ActionType {
@@ -68,5 +69,19 @@ export interface QueryHistoryMessage {
   query: string;
   startTime?: number;
   endTime?: number;
+  count?: number;
+}
+
+export interface Bookmark {
+  type: ResultType.Bookmark;
+  id: number;
+  title: string;
+  url: string;
+  match: number;
+}
+
+export interface QueryBookmarkMessage {
+  type: MessageType.QUERY_BOOKMARK;
+  query: string;
   count?: number;
 }

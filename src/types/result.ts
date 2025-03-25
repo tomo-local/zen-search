@@ -1,4 +1,4 @@
-import { Tab, History } from "@/types/chrome";
+import { Tab, History, Bookmark } from "@/types/chrome";
 import { Suggestion } from "@/types/google";
 
 export enum ResultType {
@@ -9,4 +9,4 @@ export enum ResultType {
   Google = "Google",
 }
 
-export type Result = Tab | Suggestion | History;
+export type Result = Tab | Suggestion | History | Bookmark;

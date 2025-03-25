@@ -6,7 +6,7 @@ import useQueryResult from "@/hooks/query/useQueryResult";
 import useQueryControl from "@/hooks/query/useQueryControl";
 import useControlTab from "@/hooks/useControlTab";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
-import usePopupShortCut from "@/hooks/usePopupShortCut";
+import usePopupShortcut from "@/hooks/usePopupShortcut";
 
 import Badge from "@/components/common/icon/Badge";
 import SquareBadge from "@/components/common/icon/SquareBadge";
@@ -15,8 +15,8 @@ import ResultFooter from "@/components/common/result/ResultFooter";
 import ResultLine from "@/components/common/result/ResultLine";
 
 import { closeContent } from "@/function/chrome/open";
-import { ActionType, MessageType } from "@/types/chrome";
-import { ResultType } from "@/types/result";
+import { ActionType } from "@/types/chrome";
+import { ResultType, Result } from "@/types/result";
 
 export default function App() {
   const { query, type, suggestion, setQuery, setType, reset } =
@@ -28,9 +28,26 @@ export default function App() {
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(result);
 
-  const { shortcut } = usePopupShortCut();
+  const { shortcut } = usePopupShortcut();
 
   const handleClose = () => window.close();
+
+  const onAction = (result: Result) => {
+    if (
+      [ResultType.Bookmark, ResultType.History, ResultType.Bookmark].includes(
+        result.type
+      )
+    ) {
+      createTab(result.url);
+      return;
+    }
+
+    if (result.type === ResultType.Tab) {
+      const { id, windowId } = result;
+      updateTab(id, windowId);
+      return;
+    }
+  };
 
   const handleEnterKey = () => {
     if (!result[selectedIndex] || isComposing) {
@@ -39,20 +56,7 @@ export default function App() {
 
     closeContent(ActionType.runtime);
 
-    if (
-      result[selectedIndex].type === ResultType.Google ||
-      result[selectedIndex].type === ResultType.History
-    ) {
-      createTab(result[selectedIndex].url);
-      return;
-    }
-
-    if (result[selectedIndex].type === ResultType.Tab) {
-      // @ts-ignore
-      const { id, windowId } = result[selectedIndex];
-      updateTab(id, windowId);
-      return;
-    }
+    onAction(result[selectedIndex]);
   };
 
   const handleTabKeyDown = (e: React.KeyboardEvent) => {
@@ -72,12 +76,6 @@ export default function App() {
 
     e.preventDefault();
     reset();
-  };
-
-  const getCommandShortcut = async () => {
-    const commands = await chrome.commands.getAll();
-
-    return commands.find((command) => command.name === MessageType.OPEN_POPUP);
   };
 
   const handleCommandKeyDown = async (e: React.KeyboardEvent) => {
@@ -141,14 +139,16 @@ export default function App() {
         {result?.length ? (
           <>
             <div className="border-t border-gray-700 border-solid" />
-            <div className="pt-3 pb-2">
+            <div className="pt-3 pb-2 bg-gray-800">
               <ul
-                className="overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-48"
+                className="space-y-1 overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-56"
                 ref={listRef}
               >
                 {result.map((item, index) => (
                   <ResultLine
                     key={item.id}
+                    className="hover:bg-sky-700 hover:opacity-80 hover:cursor-pointer"
+                    onClick={() => onAction(item)}
                     item={item}
                     isSelected={index === selectedIndex}
                   />
