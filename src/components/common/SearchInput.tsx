@@ -58,7 +58,6 @@ export default function SearchInput({
     }
 
     if (e.key === "Enter") {
-      e.preventDefault();
       onEnterKeyDown?.(e);
       return;
     }

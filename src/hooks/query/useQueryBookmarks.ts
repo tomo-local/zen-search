@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Bookmark, MessageType } from "@/types/chrome";
-import { ResultType } from "@/types/result";
+import { Bookmark } from "@/types/chrome";
+import { ResultType, MessageType } from "@/types/result";
 
 const DEFAULT_TAB_COUNT = 3;
 

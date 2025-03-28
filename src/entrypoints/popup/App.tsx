@@ -22,31 +22,29 @@ export default function App() {
   const [isComposing, setIsComposing] = useState(false);
 
   const { result } = useQueryResult(query, type);
-  const { onAction } = useEnterKeyControl();
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(result);
+  const { onAction } = useEnterKeyControl();
 
   const { shortcut } = usePopupShortcut();
 
   const handleClose = () => window.close();
 
-  const handleEnterKey = () => {
+  const handleEnterKey = (e: React.KeyboardEvent) => {
     if (isComposing) {
       return;
     }
 
-    handleClose();
-
+    e.preventDefault();
     onAction(result[selectedIndex]);
+    handleClose();
   };
 
   const handleTabKeyDown = (e: React.KeyboardEvent) => {
     e.preventDefault();
-
     if (!suggestion || isComposing) {
       return;
     }
-
     setType(suggestion);
   };
 
@@ -54,7 +52,6 @@ export default function App() {
     if (query || (type! == ResultType.All && query)) {
       return;
     }
-
     e.preventDefault();
     reset();
   };

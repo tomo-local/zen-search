@@ -3,7 +3,8 @@ import {
   actionTabsContent,
   actionPopupContent,
 } from "@/utils/chrome";
-import { MessageType, ActionType } from "@/types/chrome";
+import { ActionType } from "@/types/chrome";
+import { MessageType } from "@/types/result";
 
 const openContent = async (type: ActionType) => {
   if (type === ActionType.runtime) {

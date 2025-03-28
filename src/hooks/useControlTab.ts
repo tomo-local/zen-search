@@ -1,10 +1,6 @@
 import { useCallback } from "react";
-import {
-  CreateMessage,
-  UpdateMessage,
-  RemoveMessage,
-  MessageType,
-} from "@/types/chrome";
+import { CreateMessage, UpdateMessage, RemoveMessage } from "@/types/chrome";
+import { MessageType } from "@/types/result";
 
 const { CREATE_TAB, UPDATE_TAB, REMOVE_TAB } = MessageType;
 

@@ -26,7 +26,6 @@ export default function App() {
   const { result } = useQueryResult(query, type);
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(result);
-
   const { onAction } = useEnterKeyControl();
 
   const handleClose = () => closeContent(ActionType.runtime);
@@ -35,18 +34,17 @@ export default function App() {
     if (isComposing) {
       return;
     }
-    handleClose();
 
+    e.preventDefault();
     onAction(result[selectedIndex]);
+    handleClose();
   };
 
   const handleTabKeyDown = (e: React.KeyboardEvent) => {
     e.preventDefault();
-
     if (!suggestion || isComposing) {
       return;
     }
-
     setType(suggestion);
   };
 
@@ -54,7 +52,6 @@ export default function App() {
     if (query || (type! == ResultType.All && query)) {
       return;
     }
-
     e.preventDefault();
     reset();
   };

@@ -1,4 +1,4 @@
-import { MessageType } from "@/types/chrome";
+import { MessageType } from "@/types/result";
 
 const actionRuntimeContent = (
   message: MessageType.OPEN_POPUP | MessageType.CLOSE_POPUP

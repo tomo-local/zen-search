@@ -3,12 +3,12 @@ import { ResultType } from "@/types/result";
 
 import { calcMatchRateResult } from "@/utils/match";
 
-const suggest_url = "https://suggestqueries.google.com/complete/search";
+const suggest_url = "https://www.google.com/complete/search";
 const search_url = "https://www.google.com/search";
 
 export const querySuggestions = async (
   query: string,
-  option: SuggestionOptions
+  option?: SuggestionOptions
 ) => {
   if (!query) return [];
 
@@ -16,7 +16,7 @@ export const querySuggestions = async (
 
   const endpoint = `${suggest_url}?client=chrome&q=${keyword}`;
   try {
-    const response = await fetch(endpoint);
+    const response = await fetch(endpoint, { mode: "no-cors" });
     if (!response.ok) {
       console.error("Failed to fetch Google suggestions:", response.statusText);
       return [] as Suggestion[];

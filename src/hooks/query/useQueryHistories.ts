@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { History, MessageType } from "@/types/chrome";
-import { ResultType } from "@/types/result";
+import { History } from "@/types/chrome";
+import { ResultType, MessageType } from "@/types/result";
 
 const DEFAULT_TAB_COUNT = 3;
 

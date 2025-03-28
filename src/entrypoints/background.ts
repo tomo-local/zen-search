@@ -4,8 +4,8 @@ import {
   UpdateMessage,
   RemoveMessage,
   ActionType,
-  MessageType,
 } from "@/types/chrome";
+import { MessageType } from "@/types/result";
 
 import { openContent } from "@/function/chrome/open";
 import { queryTabs, updateTab, removeTab } from "@/function/chrome/tab";

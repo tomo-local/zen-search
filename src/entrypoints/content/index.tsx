@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
-import App from "../content/App";
-import { MessageType } from "@/types/chrome";
+import App from "./App";
+import { MessageType } from "@/types/result";
 
 export default defineContentScript({
   matches: ["<all_urls>"],
