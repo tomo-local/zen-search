@@ -1,4 +1,4 @@
-import { useEffect, useReducer } from "react";
+import { useReducer } from "react";
 import { ResultType } from "@/types/result";
 import { ngramSimilarity } from "@/utils/algorithm";
 

@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Tab, MessageType } from "@/types/chrome";
-import { ResultType } from "@/types/result";
+import { Tab } from "@/types/chrome";
+import { ResultType, MessageType } from "@/types/result";
 
 const DEFAULT_COUNT = undefined;
 

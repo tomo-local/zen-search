@@ -4,19 +4,19 @@ import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 
 import useQueryResult from "@/hooks/query/useQueryResult";
 import useQueryControl from "@/hooks/query/useQueryControl";
-import useControlTab from "@/hooks/useControlTab";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
+import useEnterKeyControl from "@/hooks/useEnterKeyControl";
 
 import Badge from "@/components/common/icon/Badge";
 import SquareBadge from "@/components/common/icon/SquareBadge";
 import SearchInput from "@/components/common/SearchInput";
 import { ModalOverlay, ModalContainer } from "@/components/content/Modal";
 import ResultFooter from "@/components/common/result/ResultFooter";
-import ResultLine from "@/components/common/result/ResultLine";
+import ResultLine from "@/components/common/result/item/ResultLine";
 
 import { closeContent } from "@/function/chrome/open";
 import { ActionType } from "@/types/chrome";
-import { ResultType, Result } from "@/types/result";
+import { ResultType } from "@/types/result";
 
 export default function App() {
   const { query, type, suggestion, setQuery, setType, reset } =
@@ -24,46 +24,27 @@ export default function App() {
   const [isComposing, setIsComposing] = useState(false);
 
   const { result } = useQueryResult(query, type);
-  const { updateTab, createTab } = useControlTab();
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(result);
+  const { onAction } = useEnterKeyControl();
 
   const handleClose = () => closeContent(ActionType.runtime);
 
-  const onAction = (result: Result) => {
-    if (
-      [ResultType.Bookmark, ResultType.History, ResultType.Bookmark].includes(
-        result.type
-      )
-    ) {
-      createTab(result.url);
+  const handleEnterKey = (e: React.KeyboardEvent) => {
+    if (isComposing) {
       return;
     }
 
-    if (result.type === ResultType.Tab) {
-      const { id, windowId } = result;
-      updateTab(id, windowId);
-      return;
-    }
-  };
-
-  const handleEnterKey = () => {
-    if (!result[selectedIndex] || isComposing) {
-      return;
-    }
-
-    closeContent(ActionType.runtime);
-
+    e.preventDefault();
+    handleClose();
     onAction(result[selectedIndex]);
   };
 
   const handleTabKeyDown = (e: React.KeyboardEvent) => {
     e.preventDefault();
-
     if (!suggestion || isComposing) {
       return;
     }
-
     setType(suggestion);
   };
 
@@ -71,7 +52,6 @@ export default function App() {
     if (query || (type! == ResultType.All && query)) {
       return;
     }
-
     e.preventDefault();
     reset();
   };
@@ -118,9 +98,12 @@ export default function App() {
                 >
                   {result.map((item, index) => (
                     <ResultLine
-                      key={item.id}
+                      key={index}
                       className="hover:bg-sky-700 hover:opacity-80 hover:cursor-pointer"
-                      onClick={() => onAction(item)}
+                      onClick={() => {
+                        handleClose();
+                        onAction(item);
+                      }}
                       item={item}
                       isSelected={index === selectedIndex}
                     />
@@ -133,10 +116,10 @@ export default function App() {
           <ResultFooter>
             {result.length ? (
               <p className="text-right text-gray-400">
-                {result.length} results found
+                {result.length} Results Found
               </p>
             ) : (
-              <p className="text-right text-gray-400">No results found</p>
+              <p className="text-right text-gray-400">No Results Found</p>
             )}
           </ResultFooter>
         </div>

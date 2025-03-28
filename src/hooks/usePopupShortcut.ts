@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { MessageType } from "@/types/chrome";
+import { MessageType } from "@/types/result";
 
 const keyMap: Record<string, string> = {
   "⇧": "Shift",
@@ -25,10 +25,13 @@ export default function usePopupShortCut() {
       if (!command) {
         return;
       }
-      const normalizedShortcut = command?.shortcut?.split("").map((char) => {
-        const key = keyMap[char] || char;
-        return key.toLowerCase();
-      }).sort()
+      const normalizedShortcut = command?.shortcut
+        ?.split("")
+        .map((char) => {
+          const key = keyMap[char] || char;
+          return key.toLowerCase();
+        })
+        .sort();
 
       setShortcut(normalizedShortcut ?? []);
     });

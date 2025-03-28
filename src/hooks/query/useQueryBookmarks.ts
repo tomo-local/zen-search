@@ -1,23 +1,21 @@
 import { useState, useEffect } from "react";
-import { Bookmark, MessageType } from "@/types/chrome";
-import { ResultType } from "@/types/result";
-
-const DEFAULT_TAB_COUNT = 3;
+import { Bookmark } from "@/types/chrome";
+import { ResultType, MessageType } from "@/types/result";
 
 export default function useQueryBookmarks(
   query: string,
   type: ResultType,
-  tabCount: number
+  init: boolean = false
 ) {
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 
   useEffect(() => {
-    if (type !== ResultType.Bookmark && type !== ResultType.All) {
-      setBookmarks([]);
+    if (!init) {
       return;
     }
 
-    if (tabCount > DEFAULT_TAB_COUNT) {
+    if (type !== ResultType.Bookmark && type !== ResultType.All) {
+      setBookmarks([]);
       return;
     }
 

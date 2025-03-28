@@ -13,21 +13,18 @@ const queryBookmarks = async ({
 
   const bookmarks = response
     .filter((bookmark) => bookmark.url)
-    .map((bookmark) => {
-      return {
-        type: ResultType.Bookmark,
-        id: createRandomId(),
-        title: bookmark.title || "",
-        url: bookmark.url || "",
-        match: calcMatchRateResult(query, bookmark.title, bookmark.url),
-      } as Bookmark;
-    });
+    .map(
+      (bookmark) =>
+        ({
+          type: ResultType.Bookmark,
+          id: bookmark.id,
+          title: bookmark.title || "",
+          url: bookmark.url || "",
+          match: calcMatchRateResult(query, bookmark.title, bookmark.url),
+        } as Bookmark)
+    );
 
   return count ? bookmarks.slice(0, count) : bookmarks;
-};
-
-const createRandomId = () => {
-  return Math.floor(Math.random() * 10000000000);
 };
 
 export { queryBookmarks };

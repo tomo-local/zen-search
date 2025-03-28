@@ -1,15 +1,6 @@
-import { ResultType } from "@/types/result";
+import { ResultType, MessageType } from "@/types/result";
 
-export enum MessageType {
-  CLOSE_POPUP = "CLOSE_POPUP",
-  OPEN_POPUP = "OPEN_POPUP",
-  QUERY_TAB = "QUERY_TAB",
-  CREATE_TAB = "CREATE_TAB",
-  UPDATE_TAB = "UPDATE_TAB",
-  REMOVE_TAB = "REMOVE_TAB",
-  QUERY_HISTORY = "QUERY_HISTORY",
-  QUERY_BOOKMARK = "QUERY_BOOKMARK",
-}
+
 
 export enum ActionType {
   runtime = "runtime",
@@ -72,9 +63,23 @@ export interface QueryHistoryMessage {
   count?: number;
 }
 
+export interface Suggestion {
+  type: ResultType.Google;
+  id: number;
+  title: string;
+  url: string;
+  match: number;
+}
+
+export interface QuerySuggestionMessage {
+  type: MessageType.QUERY_SUGGESTION;
+  query: string;
+  count?: number;
+}
+
 export interface Bookmark {
   type: ResultType.Bookmark;
-  id: number;
+  id: number | string
   title: string;
   url: string;
   match: number;
