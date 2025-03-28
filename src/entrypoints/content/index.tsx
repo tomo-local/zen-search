@@ -2,7 +2,7 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { MessageType } from "@/types/result";
 
-const matches = ["https://www.google.com/*"];
+const matches = ["<all_urls>"];
 
 export default defineContentScript({
   matches: matches,
