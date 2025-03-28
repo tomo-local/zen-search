@@ -4,19 +4,17 @@ import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 
 import useQueryResult from "@/hooks/query/useQueryResult";
 import useQueryControl from "@/hooks/query/useQueryControl";
-import useControlTab from "@/hooks/useControlTab";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
+import useEnterKeyControl from "@/hooks/useEnterKeyControl";
 import usePopupShortcut from "@/hooks/usePopupShortcut";
 
 import Badge from "@/components/common/icon/Badge";
 import SquareBadge from "@/components/common/icon/SquareBadge";
 import SearchInput from "@/components/common/SearchInput";
 import ResultFooter from "@/components/common/result/ResultFooter";
-import ResultLine from "@/components/common/result/ResultLine";
+import ResultLine from "@/components/common/result/item/ResultLine";
 
-import { closeContent } from "@/function/chrome/open";
-import { ActionType } from "@/types/chrome";
-import { ResultType, Result } from "@/types/result";
+import { ResultType } from "@/types/result";
 
 export default function App() {
   const { query, type, suggestion, setQuery, setType, reset } =
@@ -24,7 +22,7 @@ export default function App() {
   const [isComposing, setIsComposing] = useState(false);
 
   const { result } = useQueryResult(query, type);
-  const { updateTab, createTab } = useControlTab();
+  const { onAction } = useEnterKeyControl();
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(result);
 
@@ -32,29 +30,12 @@ export default function App() {
 
   const handleClose = () => window.close();
 
-  const onAction = (result: Result) => {
-    if (
-      [ResultType.Bookmark, ResultType.History, ResultType.Bookmark].includes(
-        result.type
-      )
-    ) {
-      createTab(result.url);
-      return;
-    }
-
-    if (result.type === ResultType.Tab) {
-      const { id, windowId } = result;
-      updateTab(id, windowId);
-      return;
-    }
-  };
-
   const handleEnterKey = () => {
-    if (!result[selectedIndex] || isComposing) {
+    if (isComposing) {
       return;
     }
 
-    closeContent(ActionType.runtime);
+    handleClose();
 
     onAction(result[selectedIndex]);
   };
@@ -146,7 +127,7 @@ export default function App() {
               >
                 {result.map((item, index) => (
                   <ResultLine
-                    key={item.id}
+                    key={index}
                     className="hover:bg-sky-700 hover:opacity-80 hover:cursor-pointer"
                     onClick={() => onAction(item)}
                     item={item}

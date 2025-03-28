@@ -23,7 +23,7 @@ const actionTabsContent = async (
 };
 
 const actionPopupContent = async () => {
-  chrome.action.openPopup();
+  await chrome.action.openPopup();
 };
 
 const actionQuery = async (
