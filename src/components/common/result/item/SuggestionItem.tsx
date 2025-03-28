@@ -1,4 +1,4 @@
-import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
+import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
 import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 import CommonItem from "@/components/common/result/item/CommonItem";
 import SquareIcon from "@/components/common/icon/SquareIcon";
@@ -35,7 +35,7 @@ export default function SuggestionItem({
         <div className="flex items-center space-x-2">
           <span className="text-xs text-gray-300">Go to Search</span>
           <SquareIcon className={isSelected ? "bg-gray-300" : ""}>
-            <ArrowLongRightIcon
+            <PlusIcon
               className={`size-5 ${
                 isSelected ? "text-gray-500" : "text-gray-300"
               }`}

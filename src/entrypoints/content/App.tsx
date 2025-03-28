@@ -36,8 +36,8 @@ export default function App() {
     }
 
     e.preventDefault();
-    onAction(result[selectedIndex]);
     handleClose();
+    onAction(result[selectedIndex]);
   };
 
   const handleTabKeyDown = (e: React.KeyboardEvent) => {
@@ -100,7 +100,10 @@ export default function App() {
                     <ResultLine
                       key={index}
                       className="hover:bg-sky-700 hover:opacity-80 hover:cursor-pointer"
-                      onClick={() => onAction(item)}
+                      onClick={() => {
+                        handleClose();
+                        onAction(item);
+                      }}
                       item={item}
                       isSelected={index === selectedIndex}
                     />
@@ -113,10 +116,10 @@ export default function App() {
           <ResultFooter>
             {result.length ? (
               <p className="text-right text-gray-400">
-                {result.length} results found
+                {result.length} Results Found
               </p>
             ) : (
-              <p className="text-right text-gray-400">No results found</p>
+              <p className="text-right text-gray-400">No Results Found</p>
             )}
           </ResultFooter>
         </div>

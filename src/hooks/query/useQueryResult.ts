@@ -9,10 +9,11 @@ import { ResultType, Result } from "@/types/result";
 
 export default function useResult(query: string, type: ResultType) {
   const [result, setResult] = useState<Result[]>([]);
+  const [init, setInit] = useState(false);
   const { tabs } = useQueryTabs(query, type);
-  const { suggestions } = useQuerySuggestions(query, type, tabs.length);
-  const { histories } = useQueryHistories(query, type, tabs.length);
-  const { bookmarks } = useQueryBookmarks(query, type, tabs.length);
+  const { suggestions } = useQuerySuggestions(query, type, init);
+  const { histories } = useQueryHistories(query, type, init);
+  const { bookmarks } = useQueryBookmarks(query, type, init);
 
   useEffect(() => {
     const items = [...tabs, ...suggestions, ...histories, ...bookmarks].sort(
@@ -20,6 +21,10 @@ export default function useResult(query: string, type: ResultType) {
     );
 
     setResult(items);
+
+    if (!init) {
+      setInit(true);
+    }
   }, [query, tabs, suggestions, histories, bookmarks]);
 
   return {

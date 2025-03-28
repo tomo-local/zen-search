@@ -1,5 +1,5 @@
-import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
-import StarIcon from "@heroicons/react/16/solid/StarIcon";
+import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
+import BookmarkIcon from "@heroicons/react/16/solid/BookmarkIcon";
 import CommonItem from "@/components/common/result/item/CommonItem";
 import SquareIcon from "@/components/common/icon/SquareIcon";
 import { Bookmark } from "@/types/chrome";
@@ -35,9 +35,10 @@ export default function BookmarkItem({
       }
       rightContent={
         <div className="flex items-center space-x-2">
+          <BookmarkIcon className="text-gray-300 size-5" />
           <span className="text-xs text-gray-300">Go to Page</span>
           <SquareIcon className={isSelected ? "bg-gray-300" : ""}>
-            <ArrowLongRightIcon
+            <PlusIcon
               className={`size-5 ${
                 isSelected ? "text-gray-500" : "text-gray-300"
               }`}

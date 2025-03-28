@@ -79,7 +79,7 @@ export interface QuerySuggestionMessage {
 
 export interface Bookmark {
   type: ResultType.Bookmark;
-  id: number;
+  id: number | string
   title: string;
   url: string;
   match: number;

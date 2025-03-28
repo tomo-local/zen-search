@@ -36,8 +36,8 @@ export default function App() {
     }
 
     e.preventDefault();
-    onAction(result[selectedIndex]);
     handleClose();
+    onAction(result[selectedIndex]);
   };
 
   const handleTabKeyDown = (e: React.KeyboardEvent) => {
@@ -139,10 +139,10 @@ export default function App() {
         <ResultFooter>
           {result.length ? (
             <p className="text-right text-gray-400">
-              {result.length} results found
+              {result.length} Results Found
             </p>
           ) : (
-            <p className="text-right text-gray-400">No results found</p>
+            <p className="text-right text-gray-400">No Results Found</p>
           )}
         </ResultFooter>
       </div>

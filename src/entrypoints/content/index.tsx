@@ -2,8 +2,10 @@ import ReactDOM from "react-dom/client";
 import App from "./App";
 import { MessageType } from "@/types/result";
 
+const matches = ["https://www.google.com/*"];
+
 export default defineContentScript({
-  matches: ["<all_urls>"],
+  matches: matches,
   cssInjectionMode: "ui",
   async main(ctx) {
     let open = false;

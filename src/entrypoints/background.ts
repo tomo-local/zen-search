@@ -9,6 +9,7 @@ import { MessageType } from "@/types/result";
 
 import { openContent } from "@/function/chrome/open";
 import { queryTabs, updateTab, removeTab } from "@/function/chrome/tab";
+import { queryBookmarks } from "@/function/chrome/bookmark";
 import { queryHistory } from "@/function/chrome/history";
 
 const {
@@ -19,6 +20,7 @@ const {
   UPDATE_TAB,
   REMOVE_TAB,
   QUERY_HISTORY,
+  QUERY_BOOKMARK,
 } = MessageType;
 
 export default defineBackground(() => {
@@ -89,6 +91,17 @@ export default defineBackground(() => {
         response({
           type: QUERY_HISTORY,
           result: history,
+        });
+      });
+      return true;
+    }
+
+    if (message.type === QUERY_BOOKMARK) {
+      const { query } = message as QueryMessage;
+      queryBookmarks({ query }).then((bookmarks) => {
+        response({
+          type: QUERY_BOOKMARK,
+          result: bookmarks,
         });
       });
       return true;

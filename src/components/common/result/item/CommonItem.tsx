@@ -20,7 +20,8 @@ export default function CommonItem({
 }: ResultItemProps) {
   return (
     <li key={key}>
-      <div
+      <button
+        type="button"
         className={`
         flex items-center justify-between w-full px-4 py-2 text-left rounded-lg
         ${className}
@@ -32,7 +33,7 @@ export default function CommonItem({
           <div className="flex-1">{children}</div>
           {rightContent && <div className="flex-none">{rightContent}</div>}
         </div>
-      </div>
+      </button>
     </li>
   );
 }

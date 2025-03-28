@@ -16,7 +16,8 @@ const calcMatchRateResult = (
 ): number => {
   const titleMatch = title ? calculateMatchRate(query, title) : 0;
   const urlMatch = url ? calculateMatchRate(query, url) : 0;
-  return titleMatch > urlMatch ? titleMatch : urlMatch;
+
+  return titleMatch * 0.7 + urlMatch * 0.3;
 };
 
 export { calcMatchRateResult };

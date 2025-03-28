@@ -2,22 +2,20 @@ import { useState, useEffect } from "react";
 import { History } from "@/types/chrome";
 import { ResultType, MessageType } from "@/types/result";
 
-const DEFAULT_TAB_COUNT = 3;
-
 export default function useQueryHistories(
   query: string,
   type: ResultType,
-  tabCount: number
+  init: boolean = false
 ) {
   const [history, setHistory] = useState<History[]>([]);
 
   useEffect(() => {
-    if (type !== ResultType.History && type !== ResultType.All) {
-      setHistory([]);
+    if (!init) {
       return;
     }
 
-    if (tabCount > DEFAULT_TAB_COUNT) {
+    if (type !== ResultType.History && type !== ResultType.All) {
+      setHistory([]);
       return;
     }
 
