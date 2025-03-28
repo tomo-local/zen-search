@@ -11,10 +11,6 @@ const queryBookmarks = async ({
     ? await actionBookmarkQuery(query)
     : await actionRecentBookmarks(count || 10);
 
-  const sample = await chrome.bookmarks.getTree();
-
-  console.log("sample", sample, response);
-
   const bookmarks = response
     .filter((bookmark) => bookmark.url)
     .map(
