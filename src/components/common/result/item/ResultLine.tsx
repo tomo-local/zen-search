@@ -1,32 +1,32 @@
-import TabItem from "@/components/common/result/TabItem";
-import SuggestionItem from "@/components/common/result/SuggestionItem";
-import HistoryItem from "@/components/common/result/HistoryItem";
-import BookmarkItem from "@/components/common/result/BookmarkItem";
+import TabItem from "@/components/common/result/item/TabItem";
+import SuggestionItem from "@/components/common/result/item/SuggestionItem";
+import HistoryItem from "@/components/common/result/item/HistoryItem";
+import BookmarkItem from "@/components/common/result/item/BookmarkItem";
 
 import { Tab, History, Bookmark } from "@/types/chrome";
 import { Suggestion } from "@/types/google";
 import { ResultType, Result } from "@/types/result";
 
 type LineProps = {
-  key: number;
+  key: React.Key;
+  className?: string | undefined;
   item: Result;
   onClick?: (event: React.MouseEvent) => void;
   isSelected: boolean;
-  className?: string;
 };
 
 export default function ResultLine({
   key,
+  className,
   item,
   onClick,
   isSelected,
-  className,
 }: LineProps) {
   if (item.type === ResultType.Tab) {
     return (
       <TabItem
-        className={className}
         key={key}
+        className={className}
         item={item as Tab}
         onClick={onClick}
         isSelected={isSelected}
@@ -37,8 +37,8 @@ export default function ResultLine({
   if (item.type === ResultType.Google) {
     return (
       <SuggestionItem
-        className={className}
         key={key}
+        className={className}
         item={item as Suggestion}
         onClick={onClick}
         isSelected={isSelected}
@@ -49,8 +49,8 @@ export default function ResultLine({
   if (item.type === ResultType.History) {
     return (
       <HistoryItem
-        className={className}
         key={key}
+        className={className}
         item={item as History}
         onClick={onClick}
         isSelected={isSelected}
@@ -61,8 +61,8 @@ export default function ResultLine({
   if (item.type === ResultType.Bookmark) {
     return (
       <BookmarkItem
-        className={className}
         key={key}
+        className={className}
         item={item as Bookmark}
         onClick={onClick}
         isSelected={isSelected}
