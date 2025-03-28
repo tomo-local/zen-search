@@ -22,7 +22,7 @@ export default defineConfig({
     },
     permissions: ["tabs", "history", "activeTab", "bookmarks"],
     commands: {
-      openPopup: {
+      OPEN_POPUP: {
         suggested_key: {
           default: "Ctrl+T",
           mac: "Command+T",
