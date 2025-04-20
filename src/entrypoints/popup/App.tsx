@@ -21,7 +21,7 @@ export default function App() {
     useQueryControl();
   const [isComposing, setIsComposing] = useState(false);
 
-  const { result } = useQueryResult(query, type);
+  const { result, loading } = useQueryResult(query, type);
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(result);
   const { onAction } = useEnterKeyControl();
@@ -136,15 +136,7 @@ export default function App() {
           </>
         ) : null}
         <div className="border-t border-gray-700 border-solid" />
-        <ResultFooter>
-          {result.length ? (
-            <p className="text-right text-gray-400">
-              {result.length} Results Found
-            </p>
-          ) : (
-            <p className="text-right text-gray-400">No Results Found</p>
-          )}
-        </ResultFooter>
+        <ResultFooter result={result} loading={loading} />
       </div>
     </div>
   );

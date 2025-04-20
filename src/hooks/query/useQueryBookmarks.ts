@@ -20,6 +20,11 @@ export default function useQueryBookmarks(
       return;
     }
 
+    if (type === ResultType.All && !query) {
+      setBookmarks([]);
+      return;
+    }
+
     setLoading(true);
     chrome.runtime.sendMessage(
       { type: MessageType.QUERY_BOOKMARK, query },

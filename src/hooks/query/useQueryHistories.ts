@@ -20,6 +20,11 @@ export default function useQueryHistories(
       return;
     }
 
+    if (type == ResultType.All && !query) {
+      setHistory([]);
+      return;
+    }
+
     setLoading(true);
     chrome.runtime.sendMessage(
       { type: MessageType.QUERY_HISTORY, query },

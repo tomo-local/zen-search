@@ -20,30 +20,35 @@ export const querySuggestions = async (
 
     if (!response.ok) {
       console.error("Failed to fetch Google suggestions:", response.statusText);
-      return [createSuggestion(query)] as Suggestion[];
+      return [createSuggestion(query, { match: true })] as Suggestion[];
     }
 
     const data = await response.json();
 
     const result = data[1].map((title: string) => createSuggestion(title));
 
-    return [createSuggestion(query), ...result];
+    return [createSuggestion(query, { match: true }), ...result];
   } catch (error) {
     console.error("Error fetching Google suggestions:", error);
-    return [createSuggestion(query)] as Suggestion[];
+    return [createSuggestion(query, { match: true })] as Suggestion[];
   }
 };
 
-const createSuggestion = (query: string) => ({
+const createSuggestion = (
+  query: string,
+  option?: { match: boolean }
+): Suggestion => ({
   id: createRandomId(),
   title: query,
   url: `${search_url}?q=${encodeURIComponent(query)}`,
   type: ResultType.Google,
-  match: calcMatchRateResult(
-    query,
-    query,
-    `${search_url}?q=${encodeURIComponent(query)}`
-  ),
+  match: option?.match
+    ? 1
+    : calcMatchRateResult(
+        query,
+        query,
+        `${search_url}?q=${encodeURIComponent(query)}`
+      ),
 });
 
 // 乱数を作成 10桁の乱数を作成
