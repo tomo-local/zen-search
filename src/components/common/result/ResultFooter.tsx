@@ -1,11 +1,38 @@
+import Footer from "@/components/modules/Footer";
+import LinearProgress from "@/components/modules/LoadingSpinner";
+import { Result } from "@/types/result";
+
 interface ResultFooterProps {
   className?: string;
-  children?: React.ReactNode;
+  loading: boolean;
+  result: Result[];
 }
 
 export default function ResultFooter({
   className,
-  children,
+  result,
+  loading,
 }: ResultFooterProps) {
-  return <div className={`py-1 ${className}`}>{children}</div>;
+  if (loading) {
+    return (
+      <Footer className={`pt-1 text-base ${className}`}>
+        <div className="flex flex-row items-center justify-end space-x-2">
+          <p className="text-gray-400">Loading...</p>
+          <LinearProgress active={loading} size="xs" />
+        </div>
+      </Footer>
+    );
+  }
+
+  return (
+    <Footer className={`pt-1 text-base ${className}`}>
+      {result.length ? (
+        <p className="text-base text-right text-gray-400">
+          {result.length} Results Found
+        </p>
+      ) : (
+        <p className="text-right text-gray-400">No Results Found</p>
+      )}
+    </Footer>
+  );
 }
