@@ -16,7 +16,12 @@ export default function useQuerySuggestions(
       return;
     }
 
-    if ((type !== ResultType.Google && type !== ResultType.All) || !query) {
+    if (type !== ResultType.Google && type !== ResultType.All) {
+      setSuggestions([]);
+      return;
+    }
+
+    if (type !== ResultType.All && !query) {
       setSuggestions([]);
       return;
     }
