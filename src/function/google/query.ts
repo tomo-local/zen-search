@@ -17,28 +17,34 @@ export const querySuggestions = async (
   const endpoint = `${suggest_url}?client=chrome&q=${keyword}`;
   try {
     const response = await fetch(endpoint, { mode: "no-cors" });
+
     if (!response.ok) {
       console.error("Failed to fetch Google suggestions:", response.statusText);
-      return [] as Suggestion[];
+      return [createSuggestion(query)] as Suggestion[];
     }
 
     const data = await response.json();
 
-    return data[1].map((title: string) => {
-      const url = `${search_url}?q=${encodeURIComponent(title)}`;
-      return {
-        id: createRandomId(),
-        title,
-        url,
-        type: ResultType.Google,
-        match: calcMatchRateResult(query, title, url),
-      } as Suggestion;
-    });
+    const result = data[1].map((title: string) => createSuggestion(title));
+
+    return [createSuggestion(query), ...result];
   } catch (error) {
     console.error("Error fetching Google suggestions:", error);
-    return [] as Suggestion[];
+    return [createSuggestion(query)] as Suggestion[];
   }
 };
+
+const createSuggestion = (query: string) => ({
+  id: createRandomId(),
+  title: query,
+  url: `${search_url}?q=${encodeURIComponent(query)}`,
+  type: ResultType.Google,
+  match: calcMatchRateResult(
+    query,
+    query,
+    `${search_url}?q=${encodeURIComponent(query)}`
+  ),
+});
 
 // 乱数を作成 10桁の乱数を作成
 const createRandomId = () => {

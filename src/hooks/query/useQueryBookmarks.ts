@@ -7,6 +7,7 @@ export default function useQueryBookmarks(
   type: ResultType,
   init: boolean = false
 ) {
+  const [loading, setLoading] = useState(false);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 
   useEffect(() => {
@@ -19,15 +20,18 @@ export default function useQueryBookmarks(
       return;
     }
 
+    setLoading(true);
     chrome.runtime.sendMessage(
       { type: MessageType.QUERY_BOOKMARK, query },
       (response) => {
         setBookmarks(response.result);
+        setLoading(false);
       }
     );
   }, [query]);
 
   return {
     bookmarks,
+    loading,
   };
 }
