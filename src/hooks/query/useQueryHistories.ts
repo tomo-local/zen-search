@@ -20,7 +20,7 @@ export default function useQueryHistories(
       return;
     }
 
-    if (type == ResultType.All && !query) {
+    if (type === ResultType.All && !query) {
       setHistory([]);
       return;
     }
