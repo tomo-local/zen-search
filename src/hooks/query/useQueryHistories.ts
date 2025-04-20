@@ -7,6 +7,7 @@ export default function useQueryHistories(
   type: ResultType,
   init: boolean = false
 ) {
+  const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<History[]>([]);
 
   useEffect(() => {
@@ -19,15 +20,18 @@ export default function useQueryHistories(
       return;
     }
 
+    setLoading(true);
     chrome.runtime.sendMessage(
       { type: MessageType.QUERY_HISTORY, query },
       (response) => {
         setHistory(response.result);
+        setLoading(false);
       }
     );
   }, [query]);
 
   return {
     histories: history,
+    loading,
   };
 }

@@ -8,6 +8,7 @@ export default function useQuerySuggestions(
   type: ResultType,
   init: boolean = false
 ) {
+  const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
 
   useEffect(() => {
@@ -20,12 +21,15 @@ export default function useQuerySuggestions(
       return;
     }
 
+    setLoading(true);
     querySuggestions(query).then((result) => {
       setSuggestions(result);
+      setLoading(false);
     });
   }, [query]);
 
   return {
     suggestions,
+    loading,
   };
 }
