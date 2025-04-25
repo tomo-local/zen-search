@@ -1,7 +1,5 @@
 import { ResultType, MessageType } from "@/types/result";
 
-
-
 export enum ActionType {
   runtime = "runtime",
   tabs = "tabs",
@@ -79,7 +77,7 @@ export interface QuerySuggestionMessage {
 
 export interface Bookmark {
   type: ResultType.Bookmark;
-  id: number | string
+  id: number | string;
   title: string;
   url: string;
   match: number;
