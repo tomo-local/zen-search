@@ -20,7 +20,7 @@ export default defineConfig({
       96: "icon/96.png",
       128: "icon/128.png",
     },
-    permissions: ["tabs", "history", "activeTab", "bookmarks"],
+    permissions: ["tabs", "history", "activeTab", "bookmarks", "storage"],
     commands: {
       OPEN_POPUP: {
         suggested_key: {
