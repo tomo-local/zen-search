@@ -13,6 +13,7 @@ import SquareBadge from "@/components/common/icon/SquareBadge";
 import SearchInput from "@/components/common/SearchInput";
 import ResultFooter from "@/components/common/result/ResultFooter";
 import ResultLine from "@/components/common/result/item/ResultLine";
+import ThemeProvider from "@/context/ThemeProvider";
 
 import { ResultType } from "@/types/result";
 
@@ -20,12 +21,10 @@ export default function App() {
   const { query, type, suggestion, setQuery, setType, reset } =
     useQueryControl();
   const [isComposing, setIsComposing] = useState(false);
-
   const { result, loading } = useQueryResult(query, type);
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(result);
   const { onAction } = useEnterKeyControl();
-
   const { shortcut } = usePopupShortcut();
 
   const handleClose = () => window.close();
@@ -83,61 +82,63 @@ export default function App() {
   };
 
   return (
-    <div className="min-w-[700px] max-w-min">
-      <div className="px-6 py-2 space-y-2 text-gray-200 bg-gray-800 border-2 border-solid shadow-xl border-sky-500">
-        <SearchInput
-          className="text-gray-200 bg-gray-800 "
-          value={query}
-          leftContent={
-            type === ResultType.All ? (
-              <MagnifyingGlassIcon className="text-gray-400 size-6" />
-            ) : (
-              <Badge className="bg-sky-500" label={type} />
-            )
-          }
-          rightContent={
-            suggestion ? (
-              <div className="flex space-x-1">
-                <div>Change to</div>
-                <div className="font-bold">{suggestion}</div>
-                <SquareBadge className="ml-1 bg-gray-500">Tab</SquareBadge>
+    <ThemeProvider>
+      <div className="min-w-[700px] max-w-min">
+        <div className="px-6 py-2 space-y-2 text-gray-200 bg-gray-800 border-2 border-solid shadow-xl border-sky-500">
+          <SearchInput
+            className="text-gray-200 bg-gray-800 "
+            value={query}
+            leftContent={
+              type === ResultType.All ? (
+                <MagnifyingGlassIcon className="text-gray-400 size-6" />
+              ) : (
+                <Badge className="bg-sky-500" label={type} />
+              )
+            }
+            rightContent={
+              suggestion ? (
+                <div className="flex space-x-1">
+                  <div>Change to</div>
+                  <div className="font-bold">{suggestion}</div>
+                  <SquareBadge className="ml-1 bg-gray-500">Tab</SquareBadge>
+                </div>
+              ) : null
+            }
+            onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={handleCommandKeyDown}
+            onCompositionStart={() => setIsComposing(true)}
+            onCompositionEnd={() => setIsComposing(false)}
+            onArrowUpDownKeyDown={handleArrowUpDownKey}
+            onEnterKeyDown={handleEnterKey}
+            onTabKeyDown={handleTabKeyDown}
+            onEscapeKeyDown={handleClose}
+            onBackspaceKeyDown={handleBackspaceKeyDown}
+          />
+          {result?.length ? (
+            <>
+              <div className="border-t border-gray-700 border-solid" />
+              <div className="pt-3 pb-2 bg-gray-800">
+                <ul
+                  className="space-y-1 overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-56"
+                  ref={listRef}
+                >
+                  {result.map((item, index) => (
+                    <ResultLine
+                      key={index}
+                      className="hover:bg-sky-700 hover:opacity-80 hover:cursor-pointer"
+                      onClick={() => onAction(item)}
+                      item={item}
+                      isSelected={index === selectedIndex}
+                    />
+                  ))}
+                </ul>
               </div>
-            ) : null
-          }
-          onChange={(e) => setQuery(e.target.value)}
-          onKeyDown={handleCommandKeyDown}
-          onCompositionStart={() => setIsComposing(true)}
-          onCompositionEnd={() => setIsComposing(false)}
-          onArrowUpDownKeyDown={handleArrowUpDownKey}
-          onEnterKeyDown={handleEnterKey}
-          onTabKeyDown={handleTabKeyDown}
-          onEscapeKeyDown={handleClose}
-          onBackspaceKeyDown={handleBackspaceKeyDown}
-        />
-        {result?.length ? (
-          <>
-            <div className="border-t border-gray-700 border-solid" />
-            <div className="pt-3 pb-2 bg-gray-800">
-              <ul
-                className="space-y-1 overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-56"
-                ref={listRef}
-              >
-                {result.map((item, index) => (
-                  <ResultLine
-                    key={index}
-                    className="hover:bg-sky-700 hover:opacity-80 hover:cursor-pointer"
-                    onClick={() => onAction(item)}
-                    item={item}
-                    isSelected={index === selectedIndex}
-                  />
-                ))}
-              </ul>
-            </div>
-          </>
-        ) : null}
-        <div className="border-t border-gray-700 border-solid" />
-        <ResultFooter result={result} loading={loading} />
+            </>
+          ) : null}
+          <div className="border-t border-gray-700 border-solid" />
+          <ResultFooter result={result} loading={loading} />
+        </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 }
