@@ -1,10 +1,11 @@
-import useTheme from "@/hooks/storage/useTheme";
+import { useContext } from "react";
+import { ThemeContext } from "@/context/ThemeProvider";
 import { ThemeValue } from "@/types/storage";
 import SunIcon from "@heroicons/react/16/solid/SunIcon";
 import MoonIcon from "@heroicons/react/16/solid/MoonIcon";
 import ComputerDesktopIcon from "@heroicons/react/16/solid/ComputerDesktopIcon";
 
-type ThemeSelectorProps = {
+export type ThemeSelectorProps = {
   className?: string;
 };
 
@@ -21,26 +22,22 @@ const ThemeIcon = (props: { theme: ThemeValue }) => {
   }
 };
 
-export default function ThemeSelector(props: ThemeSelectorProps) {
-  const { theme, setTheme } = useTheme();
-
-  const nextTheme = () => {
-    const themes: ThemeValue[] = ["light", "dark", "system"];
-    const currentIndex = themes.indexOf(theme);
-    const nextIndex = (currentIndex + 1) % themes.length;
-    setTheme(themes[nextIndex]);
-  };
+export default function ThemeSelectButton(props: ThemeSelectorProps) {
+  const { theme, changeNextTheme } = useContext(ThemeContext);
 
   const handleThemeChange = () => {
-    nextTheme();
+    changeNextTheme();
   };
 
   return (
     <button
-      className={`flex items-center ${props.className}`}
+      className={`flex items-center hover:cursor-pointer group relative space-x-2 ${props.className}`}
       onClick={handleThemeChange}
     >
       <ThemeIcon theme={theme} />
+      <span className="invisible font-bold opacity-0 opacity-100 group-hover:visible">
+        {theme.toUpperCase()}
+      </span>
     </button>
   );
 }

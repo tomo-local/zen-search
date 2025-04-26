@@ -1,42 +1,37 @@
-import { createContext, useContext, useMemo, ReactNode } from "react";
-import useTheme from "@/hooks/storage/useTheme";
+import { createContext } from "react";
+import useTheme, {
+  type ThemeState,
+  initialState,
+} from "@/hooks/storage/useTheme";
 import { ThemeValue } from "@/types/storage";
-interface ThemeContextType {
-  theme: ThemeValue;
-  isDarkMode: boolean;
-  setTheme: (value: ThemeValue) => void;
-}
 
-const ThemeContext = createContext<ThemeContextType | null>(null);
-
-type setTheme = {
+type Props = {
   children: React.ReactNode;
 };
-const ThemeProvider = (props: setTheme) => {
-  const { theme, isDarkMode, setTheme } = useTheme();
 
-  const contextValue = useMemo(
-    () => ({
-      theme,
-      isDarkMode,
-      setTheme,
-    }),
-    [theme, isDarkMode, setTheme]
-  );
-
-  return (
-    <ThemeContext.Provider value={contextValue}>
-      <div className={`${isDarkMode ? "dark" : "light"}`}>{props.children}</div>
-    </ThemeContext.Provider>
-  );
+type ThemeContextType = ThemeState & {
+  setTheme: (value: ThemeValue) => void;
+  changeNextTheme: () => void;
 };
 
-export const useThemeContext = () => {
-  const context = useContext(ThemeContext);
-  if (!context) {
-    throw new Error("useThemeContext must be used within a ThemeProvider");
-  }
-  return context;
+export const ThemeContext = createContext<ThemeContextType>({
+  ...initialState,
+  setTheme: () => {},
+  changeNextTheme: () => {},
+});
+
+const ThemeProvider = (props: Props) => {
+  const { theme, isDarkMode, setTheme, changeNextTheme } = useTheme();
+
+  return (
+    <ThemeContext.Provider
+      value={{ theme, isDarkMode, changeNextTheme, setTheme }}
+    >
+      <div className={`theme-${theme} ${isDarkMode ? "dark" : ""}`}>
+        {props.children}
+      </div>
+    </ThemeContext.Provider>
+  );
 };
 
 export default ThemeProvider;

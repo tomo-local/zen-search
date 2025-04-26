@@ -1,5 +1,6 @@
 import "@/assets/global.css";
 import { useState } from "react";
+import clsx from "clsx";
 import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 
 import useQueryResult from "@/hooks/query/useQueryResult";
@@ -7,10 +8,14 @@ import useQueryControl from "@/hooks/query/useQueryControl";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
 import useEnterKeyControl from "@/hooks/useEnterKeyControl";
 
-import ThemeProvider from "@/context/ThemeProvider";
-import Badge from "@/components/common/icon/Badge";
-import SquareBadge from "@/components/common/icon/SquareBadge";
-import SearchInput from "@/components/common/SearchInput";
+import Layout, {
+  commonClassName as layoutClassName,
+} from "@/components/common/Layout";
+import SearchInput, {
+  commonClassName as searchInputClassName,
+} from "@/components/common/SearchInput";
+import Badge from "@/components/modules/icon/Badge";
+import SquareBadge from "@/components/modules/icon/SquareBadge";
 import { ModalOverlay, ModalContainer } from "@/components/content/Modal";
 import ResultFooter from "@/components/common/result/ResultFooter";
 import ResultLine from "@/components/common/result/item/ResultLine";
@@ -58,67 +63,88 @@ export default function App() {
   };
 
   return (
-    <ThemeProvider>
-      <ModalOverlay onClose={handleClose}>
-        <ModalContainer className="w-full max-w-3xl min-h-96 max-h-min">
-          <div className="px-6 py-2 space-y-2 text-gray-200 bg-gray-800 border-2 border-solid rounded-lg shadow-xl border-sky-500">
-            <SearchInput
-              className="text-gray-200 bg-gray-800 focus:ring-sky-500"
-              value={query}
-              leftContent={
-                type === ResultType.All ? (
-                  <MagnifyingGlassIcon className="text-gray-400 size-6" />
-                ) : (
-                  <Badge className="bg-sky-500" label={type} />
-                )
-              }
-              rightContent={
-                suggestion ? (
-                  <div className="flex space-x-1">
-                    <div>Change to</div>
-                    <div className="font-bold">{suggestion}</div>
-                    <SquareBadge className="ml-1 bg-gray-500">Tab</SquareBadge>
+    <ModalOverlay onClose={handleClose}>
+      <ModalContainer className="w-full max-w-3xl min-h-96 max-h-min">
+        <Layout
+          className={clsx(
+            layoutClassName.bg,
+            layoutClassName.text,
+            layoutClassName.border,
+            layoutClassName.shadow,
+            layoutClassName.p,
+            layoutClassName.space,
+            "rounded-lg"
+          )}
+        >
+          <SearchInput
+            className={clsx(searchInputClassName.text, searchInputClassName.bg)}
+            value={query}
+            leftContent={
+              type === ResultType.All ? (
+                <MagnifyingGlassIcon
+                  className={clsx(
+                    searchInputClassName.icon.text,
+                    searchInputClassName.icon.size
+                  )}
+                />
+              ) : (
+                <Badge
+                  className={searchInputClassName.badge.text}
+                  label={type}
+                />
+              )
+            }
+            rightContent={
+              suggestion ? (
+                <div className="flex items-center space-x-1">
+                  <div>Change to</div>
+                  <div className={searchInputClassName.right.text}>
+                    {suggestion}
                   </div>
-                ) : null
-              }
-              onChange={(e) => setQuery(e.target.value)}
-              onCompositionStart={() => setIsComposing(true)}
-              onCompositionEnd={() => setIsComposing(false)}
-              onArrowUpDownKeyDown={handleArrowUpDownKey}
-              onEnterKeyDown={handleEnterKey}
-              onTabKeyDown={handleTabKeyDown}
-              onEscapeKeyDown={handleClose}
-              onBackspaceKeyDown={handleBackspaceKeyDown}
-            />
-            {result?.length ? (
-              <>
-                <div className="border-t border-gray-700 border-solid" />
-                <div className="pt-3 pb-2">
-                  <ul
-                    className="space-y-1 overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-56"
-                    ref={listRef}
+                  <SquareBadge
+                    className={clsx("ml-1", searchInputClassName.badge.bg)}
                   >
-                    {result.map((item, index) => (
-                      <ResultLine
-                        key={index}
-                        className="hover:bg-sky-700 hover:opacity-80 hover:cursor-pointer"
-                        onClick={() => {
-                          handleClose();
-                          onAction(item);
-                        }}
-                        item={item}
-                        isSelected={index === selectedIndex}
-                      />
-                    ))}
-                  </ul>
+                    Tab
+                  </SquareBadge>
                 </div>
-              </>
-            ) : null}
-            <div className="border-t border-gray-700 border-solid" />
-            <ResultFooter result={result} loading={loading} />
-          </div>
-        </ModalContainer>
-      </ModalOverlay>
-    </ThemeProvider>
+              ) : null
+            }
+            onChange={(e) => setQuery(e.target.value)}
+            onCompositionStart={() => setIsComposing(true)}
+            onCompositionEnd={() => setIsComposing(false)}
+            onArrowUpDownKeyDown={handleArrowUpDownKey}
+            onEnterKeyDown={handleEnterKey}
+            onTabKeyDown={handleTabKeyDown}
+            onEscapeKeyDown={handleClose}
+            onBackspaceKeyDown={handleBackspaceKeyDown}
+          />
+          {result?.length ? (
+            <>
+              <div className="border-t border-gray-700 border-solid" />
+              <div className="pt-3 pb-2">
+                <ul
+                  className="space-y-1 overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-56"
+                  ref={listRef}
+                >
+                  {result.map((item, index) => (
+                    <ResultLine
+                      key={index}
+                      onClick={() => {
+                        handleClose();
+                        onAction(item);
+                      }}
+                      item={item}
+                      isSelected={index === selectedIndex}
+                    />
+                  ))}
+                </ul>
+              </div>
+            </>
+          ) : null}
+          <div className="border-t border-gray-700 border-solid" />
+          <ResultFooter result={result} loading={loading} />
+        </Layout>
+      </ModalContainer>
+    </ModalOverlay>
   );
 }

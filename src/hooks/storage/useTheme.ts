@@ -2,33 +2,50 @@ import { useEffect, useReducer } from "react";
 import { getTheme, setTheme } from "@/function/chrome/storage";
 import { ThemeValue } from "@/types/storage";
 
-interface ThemeState {
+export interface ThemeState {
   theme: ThemeValue;
   isDarkMode: boolean;
 }
 
-type Action = { type: "SET_THEME"; payload: ThemeValue };
+type Action =
+  | { type: "SET_THEME"; payload: ThemeValue }
+  | { type: "NEXT_THEME" };
 
-const initialState: ThemeState = {
+export const initialState: ThemeState = {
   theme: "system",
   isDarkMode: false,
+};
+
+const getWindowTheme = () => {
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  return mediaQuery.matches;
 };
 
 function themeReducer(state: ThemeState, action: Action): ThemeState {
   switch (action.type) {
     case "SET_THEME":
-      if (action.payload === "system") {
-        const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-        return {
-          ...state,
-          theme: action.payload,
-          isDarkMode: mediaQuery.matches,
-        };
-      }
+      const theme = action.payload;
+
+      setTheme(theme);
+
       return {
         ...state,
-        theme: action.payload,
-        isDarkMode: action.payload === "dark",
+        theme: theme,
+        isDarkMode: theme === "system" ? getWindowTheme() : theme === "dark",
+      };
+    case "NEXT_THEME":
+      const themeMap = ["light", "dark", "system"] as ThemeValue[];
+      const nextIndex = (themeMap.indexOf(state.theme) + 1) % themeMap.length;
+
+      const nextTheme = themeMap[nextIndex];
+
+      setTheme(nextTheme);
+
+      return {
+        ...state,
+        theme: themeMap[nextIndex],
+        isDarkMode:
+          nextTheme === "system" ? getWindowTheme() : nextTheme === "dark",
       };
     default:
       return state;
@@ -36,7 +53,10 @@ function themeReducer(state: ThemeState, action: Action): ThemeState {
 }
 
 export default function useTheme() {
-  const [state, dispatch] = useReducer(themeReducer, initialState);
+  const [{ theme, isDarkMode }, dispatch] = useReducer(
+    themeReducer,
+    initialState
+  );
 
   useEffect(() => {
     const fetchTheme = async () => {
@@ -47,11 +67,13 @@ export default function useTheme() {
   }, []);
 
   return {
-    theme: state.theme,
-    isDarkMode: state.isDarkMode,
+    theme: theme,
+    isDarkMode: isDarkMode,
     setTheme: (value: ThemeValue) => {
       dispatch({ type: "SET_THEME", payload: value });
-      setTheme(value);
+    },
+    changeNextTheme: () => {
+      dispatch({ type: "NEXT_THEME" });
     },
   };
 }
