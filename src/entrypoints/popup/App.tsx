@@ -1,6 +1,7 @@
 import "@/assets/global.css";
 import React, { useState } from "react";
 import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
+import clsx from "clsx";
 
 import useQueryResult from "@/hooks/query/useQueryResult";
 import useQueryControl from "@/hooks/query/useQueryControl";
@@ -8,9 +9,14 @@ import useArrowKeyControl from "@/hooks/useArrowKeyControl";
 import useEnterKeyControl from "@/hooks/useEnterKeyControl";
 import usePopupShortcut from "@/hooks/usePopupShortcut";
 
-import Badge from "@/components/common/icon/Badge";
-import SquareBadge from "@/components/common/icon/SquareBadge";
-import SearchInput from "@/components/common/SearchInput";
+import Layout, {
+  commonClassName as layoutClassName,
+} from "@/components/common/Layout";
+import SearchInput, {
+  commonClassName as searchInputClassName,
+} from "@/components/common/SearchInput";
+import Badge from "@/components/modules/icon/Badge";
+import SquareBadge from "@/components/modules/icon/SquareBadge";
 import ResultFooter from "@/components/common/result/ResultFooter";
 import ResultLine from "@/components/common/result/item/ResultLine";
 
@@ -20,12 +26,10 @@ export default function App() {
   const { query, type, suggestion, setQuery, setType, reset } =
     useQueryControl();
   const [isComposing, setIsComposing] = useState(false);
-
   const { result, loading } = useQueryResult(query, type);
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(result);
   const { onAction } = useEnterKeyControl();
-
   const { shortcut } = usePopupShortcut();
 
   const handleClose = () => window.close();
@@ -83,24 +87,44 @@ export default function App() {
   };
 
   return (
-    <div className="min-w-[700px] max-w-min">
-      <div className="px-6 py-2 space-y-2 text-gray-200 bg-gray-800 border-2 border-solid shadow-xl border-sky-500">
+    <Layout className="min-w-[700px] max-w-min">
+      <div
+        className={clsx(
+          layoutClassName.bg,
+          layoutClassName.text,
+          layoutClassName.border,
+          layoutClassName.shadow,
+          layoutClassName.p,
+          layoutClassName.space
+        )}
+      >
         <SearchInput
-          className="text-gray-200 bg-gray-800 "
+          className={clsx(searchInputClassName.text, searchInputClassName.bg)}
           value={query}
           leftContent={
             type === ResultType.All ? (
-              <MagnifyingGlassIcon className="text-gray-400 size-6" />
+              <MagnifyingGlassIcon
+                className={clsx(
+                  searchInputClassName.icon.text,
+                  searchInputClassName.icon.size
+                )}
+              />
             ) : (
-              <Badge className="bg-sky-500" label={type} />
+              <Badge className={searchInputClassName.badge.text} label={type} />
             )
           }
           rightContent={
             suggestion ? (
-              <div className="flex space-x-1">
+              <div className="flex items-center space-x-1">
                 <div>Change to</div>
-                <div className="font-bold">{suggestion}</div>
-                <SquareBadge className="ml-1 bg-gray-500">Tab</SquareBadge>
+                <div className={searchInputClassName.right.text}>
+                  {suggestion}
+                </div>
+                <SquareBadge
+                  className={clsx("ml-1", searchInputClassName.badge.bg)}
+                >
+                  Tab
+                </SquareBadge>
               </div>
             ) : null
           }
@@ -117,7 +141,7 @@ export default function App() {
         {result?.length ? (
           <>
             <div className="border-t border-gray-700 border-solid" />
-            <div className="pt-3 pb-2 bg-gray-800">
+            <div className="pt-3 pb-2 dark:bg-gray-800">
               <ul
                 className="space-y-1 overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-56"
                 ref={listRef}
@@ -125,7 +149,6 @@ export default function App() {
                 {result.map((item, index) => (
                   <ResultLine
                     key={index}
-                    className="hover:bg-sky-700 hover:opacity-80 hover:cursor-pointer"
                     onClick={() => onAction(item)}
                     item={item}
                     isSelected={index === selectedIndex}
@@ -138,6 +161,6 @@ export default function App() {
         <div className="border-t border-gray-700 border-solid" />
         <ResultFooter result={result} loading={loading} />
       </div>
-    </div>
+    </Layout>
   );
 }

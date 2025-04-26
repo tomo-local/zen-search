@@ -19,6 +19,23 @@ interface SearchInputProps {
   onBackspaceKeyDown?: (event: React.KeyboardEvent<HTMLInputElement>) => void;
 }
 
+export const commonClassName = {
+  bg: "bg-gray-50 dark:bg-gray-800",
+  text: "text-gray-700 dark:text-gray-200",
+  border: "border-2 border-solid border-sky-500",
+  icon: {
+    text: "text-gray-700 dark:text-gray-200",
+    size: "size-6",
+  },
+  badge: {
+    text: "bg-sky-500",
+    bg: "bg-gray-500",
+  },
+  right: {
+    text: "font-bold text-gray-700 dark:text-gray-400",
+  },
+};
+
 export default function SearchInput({
   className,
   value,

@@ -10,6 +10,21 @@ interface ResultItemProps {
   isSelected: boolean;
 }
 
+export const commonClassName = {
+  bg: "dark:bg-gray-800 bg-gray-50",
+  border: "border-sky-500",
+  selected: "dark:bg-sky-500 bg-sky-400",
+  hover:
+    "hover:dark:bg-sky-700 hover:bg-sky-300 hover:opacity-80 hover:cursor-pointer",
+  icon: {
+    bg: "dark:bg-gray-300 bg-slate-200",
+    text: "dark:text-gray-300",
+    selected: "dark:text-gray-500",
+    size: "size-5",
+  },
+  text: "dark:text-gray-300 text-xs",
+};
+
 export default function CommonItem({
   key,
   className,
