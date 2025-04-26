@@ -19,6 +19,7 @@
     "@tailwindcss/postcss": "^4.0.3",
     "@xstate/react": "^5.0.2",
     "autoprefixer": "^10.4.20",
+    "clsx": "^2.1.1",
     "postcss": "^8.5.1",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
