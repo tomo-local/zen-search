@@ -4,6 +4,7 @@ import { ResultType } from "@/types/result";
 import { calcMatchRateResult } from "@/utils/match";
 
 const suggest_url = "https://www.google.com/complete/search";
+// const suggest_url = "https://suggestqueries.google.com/complete/search";
 const search_url = "https://www.google.com/search";
 
 export const querySuggestions = async (
@@ -16,7 +17,9 @@ export const querySuggestions = async (
 
   const endpoint = `${suggest_url}?client=chrome&q=${keyword}`;
   try {
-    const response = await fetch(endpoint, { mode: "no-cors" });
+    const response = await fetch(endpoint, { mode: "cors" });
+
+    console.log("Fetching Google suggestions from:", response);
 
     if (!response.ok) {
       console.error("Failed to fetch Google suggestions:", response.statusText);
@@ -40,7 +43,7 @@ const createSuggestion = (
 ): Suggestion => ({
   id: createRandomId(),
   title: query,
-  url: `${search_url}?q=${encodeURIComponent(query)}`,
+  url: createUrl(query),
   type: ResultType.Google,
   match: option?.match
     ? 1
@@ -50,6 +53,15 @@ const createSuggestion = (
         `${search_url}?q=${encodeURIComponent(query)}`
       ),
 });
+
+const createUrl = (query: string) => {
+  try {
+    const url = new URL(query);
+    return url.href;
+  } catch (e) {
+    return `${search_url}?q=${encodeURIComponent(query)}`;
+  }
+};
 
 // 乱数を作成 10桁の乱数を作成
 const createRandomId = () => {
