@@ -6,6 +6,8 @@ import BookmarkItem from "@/components/common/result/item/BookmarkItem";
 import { Tab, History, Bookmark } from "@/types/chrome";
 import { Suggestion } from "@/types/google";
 import { ResultType, Result } from "@/types/result";
+import { ActionType, Calculation } from "@/types/action";
+import CalculationItem from "./CalculationItem";
 
 type LineProps = {
   key: React.Key;
@@ -64,6 +66,18 @@ export default function ResultLine({
         key={key}
         className={className}
         item={item as Bookmark}
+        onClick={onClick}
+        isSelected={isSelected}
+      />
+    );
+  }
+
+  if (item.type === ActionType.Calculation) {
+    return (
+      <CalculationItem
+        key={key}
+        className={className}
+        item={item as Calculation}
         onClick={onClick}
         isSelected={isSelected}
       />

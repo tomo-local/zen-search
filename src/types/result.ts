@@ -1,5 +1,6 @@
 import { Tab, History, Bookmark } from "@/types/chrome";
 import { Suggestion } from "@/types/google";
+import { Action } from "@/types/action";
 
 export enum ResultType {
   All = "All",
@@ -21,4 +22,4 @@ export enum MessageType {
   QUERY_BOOKMARK = "QUERY_BOOKMARK",
 }
 
-export type Result = Tab | Suggestion | History | Bookmark;
+export type Result = Tab | Suggestion | History | Bookmark | Action;
