@@ -20,7 +20,7 @@ export const useActionCalculation = (query: string) => {
 
     const action: Action = {
       type: ActionType.Calculation,
-      id: 0,
+      id: Date.now(),
       title: `${query}=${calculationResult}`,
       url: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
       match: 1,
