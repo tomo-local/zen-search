@@ -6,8 +6,9 @@ import useQueryHistories from "@/hooks/query/useQueryHistories";
 import useQueryBookmarks from "@/hooks/query/useQueryBookmarks";
 
 import { ResultType, Result } from "@/types/result";
+import { useActionCalculation } from "./action/useActionCalculation";
 
-export default function useResult(query: string, type: ResultType) {
+export default function useResults(query: string, type: ResultType) {
   const [init, setInit] = useState(false);
   const { tabs, loading: tabLoading } = useQueryTabs(query, type);
   const { suggestions, loading: suggestionLoading } = useQuerySuggestions(
@@ -26,14 +27,21 @@ export default function useResult(query: string, type: ResultType) {
     init
   );
 
+  const { result: calculationResult } = useActionCalculation(query);
+
   useEffect(() => {
     setInit(true);
   }, []);
 
   const result = useMemo<Result[]>(() => {
-    return [...tabs, ...suggestions, ...histories, ...bookmarks].sort(
-      (a, b) => b.match - a.match
-    );
+    const queryList = [
+      ...tabs,
+      ...suggestions,
+      ...histories,
+      ...bookmarks,
+    ].sort((a, b) => b.match - a.match);
+
+    return calculationResult ? [calculationResult, ...queryList] : queryList;
   }, [tabs, suggestions, histories, bookmarks]);
 
   return {

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 import clsx from "clsx";
 
-import useQueryResult from "@/hooks/query/useQueryResult";
+import useQueryResult from "@/hooks/useResults";
 import useQueryControl from "@/hooks/query/useQueryControl";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
 import useEnterKeyControl from "@/hooks/useEnterKeyControl";
