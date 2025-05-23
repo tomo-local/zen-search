@@ -10,15 +10,18 @@ import useEnterKeyControl from "@/hooks/useEnterKeyControl";
 
 import Layout, {
   commonClassName as layoutClassName,
-} from "@/components/common/Layout";
+} from "@/components/widgets/common/Layout";
 import SearchInput, {
   commonClassName as searchInputClassName,
-} from "@/components/common/SearchInput";
+} from "@/components/widgets/common/SearchInput";
 import Badge from "@/components/modules/icon/Badge";
 import SquareBadge from "@/components/modules/icon/SquareBadge";
-import { ModalOverlay, ModalContainer } from "@/components/content/Modal";
-import ResultFooter from "@/components/common/result/ResultFooter";
-import ResultLine from "@/components/common/result/item/ResultLine";
+import {
+  ModalOverlay,
+  ModalContainer,
+} from "@/components/widgets/content/Modal";
+import ResultFooter from "@/components/widgets/common/ResultFooter";
+import ResultLine from "@/components/widgets/common/ResultLine/ResultLine";
 
 import { closeContent } from "@/function/chrome/open";
 import { ActionType } from "@/types/chrome";

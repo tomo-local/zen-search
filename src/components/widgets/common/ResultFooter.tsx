@@ -1,4 +1,4 @@
-import ThemeSelectButton from "@/components/common/ThemeSelectButton";
+import ThemeSelectButton from "@/components/widgets/common/ThemeSelectButton";
 import Footer from "@/components/modules/Footer";
 import LinearProgress from "@/components/modules/LoadingSpinner";
 import { Result } from "@/types/result";
