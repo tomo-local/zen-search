@@ -22,6 +22,7 @@ const initialState: QueryState = {
 
 const matchType = (query: string) => {
   const count = query.length;
+
   if (count < 1) {
     return null;
   }
@@ -53,11 +54,13 @@ const queryReducer = (state: QueryState, action: QueryAction): QueryState => {
   switch (action.type) {
     case "type":
       return { ...state, type: action.value, query: "", suggestion: null };
+
     case "query":
       const suggestion =
         state.type === ResultType.All ? matchType(action.value) : null;
 
       return { ...state, query: action.value, suggestion };
+
     case "resetType": {
       if (state.type === ResultType.All) {
         return state;

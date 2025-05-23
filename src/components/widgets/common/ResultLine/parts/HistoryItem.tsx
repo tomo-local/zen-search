@@ -1,27 +1,32 @@
-import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
-import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
+import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
+import ClockIcon from "@heroicons/react/16/solid/ClockIcon";
 import CommonItem, {
   commonClassName as common,
-} from "@/components/common/result/item/CommonItem";
+} from "@/components/widgets/common/ResultLine/parts/CommonItem";
 import SquareIcon from "@/components/modules/icon/SquareIcon";
-import { Tab } from "@/types/chrome";
+import { History } from "@/types/chrome";
 import clsx from "clsx";
 
-type TabItemProps = {
+const getFavicon = (url: string) => {
+  const urlObj = new URL(url);
+  return `https://www.google.com/s2/favicons?domain=${urlObj.hostname}`;
+};
+
+type HistoryItemProps = {
   key: React.Key;
   className?: string | undefined;
-  item: Tab;
+  item: History;
   onClick?: (event: React.MouseEvent) => void;
   isSelected: boolean;
 };
 
-export default function TabItem({
+export default function HistoryItem({
   key,
   className,
   item,
   onClick,
   isSelected,
-}: TabItemProps) {
+}: HistoryItemProps) {
   return (
     <CommonItem
       key={key}
@@ -33,25 +38,21 @@ export default function TabItem({
         className
       )}
       onClick={onClick}
-      leftContent={
+      LeftContent={
         <SquareIcon className={clsx(isSelected && common.icon.bg)}>
-          {item.icon ? (
-            <img src={item.icon} alt="favicon" className={common.icon.size} />
-          ) : (
-            <WindowIcon
-              className={clsx(
-                isSelected ? common.icon.selected : common.icon.text,
-                common.icon.size
-              )}
-            />
-          )}
+          <img
+            src={getFavicon(item.url)}
+            alt="favicon"
+            className={common.icon.size}
+          />
         </SquareIcon>
       }
-      rightContent={
+      RightContent={
         <div className="flex items-center space-x-2">
-          <span className={common.text}>Go to Tab</span>
+          <ClockIcon className={clsx(common.icon.text, common.icon.size)} />
+          <span className={common.text}>Go to Page</span>
           <SquareIcon className={clsx(isSelected && common.icon.bg)}>
-            <ArrowLongRightIcon
+            <PlusIcon
               className={clsx(
                 common.icon.size,
                 isSelected ? common.icon.selected : common.icon.text

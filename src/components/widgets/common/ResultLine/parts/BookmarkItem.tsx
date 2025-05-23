@@ -2,7 +2,7 @@ import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
 import BookmarkIcon from "@heroicons/react/16/solid/BookmarkIcon";
 import CommonItem, {
   commonClassName as common,
-} from "@/components/common/result/item/CommonItem";
+} from "@/components/widgets/common/ResultLine/parts/CommonItem";
 import SquareIcon from "@/components/modules/icon/SquareIcon";
 import { Bookmark } from "@/types/chrome";
 import clsx from "clsx";
@@ -35,7 +35,7 @@ export default function BookmarkItem({
         className
       )}
       onClick={onClick}
-      leftContent={
+      LeftContent={
         <SquareIcon className={clsx(isSelected && common.icon.bg)}>
           <img
             src={getFavicon(item.url)}
@@ -44,7 +44,7 @@ export default function BookmarkItem({
           />
         </SquareIcon>
       }
-      rightContent={
+      RightContent={
         <div className="flex items-center space-x-2">
           <BookmarkIcon className={clsx(common.icon.text, common.icon.size)} />
           <span className={common.text}>Go to Page</span>

@@ -1,27 +1,27 @@
 import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
-import EqualsIcon from "@heroicons/react/16/solid/EqualsIcon";
+import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 import CommonItem, {
   commonClassName as common,
-} from "@/components/common/result/item/CommonItem";
+} from "@/components/widgets/common/ResultLine/parts/CommonItem";
 import SquareIcon from "@/components/modules/icon/SquareIcon";
-import { Calculation } from "@/types/action";
+import { Suggestion } from "@/types/google";
 import clsx from "clsx";
 
-type TabItemProps = {
+type SuggestionItemProps = {
   key: React.Key;
-  className?: string | undefined;
-  item: Calculation;
+  className?: string;
+  item: Suggestion;
   onClick?: (event: React.MouseEvent) => void;
   isSelected: boolean;
 };
 
-export default function CalculationItem({
+export default function SuggestionItem({
   key,
   className,
   item,
   onClick,
   isSelected,
-}: TabItemProps) {
+}: SuggestionItemProps) {
   return (
     <CommonItem
       key={key}
@@ -33,9 +33,9 @@ export default function CalculationItem({
         className
       )}
       onClick={onClick}
-      leftContent={
+      LeftContent={
         <SquareIcon className={clsx(isSelected && common.icon.bg)}>
-          <EqualsIcon
+          <MagnifyingGlassIcon
             className={clsx(
               isSelected ? common.icon.selected : common.icon.text,
               common.icon.size
@@ -43,9 +43,9 @@ export default function CalculationItem({
           />
         </SquareIcon>
       }
-      rightContent={
+      RightContent={
         <div className="flex items-center space-x-2">
-          <span className={common.text}>Go to Calculation</span>
+          <span className={common.text}>Go to Search</span>
           <SquareIcon className={clsx(isSelected && common.icon.bg)}>
             <PlusIcon
               className={clsx(
@@ -59,11 +59,8 @@ export default function CalculationItem({
       isSelected={isSelected}
     >
       <div className="relative flex-col items-center justify-center inline-block max-w-fit">
-        <div className="text-xs truncate max-w-[224px] md:max-w-md whitespace-nowrap">
-          {item.calculation.expression}
-          <p className="text-sm font-bold text-gray-900 dark:text-gray-100">
-            {` = ${item.calculation.result}`}
-          </p>
+        <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
+          {item.title}
         </div>
       </div>
     </CommonItem>

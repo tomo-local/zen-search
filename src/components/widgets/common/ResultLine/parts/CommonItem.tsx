@@ -5,8 +5,8 @@ interface ResultItemProps {
   className?: string | undefined;
   onClick?: (event: React.MouseEvent) => void;
   children: React.ReactNode;
-  leftContent?: React.ReactNode;
-  rightContent?: React.ReactNode;
+  LeftContent?: React.ReactNode;
+  RightContent?: React.ReactNode;
   isSelected: boolean;
 }
 
@@ -29,8 +29,8 @@ export default function CommonItem({
   key,
   className,
   onClick,
-  leftContent,
-  rightContent,
+  LeftContent,
+  RightContent,
   children,
 }: ResultItemProps) {
   return (
@@ -44,9 +44,9 @@ export default function CommonItem({
         onClick={onClick}
       >
         <div className="flex items-center min-w-full space-x-2">
-          {leftContent && <div className="flex-none">{leftContent}</div>}
+          {LeftContent && <div className="flex-none">{LeftContent}</div>}
           <div className="flex-1">{children}</div>
-          {rightContent && <div className="flex-none">{rightContent}</div>}
+          {RightContent && <div className="flex-none">{RightContent}</div>}
         </div>
       </button>
     </li>
