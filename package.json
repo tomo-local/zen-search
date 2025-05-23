@@ -1,8 +1,9 @@
 {
   "name": "zen-search",
   "description": "manifest.json description",
+  "author": "tomo-local<tomohiro.togashi@gmail.com>",
   "private": true,
-  "version": "0.0.0",
+  "version": "1.2.0",
   "type": "module",
   "scripts": {
     "dev": "wxt",

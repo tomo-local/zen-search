@@ -45,7 +45,7 @@ src/
 
 ## TODO for Next Release
 
-- [ ] Add support for dark mode.
+- [x] Add support for dark mode.
 - [ ] Implement multi-language support for the UI.
 - [ ] Enhance search result filtering options.
 - [ ] Optimize performance for large datasets.
