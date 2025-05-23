@@ -2,12 +2,12 @@ import TabItem from "@/components/widgets/common/ResultLine/parts/TabItem";
 import SuggestionItem from "@/components/widgets/common/ResultLine/parts/SuggestionItem";
 import HistoryItem from "@/components/widgets/common/ResultLine/parts/HistoryItem";
 import BookmarkItem from "@/components/widgets/common/ResultLine/parts/BookmarkItem";
+import CalculationItem from "@/components/widgets/common/ResultLine/parts/CalculationItem";
 
 import { Tab, History, Bookmark } from "@/types/chrome";
 import { Suggestion } from "@/types/google";
 import { ResultType, Result } from "@/types/result";
 import { ActionType, Calculation } from "@/types/action";
-import CalculationItem from "./parts/CalculationItem";
 
 type LineProps = {
   key: React.Key;
