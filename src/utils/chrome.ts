@@ -1,4 +1,4 @@
-import { MessageType } from "@/types/chrome";
+import { MessageType } from "@/types/result";
 
 const actionRuntimeContent = (
   message: MessageType.OPEN_POPUP | MessageType.CLOSE_POPUP
@@ -23,7 +23,7 @@ const actionTabsContent = async (
 };
 
 const actionPopupContent = async () => {
-  chrome.action.openPopup();
+  await chrome.action.openPopup();
 };
 
 const actionQuery = async (

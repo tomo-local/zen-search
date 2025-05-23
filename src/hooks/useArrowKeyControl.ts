@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { Result } from "@/types/result";
 
 export default function useArrowKeyControl(tabs: Result[]) {
@@ -15,13 +15,16 @@ export default function useArrowKeyControl(tabs: Result[]) {
     }
   }, [selectedIndex]);
 
-  const handleArrowUpDownKey = (e: React.KeyboardEvent) => {
-    if (e.key === "ArrowUp") {
-      setSelectedIndex((prev) => (prev > 0 ? prev - 1 : tabs.length - 1));
-    } else if (e.key === "ArrowDown") {
-      setSelectedIndex((prev) => (prev < tabs.length - 1 ? prev + 1 : 0));
-    }
-  };
+  const handleArrowUpDownKey = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowUp") {
+        setSelectedIndex((prev) => (prev > 0 ? prev - 1 : tabs.length - 1));
+      } else if (e.key === "ArrowDown") {
+        setSelectedIndex((prev) => (prev < tabs.length - 1 ? prev + 1 : 0));
+      }
+    },
+    [tabs.length]
+  );
 
   return { selectedIndex, listRef, handleArrowUpDownKey };
 }

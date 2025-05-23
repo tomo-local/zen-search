@@ -1,11 +1,8 @@
-interface ResultFooterProps {
+interface FooterProps {
   className?: string;
   children?: React.ReactNode;
 }
 
-export default function ResultFooter({
-  className,
-  children,
-}: ResultFooterProps) {
+export default function Footer({ className, children }: FooterProps) {
   return <div className={`py-1 ${className}`}>{children}</div>;
 }

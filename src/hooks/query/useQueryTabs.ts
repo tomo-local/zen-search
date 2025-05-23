@@ -1,12 +1,10 @@
 import { useState, useEffect } from "react";
-import { Tab, MessageType } from "@/types/chrome";
-import { ResultType } from "@/types/result";
-
-const DEFAULT_COUNT = undefined;
+import { Tab } from "@/types/chrome";
+import { ResultType, MessageType } from "@/types/result";
 
 export default function useQueryTabs(query: string, type: ResultType) {
+  const [loading, setLoading] = useState(false);
   const [filteredTabs, setFilteredTabs] = useState<Tab[]>([]);
-  const [count, setCount] = useState<number | undefined>(DEFAULT_COUNT);
 
   useEffect(() => {
     if (type !== ResultType.Tab && type !== ResultType.All) {
@@ -14,16 +12,18 @@ export default function useQueryTabs(query: string, type: ResultType) {
       return;
     }
 
+    setLoading(true);
     chrome.runtime.sendMessage(
-      { type: MessageType.QUERY_TAB, query, count },
+      { type: MessageType.QUERY_TAB, query },
       (response) => {
         setFilteredTabs(response.result);
+        setLoading(false);
       }
     );
-    setCount(undefined);
   }, [query]);
 
   return {
     tabs: filteredTabs,
+    loading,
   };
 }

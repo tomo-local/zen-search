@@ -1,35 +1,42 @@
 import { useState, useEffect } from "react";
-import { Bookmark, MessageType } from "@/types/chrome";
-import { ResultType } from "@/types/result";
-
-const DEFAULT_TAB_COUNT = 3;
+import { Bookmark } from "@/types/chrome";
+import { ResultType, MessageType } from "@/types/result";
 
 export default function useQueryBookmarks(
   query: string,
   type: ResultType,
-  tabCount: number
+  init: boolean = false
 ) {
+  const [loading, setLoading] = useState(false);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
 
   useEffect(() => {
+    if (!init) {
+      return;
+    }
+
     if (type !== ResultType.Bookmark && type !== ResultType.All) {
       setBookmarks([]);
       return;
     }
 
-    if (tabCount > DEFAULT_TAB_COUNT) {
+    if (type === ResultType.All && !query) {
+      setBookmarks([]);
       return;
     }
 
+    setLoading(true);
     chrome.runtime.sendMessage(
       { type: MessageType.QUERY_BOOKMARK, query },
       (response) => {
         setBookmarks(response.result);
+        setLoading(false);
       }
     );
   }, [query]);
 
   return {
     bookmarks,
+    loading,
   };
 }

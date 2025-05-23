@@ -1,36 +1,40 @@
 import { useState, useEffect } from "react";
 import { Suggestion } from "@/types/google";
+import { ResultType, MessageType } from "@/types/result";
 import { querySuggestions } from "@/function/google/query";
-import { ResultType } from "@/types/result";
-
-const DEFAULT_COUNT = undefined;
-const DEFAULT_TAB_COUNT = 3;
 
 export default function useQuerySuggestions(
   query: string,
   type: ResultType,
-  tabCount: number
+  init: boolean = false
 ) {
+  const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
-  const [count, setCount] = useState<number | undefined>(DEFAULT_COUNT);
 
   useEffect(() => {
+    if (!init) {
+      return;
+    }
+
     if (type !== ResultType.Google && type !== ResultType.All) {
       setSuggestions([]);
       return;
     }
 
-    if (tabCount > DEFAULT_TAB_COUNT) {
+    if (type !== ResultType.All && !query) {
+      setSuggestions([]);
       return;
     }
 
-    querySuggestions(query, { count }).then((result) => {
+    setLoading(true);
+    querySuggestions(query).then((result) => {
       setSuggestions(result);
+      setLoading(false);
     });
-    setCount(undefined);
-  }, [query, tabCount]);
+  }, [query]);
 
   return {
     suggestions,
+    loading,
   };
 }

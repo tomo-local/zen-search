@@ -1,71 +1,54 @@
 import "@/assets/global.css";
 import React, { useState } from "react";
 import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
+import clsx from "clsx";
 
-import useQueryResult from "@/hooks/query/useQueryResult";
+import useQueryResult from "@/hooks/useResults";
 import useQueryControl from "@/hooks/query/useQueryControl";
-import useControlTab from "@/hooks/useControlTab";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
+import useEnterKeyControl from "@/hooks/useEnterKeyControl";
 import usePopupShortcut from "@/hooks/usePopupShortcut";
 
-import Badge from "@/components/common/icon/Badge";
-import SquareBadge from "@/components/common/icon/SquareBadge";
-import SearchInput from "@/components/common/SearchInput";
-import ResultFooter from "@/components/common/result/ResultFooter";
-import ResultLine from "@/components/common/result/ResultLine";
+import Layout, {
+  commonClassName as layoutClassName,
+} from "@/components/widgets/common/Layout";
+import SearchInput, {
+  commonClassName as searchInputClassName,
+} from "@/components/widgets/common/SearchInput";
+import Badge from "@/components/modules/icon/Badge";
+import SquareBadge from "@/components/modules/icon/SquareBadge";
+import ResultFooter from "@/components/widgets/common/ResultFooter";
+import ResultLine from "@/components/widgets/common/ResultLine/ResultLine";
 
-import { closeContent } from "@/function/chrome/open";
-import { ActionType } from "@/types/chrome";
-import { ResultType, Result } from "@/types/result";
+import { ResultType } from "@/types/result";
 
 export default function App() {
   const { query, type, suggestion, setQuery, setType, reset } =
     useQueryControl();
   const [isComposing, setIsComposing] = useState(false);
-
-  const { result } = useQueryResult(query, type);
-  const { updateTab, createTab } = useControlTab();
+  const { result, loading } = useQueryResult(query, type);
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(result);
-
+  const { onAction } = useEnterKeyControl();
   const { shortcut } = usePopupShortcut();
 
   const handleClose = () => window.close();
 
-  const onAction = (result: Result) => {
-    if (
-      [ResultType.Bookmark, ResultType.History, ResultType.Bookmark].includes(
-        result.type
-      )
-    ) {
-      createTab(result.url);
+  const handleEnterKey = (e: React.KeyboardEvent) => {
+    if (isComposing) {
       return;
     }
 
-    if (result.type === ResultType.Tab) {
-      const { id, windowId } = result;
-      updateTab(id, windowId);
-      return;
-    }
-  };
-
-  const handleEnterKey = () => {
-    if (!result[selectedIndex] || isComposing) {
-      return;
-    }
-
-    closeContent(ActionType.runtime);
-
+    e.preventDefault();
+    handleClose();
     onAction(result[selectedIndex]);
   };
 
   const handleTabKeyDown = (e: React.KeyboardEvent) => {
     e.preventDefault();
-
     if (!suggestion || isComposing) {
       return;
     }
-
     setType(suggestion);
   };
 
@@ -73,7 +56,6 @@ export default function App() {
     if (query || (type! == ResultType.All && query)) {
       return;
     }
-
     e.preventDefault();
     reset();
   };
@@ -105,24 +87,44 @@ export default function App() {
   };
 
   return (
-    <div className="min-w-[700px] max-w-min">
-      <div className="px-6 py-2 space-y-2 text-gray-200 bg-gray-800 border-2 border-solid shadow-xl border-sky-500">
+    <Layout className="min-w-[700px] max-w-min">
+      <div
+        className={clsx(
+          layoutClassName.bg,
+          layoutClassName.text,
+          layoutClassName.border,
+          layoutClassName.shadow,
+          layoutClassName.p,
+          layoutClassName.space
+        )}
+      >
         <SearchInput
-          className="text-gray-200 bg-gray-800 "
+          className={clsx(searchInputClassName.text, searchInputClassName.bg)}
           value={query}
           leftContent={
             type === ResultType.All ? (
-              <MagnifyingGlassIcon className="text-gray-400 size-6" />
+              <MagnifyingGlassIcon
+                className={clsx(
+                  searchInputClassName.icon.text,
+                  searchInputClassName.icon.size
+                )}
+              />
             ) : (
-              <Badge className="bg-sky-500" label={type} />
+              <Badge className={searchInputClassName.badge.text} label={type} />
             )
           }
           rightContent={
             suggestion ? (
-              <div className="flex space-x-1">
+              <div className="flex items-center space-x-1">
                 <div>Change to</div>
-                <div className="font-bold">{suggestion}</div>
-                <SquareBadge className="ml-1 bg-gray-500">Tab</SquareBadge>
+                <div className={searchInputClassName.right.text}>
+                  {suggestion}
+                </div>
+                <SquareBadge
+                  className={clsx("ml-1", searchInputClassName.badge.bg)}
+                >
+                  Tab
+                </SquareBadge>
               </div>
             ) : null
           }
@@ -139,15 +141,14 @@ export default function App() {
         {result?.length ? (
           <>
             <div className="border-t border-gray-700 border-solid" />
-            <div className="pt-3 pb-2 bg-gray-800">
+            <div className="pt-3 pb-2 dark:bg-gray-800">
               <ul
                 className="space-y-1 overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-56"
                 ref={listRef}
               >
                 {result.map((item, index) => (
                   <ResultLine
-                    key={item.id}
-                    className="hover:bg-sky-700 hover:opacity-80 hover:cursor-pointer"
+                    key={index}
                     onClick={() => onAction(item)}
                     item={item}
                     isSelected={index === selectedIndex}
@@ -158,16 +159,8 @@ export default function App() {
           </>
         ) : null}
         <div className="border-t border-gray-700 border-solid" />
-        <ResultFooter>
-          {result.length ? (
-            <p className="text-right text-gray-400">
-              {result.length} results found
-            </p>
-          ) : (
-            <p className="text-right text-gray-400">No results found</p>
-          )}
-        </ResultFooter>
+        <ResultFooter result={result} loading={loading} />
       </div>
-    </div>
+    </Layout>
   );
 }

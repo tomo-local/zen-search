@@ -12,7 +12,7 @@ export default defineConfig({
   manifest: {
     name: "Zen Search",
     description: "Search your bookmarks and history",
-    version: "1.1.0",
+    version: "1.2.0",
     icons: {
       16: "icon/16.png",
       32: "icon/32.png",
@@ -20,14 +20,14 @@ export default defineConfig({
       96: "icon/96.png",
       128: "icon/128.png",
     },
-    permissions: ["tabs", "history", "activeTab", "bookmarks"],
+    permissions: ["tabs", "history", "activeTab", "bookmarks", "storage"],
     commands: {
-      openPopup: {
+      OPEN_POPUP: {
         suggested_key: {
           default: "Ctrl+T",
           mac: "Command+T",
         },
-        description: "Open the popup",
+        description: "Open The Popup",
       },
     },
   },

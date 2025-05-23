@@ -32,7 +32,7 @@ const ModalContainer: React.FC<{
   onClick?: (e: React.MouseEvent) => void;
 }> = ({ className, children, onClick }) => (
   <div
-    id="modal-container"
+    id="zen-search-modal-container"
     className={`relative ${className}`}
     onClick={(e) => {
       e.stopPropagation();
@@ -48,7 +48,7 @@ const ModalCloseButton: React.FC<{
   className?: string;
 }> = ({ onClose, className }) => (
   <button
-    id="modal-close-button"
+    id="zen-search-modal-close-button"
     className={`absolute top-2 right-2 ${className}`}
     onClick={onClose}
   >
