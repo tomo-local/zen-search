@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { isCalculation, calculate } from "@/utils/calculation";
 import { ActionType, Action } from "@/types/action";
 
