@@ -27,3 +27,5 @@ dist
 *.njsproj
 *.sln
 *.sw?
+
+doc/local/*
