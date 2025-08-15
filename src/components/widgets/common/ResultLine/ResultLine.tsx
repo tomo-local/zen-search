@@ -4,7 +4,8 @@ import HistoryItem from "@/components/widgets/common/ResultLine/parts/HistoryIte
 import BookmarkItem from "@/components/widgets/common/ResultLine/parts/BookmarkItem";
 import CalculationItem from "@/components/widgets/common/ResultLine/parts/CalculationItem";
 
-import { Tab, History, Bookmark } from "@/types/chrome";
+import { Tab, History } from "@/types/chrome";
+import type { Bookmark } from "@/services/bookmark";
 import { Suggestion } from "@/types/google";
 import { ResultType, Result } from "@/types/result";
 import { ActionType, Calculation } from "@/types/action";
