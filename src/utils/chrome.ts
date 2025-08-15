@@ -47,27 +47,9 @@ const actionQuery = async (
   }) as chrome.tabs.Tab[];
 };
 
-const actionBookmarkQuery = async (
-  query: string
-): Promise<chrome.bookmarks.BookmarkTreeNode[]> => {
-  const response = await chrome.bookmarks.search(query);
-
-  return response;
-};
-
-const actionRecentBookmarks = async (
-  count: number
-): Promise<chrome.bookmarks.BookmarkTreeNode[]> => {
-  const response = await chrome.bookmarks.getRecent(count);
-
-  return response;
-};
-
 export {
   actionRuntimeContent,
   actionTabsContent,
   actionPopupContent,
   actionQuery,
-  actionBookmarkQuery,
-  actionRecentBookmarks,
 };
