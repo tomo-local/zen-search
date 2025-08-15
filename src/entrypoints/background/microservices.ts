@@ -7,43 +7,66 @@ import {
   RemoveMessage,
 } from '@/types/chrome';
 
-// サービスレジストリのインスタンスを作成
-const serviceRegistry = new ServiceRegistry();
+/**
+ * バックグラウンドマイクロサービス
+ * Chrome拡張機能のバックグラウンド処理を管理
+ */
+export class BackgroundMicroservices {
+  private serviceRegistry: ServiceRegistry;
 
-export default defineBackground(() => {
-  // サービスレジストリを初期化
-  serviceRegistry.initialize().catch((error) => {
-    console.error('Failed to initialize service registry:', error);
-  });
+  constructor() {
+    this.serviceRegistry = new ServiceRegistry();
+  }
 
-  // キーボードショートカットハンドラー
-  chrome.commands.onCommand.addListener(async (command) => {
+  /**
+   * マイクロサービスを初期化
+   */
+  async initialize(): Promise<void> {
+    try {
+      await this.serviceRegistry.initialize();
+    } catch (error) {
+      console.error('Failed to initialize service registry:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * マイクロサービスを破棄
+   */
+  async dispose(): Promise<void> {
+    try {
+      await this.serviceRegistry.dispose();
+    } catch (error) {
+      console.error('Failed to dispose service registry:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * キーボードショートカットハンドラー
+   */
+  async handleCommand(command: string): Promise<void> {
     if (command === MessageType.OPEN_POPUP) {
       try {
-        await serviceRegistry.popupService.openPopup();
+        await this.serviceRegistry.popupService.openPopup();
       } catch (error) {
         console.error('Failed to handle command:', error);
+        throw error;
       }
     }
-  });
-
-  // メッセージハンドラー
-  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    handleMessage(message, sender, sendResponse);
-    return true; // 非同期レスポンスを有効にする
-  });
+  }
 
   /**
    * メッセージを処理する
    */
-  async function handleMessage(
+  async handleMessage(
     message: any,
     _sender: chrome.runtime.MessageSender,
     sendResponse: (response?: any) => void
   ): Promise<void> {
     try {
       // サービスレジストリが初期化されているかチェック
-      if (!serviceRegistry.isReady()) {
+      if (!this.serviceRegistry.isReady()) {
         throw new Error('Service registry is not ready');
       }
 
@@ -53,32 +76,32 @@ export default defineBackground(() => {
       switch (type) {
         case MessageType.OPEN_POPUP:
         case MessageType.CLOSE_POPUP:
-          await handlePopupMessage(message);
+          await this.handlePopupMessage(message);
           response = { type, result: true };
           break;
 
         case MessageType.QUERY_TAB:
-          response = await serviceRegistry.tabService.queryTabs(message as QueryMessage);
+          response = await this.serviceRegistry.tabService.queryTabs(message as QueryMessage);
           break;
 
         case MessageType.CREATE_TAB:
-          response = await serviceRegistry.tabService.createTab(message as CreateMessage);
+          response = await this.serviceRegistry.tabService.createTab(message as CreateMessage);
           break;
 
         case MessageType.UPDATE_TAB:
-          response = await serviceRegistry.tabService.updateTab(message as UpdateMessage);
+          response = await this.serviceRegistry.tabService.updateTab(message as UpdateMessage);
           break;
 
         case MessageType.REMOVE_TAB:
-          response = await serviceRegistry.tabService.removeTab(message as RemoveMessage);
+          response = await this.serviceRegistry.tabService.removeTab(message as RemoveMessage);
           break;
 
         case MessageType.QUERY_HISTORY:
-          response = await serviceRegistry.historyService.queryHistory(message as QueryMessage);
+          response = await this.serviceRegistry.historyService.queryHistory(message as QueryMessage);
           break;
 
         case MessageType.QUERY_BOOKMARK:
-          response = await serviceRegistry.bookmarkService.queryBookmarks(message as QueryMessage);
+          response = await this.serviceRegistry.bookmarkService.queryBookmarks(message as QueryMessage);
           break;
 
         default:
@@ -99,27 +122,20 @@ export default defineBackground(() => {
   /**
    * ポップアップ関連のメッセージを処理
    */
-  async function handlePopupMessage(message: any): Promise<void> {
+  private async handlePopupMessage(message: any): Promise<void> {
     const { type } = message;
 
     switch (type) {
       case MessageType.OPEN_POPUP:
-        await serviceRegistry.popupService.openPopup();
+        await this.serviceRegistry.popupService.openPopup();
         break;
 
       case MessageType.CLOSE_POPUP:
-        await serviceRegistry.popupService.closePopup();
+        await this.serviceRegistry.popupService.closePopup();
         break;
 
       default:
         throw new Error(`Unknown popup message type: ${type}`);
     }
   }
-
-  // 拡張機能の停止時にサービスを清理
-  chrome.runtime.onSuspend.addListener(() => {
-    serviceRegistry.dispose().catch((error) => {
-      console.error('Failed to dispose service registry:', error);
-    });
-  });
-});
+}
