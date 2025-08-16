@@ -1,11 +1,6 @@
-import { ServiceRegistry } from '@/services/registry';
-import { MessageType } from '@/types/result';
-import {
-  QueryMessage,
-  CreateMessage,
-  UpdateMessage,
-  RemoveMessage,
-} from '@/types/chrome';
+import { ServiceRegistry } from "@/services/registry";
+import { MessageType } from "@/types/result";
+import { QueryMessage } from "@/types/chrome";
 
 /**
  * バックグラウンドマイクロサービス
@@ -25,7 +20,7 @@ export class BackgroundMicroservices {
     try {
       await this.serviceRegistry.initialize();
     } catch (error) {
-      console.error('Failed to initialize service registry:', error);
+      console.error("Failed to initialize service registry:", error);
       throw error;
     }
   }
@@ -37,7 +32,7 @@ export class BackgroundMicroservices {
     try {
       await this.serviceRegistry.dispose();
     } catch (error) {
-      console.error('Failed to dispose service registry:', error);
+      console.error("Failed to dispose service registry:", error);
       throw error;
     }
   }
@@ -50,7 +45,7 @@ export class BackgroundMicroservices {
       try {
         await this.serviceRegistry.popupService.openPopup();
       } catch (error) {
-        console.error('Failed to handle command:', error);
+        console.error("Failed to handle command:", error);
         throw error;
       }
     }
@@ -67,7 +62,7 @@ export class BackgroundMicroservices {
     try {
       // サービスレジストリが初期化されているかチェック
       if (!this.serviceRegistry.isReady()) {
-        throw new Error('Service registry is not ready');
+        throw new Error("Service registry is not ready");
       }
 
       const { type } = message;
@@ -81,23 +76,25 @@ export class BackgroundMicroservices {
           break;
 
         case MessageType.QUERY_TAB:
-          response = await this.serviceRegistry.tabService.queryTabs(message as QueryMessage);
+          response = await this.serviceRegistry.tabService.query(message);
           break;
 
         case MessageType.CREATE_TAB:
-          response = await this.serviceRegistry.tabService.createTab(message as CreateMessage);
+          response = await this.serviceRegistry.tabService.create(message);
           break;
 
         case MessageType.UPDATE_TAB:
-          response = await this.serviceRegistry.tabService.updateTab(message as UpdateMessage);
+          response = await this.serviceRegistry.tabService.update(message);
           break;
 
         case MessageType.REMOVE_TAB:
-          response = await this.serviceRegistry.tabService.removeTab(message as RemoveMessage);
+          response = await this.serviceRegistry.tabService.remove(message);
           break;
 
         case MessageType.QUERY_HISTORY:
-          response = await this.serviceRegistry.historyService.queryHistory(message as QueryMessage);
+          response = await this.serviceRegistry.historyService.queryHistory(
+            message as QueryMessage
+          );
           break;
 
         case MessageType.QUERY_BOOKMARK:
@@ -110,7 +107,7 @@ export class BackgroundMicroservices {
 
       sendResponse(response);
     } catch (error) {
-      console.error('Error handling message:', error);
+      console.error("Error handling message:", error);
       sendResponse({
         type: message.type,
         error: (error as Error).message,

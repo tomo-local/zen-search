@@ -1,36 +1,70 @@
-import { BaseService } from '@/services/base';
-import { MessageType } from '@/types/result';
-import { QueryMessage, CreateMessage, UpdateMessage, RemoveMessage } from '@/types/chrome';
-import { queryTabs, updateTab, removeTab } from '@/function/chrome/tab';
+import { BaseService } from "@/services/base";
+import { MessageType } from "@/types/result";
+import * as Type from "./tab.types";
+import { TabConverter } from "./tab.converter";
+import { filterTabsByQuery } from "./tab.utils";
 
 /**
  * タブ関連の操作を担当するサービス
  */
 export class TabService extends BaseService {
   async initialize(): Promise<void> {
-    this.log('Tab service initialized');
+    this.log("Tab service initialized");
     this.isInitialized = true;
   }
 
   async dispose(): Promise<void> {
-    this.log('Tab service disposed');
+    this.log("Tab service disposed");
     this.isInitialized = false;
+  }
+
+  /**
+   * Chrome APIを使ってタブを検索する（utils/chrome.tsのactionQueryを統合）
+   * @private
+   */
+  private async searchChromeTab(
+    query: string,
+    option: chrome.tabs.QueryInfo
+  ): Promise<chrome.tabs.Tab[]> {
+    const response = await chrome.tabs.query(option);
+
+    return filterTabsByQuery(response, query);
+  }
+
+  /**
+   * タブクエリを実行してフォーマットする
+   * @private
+   */
+  private async performTabQuery(
+    request: Type.TabQueryRequest
+  ): Promise<Type.Tab[]> {
+    const response = await this.searchChromeTab(request.query || "", {
+      currentWindow: request.currentWindow,
+    });
+
+    const tabs = TabConverter.convertToTabs(response, request.query);
+
+    return request.count ? tabs.slice(0, request.count) : tabs;
   }
 
   /**
    * タブを検索する
    */
-  async queryTabs(message: QueryMessage): Promise<any> {
+  async query(request: Type.TabQueryRequest): Promise<{
+    type: MessageType.QUERY_TAB;
+    result: Type.Tab[];
+  }> {
     try {
-      const { query, count } = message;
-      const tabs = await queryTabs(query, { count });
+      const tabs = await this.performTabQuery(request);
+
+      const tabsBySort = tabs.sort((a, b) => b.lastAccessed - a.lastAccessed);
 
       return {
         type: MessageType.QUERY_TAB,
-        result: tabs,
+        result: tabsBySort,
       };
     } catch (error) {
-      this.error('Failed to query tabs', error as Error);
+      this.error("Failed to query tabs", error as Error);
       throw error;
     }
   }
@@ -38,35 +72,44 @@ export class TabService extends BaseService {
   /**
    * 新しいタブを作成する
    */
-  async createTab(message: CreateMessage): Promise<any> {
+  async create(request: Type.CreateTabRequest): Promise<{
+    type: MessageType.CREATE_TAB;
+    result: boolean;
+  }> {
     try {
-      const { url } = message;
-      await chrome.tabs.create({ url });
+      await chrome.tabs.create({ url: request.url });
 
       return {
         type: MessageType.CREATE_TAB,
         result: true,
       };
     } catch (error) {
-      this.error('Failed to create tab', error as Error);
+      this.error("Failed to create tab", error as Error);
       throw error;
     }
   }
 
   /**
-   * タブを更新する
+   * タブを更新する（アクティブにして、ウィンドウにフォーカス）
    */
-  async updateTab(message: UpdateMessage): Promise<any> {
+  async update(request: Type.UpdateTabRequest): Promise<{
+    type: MessageType.UPDATE_TAB;
+    result: boolean;
+  }> {
     try {
-      const { tabId, windowId } = message;
-      await updateTab({ tabId, windowId });
+      await chrome.tabs.update(request.tabId, { active: true });
+
+      // Focus on the window
+      if (request.windowId) {
+        await chrome.windows.update(request.windowId, { focused: true });
+      }
 
       return {
         type: MessageType.UPDATE_TAB,
         result: true,
       };
     } catch (error) {
-      this.error('Failed to update tab', error as Error);
+      this.error("Failed to update tab", error as Error);
       throw error;
     }
   }
@@ -74,17 +117,19 @@ export class TabService extends BaseService {
   /**
    * タブを削除する
    */
-  async removeTab(message: RemoveMessage): Promise<any> {
+  async remove(request: Type.RemoveTabRequest): Promise<{
+    type: MessageType.REMOVE_TAB;
+    result: boolean;
+  }> {
     try {
-      const { tabId } = message;
-      await removeTab({ tabId });
+      await chrome.tabs.remove(request.tabId);
 
       return {
         type: MessageType.REMOVE_TAB,
         result: true,
       };
     } catch (error) {
-      this.error('Failed to remove tab', error as Error);
+      this.error("Failed to remove tab", error as Error);
       throw error;
     }
   }
