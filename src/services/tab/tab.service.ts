@@ -2,6 +2,7 @@ import { BaseService } from "@/services/base";
 import { MessageType } from "@/types/result";
 import * as Type from "./tab.types";
 import { TabConverter } from "./tab.converter";
+import { filterTabsByQuery } from "./tab.utils";
 
 /**
  * タブ関連の操作を担当するサービス
@@ -27,26 +28,16 @@ export class TabService extends BaseService {
   ): Promise<chrome.tabs.Tab[]> {
     const response = await chrome.tabs.query(option);
 
-    if (!query) {
-      return response;
-    }
-
-    return response.filter((tab) => {
-      const title = tab.title || "";
-      const url = tab.url ? new URL(tab.url).hostname : "";
-
-      const isTitleMatch = title.toLowerCase().includes(query.toLowerCase());
-      const isUrlMatch = url.toLowerCase().includes(query.toLowerCase());
-
-      return isTitleMatch || isUrlMatch;
-    }) as chrome.tabs.Tab[];
+    return filterTabsByQuery(response, query);
   }
 
   /**
    * タブクエリを実行してフォーマットする
    * @private
    */
-  private async performTabQuery(request: Type.TabQueryRequest): Promise<Type.Tab[]> {
+  private async performTabQuery(
+    request: Type.TabQueryRequest
+  ): Promise<Type.Tab[]> {
     const response = await this.searchChromeTab(request.query || "", {
       currentWindow: request.currentWindow,
     });
@@ -66,9 +57,11 @@ export class TabService extends BaseService {
     try {
       const tabs = await this.performTabQuery(request);
 
+      const tabsBySort = tabs.sort((a, b) => b.lastAccessed - a.lastAccessed);
+
       return {
         type: MessageType.QUERY_TAB,
-        result: tabs,
+        result: tabsBySort,
       };
     } catch (error) {
       this.error("Failed to query tabs", error as Error);
