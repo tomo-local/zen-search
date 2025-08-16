@@ -101,7 +101,7 @@ export class BackgroundMicroservices {
           break;
 
         case MessageType.QUERY_BOOKMARK:
-          response = await this.serviceRegistry.bookmarkService.queryBookmarks(message as QueryMessage);
+          response = await this.serviceRegistry.bookmarkService.query(message);
           break;
 
         default:

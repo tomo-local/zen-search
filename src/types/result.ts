@@ -1,4 +1,5 @@
-import { Tab, History, Bookmark } from "@/types/chrome";
+import { Tab, History } from "@/types/chrome";
+import type { Bookmark } from "@/services/bookmark";
 import { Suggestion } from "@/types/google";
 import { Action } from "@/types/action";
 

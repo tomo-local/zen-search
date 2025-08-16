@@ -74,17 +74,3 @@ export interface QuerySuggestionMessage {
   query: string;
   count?: number;
 }
-
-export interface Bookmark {
-  type: ResultType.Bookmark;
-  id: number | string;
-  title: string;
-  url: string;
-  match: number;
-}
-
-export interface QueryBookmarkMessage {
-  type: MessageType.QUERY_BOOKMARK;
-  query: string;
-  count?: number;
-}

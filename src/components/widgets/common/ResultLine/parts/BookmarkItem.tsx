@@ -4,7 +4,7 @@ import CommonItem, {
   commonClassName as common,
 } from "@/components/widgets/common/ResultLine/parts/CommonItem";
 import SquareIcon from "@/components/modules/icon/SquareIcon";
-import { Bookmark } from "@/types/chrome";
+import type { Bookmark } from "@/services/bookmark";
 import clsx from "clsx";
 
 const getFavicon = (url: string) => {

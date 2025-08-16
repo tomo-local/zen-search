@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Bookmark } from "@/types/chrome";
+import type { Bookmark } from "@/services/bookmark";
 import { ResultType, MessageType } from "@/types/result";
 
 export default function useQueryBookmarks(
