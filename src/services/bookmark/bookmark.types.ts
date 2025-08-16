@@ -8,14 +8,16 @@ export interface Bookmark {
   match: number;
 }
 
+export type BookmarkQuery = chrome.bookmarks.BookmarkSearchQuery;
+
 export interface QueryBookmarkMessage {
   type: MessageType.QUERY_BOOKMARK;
-  query: string;
+  query: BookmarkQuery;
   count?: number;
 }
 
 export interface QueryMessage {
   type: MessageType.QUERY_BOOKMARK;
-  query: string;
+  query: BookmarkQuery;
   count?: number;
 }
