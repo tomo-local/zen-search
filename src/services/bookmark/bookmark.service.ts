@@ -54,7 +54,7 @@ export class BookmarkService extends BaseService {
   private async performBookmarkQuery(
     request: Type.QueryBookmarkRequest
   ): Promise<Type.Bookmark[]> {
-    if (!request.query) {
+    if (request.query == null) {
       return BookmarkConverter.convertToBookmarks(
         await this.getRecentBookmarksOnlySites(
           request.count || BookmarkService.DEFAULT_RECENT_COUNT
