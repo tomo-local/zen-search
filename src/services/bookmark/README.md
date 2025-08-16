@@ -63,14 +63,14 @@ const bookmarkService = new BookmarkService();
 await bookmarkService.initialize();
 
 // 1. キーワードでブックマークを検索
-const searchResult = await bookmarkService.queryBookmarks({
+const searchResult = await bookmarkService.query({
   type: MessageType.QUERY_BOOKMARK,
   query: "GitHub",
   count: 5
 });
 
 // 2. 最近のブックマークを取得
-const recentResult = await bookmarkService.queryBookmarks({
+const recentResult = await bookmarkService.query({
   type: MessageType.QUERY_BOOKMARK,
   query: null,
   count: 10
