@@ -40,7 +40,7 @@ export class BookmarkConverter {
       id: bookmark.id,
       title: bookmark.title || "",
       url: bookmark.url,
-      match: calcMatchRateResult(query || "", bookmark.title, bookmark.url),
+      match: calcMatchRateResult(query, bookmark.title, bookmark.url),
     };
   }
 }
