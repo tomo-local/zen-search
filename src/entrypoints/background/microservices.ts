@@ -92,7 +92,7 @@ export class BackgroundMicroservices {
           break;
 
         case MessageType.QUERY_HISTORY:
-          response = await this.serviceRegistry.historyService.queryHistory(
+          response = await this.serviceRegistry.historyService.query(
             message as QueryMessage
           );
           break;

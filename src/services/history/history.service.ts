@@ -61,19 +61,4 @@ export class HistoryService extends BaseService {
       throw error;
     }
   }
-
-  // ===== 下位互換性のためのメソッド（古いインターフェースサポート） =====
-
-  /**
-   * 旧インターフェースサポート: 履歴を検索する
-   * @deprecated 新しいqueryメソッドを使用してください
-   */
-  async queryHistory(message: Type.QueryHistoryMessage): Promise<any> {
-    return this.query({
-      query: message.query,
-      startTime: message.startTime,
-      endTime: message.endTime,
-      count: message.count,
-    });
-  }
 }
