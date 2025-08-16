@@ -1,4 +1,4 @@
-import { MessageType, ResultType } from '@/types/result';
+import { MessageType, ResultType } from "@/types/result";
 
 export interface Bookmark {
   type: ResultType.Bookmark;
@@ -10,14 +10,7 @@ export interface Bookmark {
 
 export type BookmarkQuery = chrome.bookmarks.BookmarkSearchQuery;
 
-export interface QueryBookmarkMessage {
-  type: MessageType.QUERY_BOOKMARK;
-  query: BookmarkQuery;
-  count?: number;
-}
-
-export interface QueryMessage {
-  type: MessageType.QUERY_BOOKMARK;
+export interface QueryBookmarkRequest {
   query: BookmarkQuery;
   count?: number;
 }

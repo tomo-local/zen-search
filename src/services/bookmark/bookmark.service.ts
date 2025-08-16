@@ -52,7 +52,7 @@ export class BookmarkService extends BaseService {
    * @private
    */
   private async performBookmarkQuery(
-    request: Omit<Type.QueryBookmarkMessage, "type">
+    request: Type.QueryBookmarkRequest
   ): Promise<Type.Bookmark[]> {
     if (!request.query) {
       return BookmarkConverter.convertToBookmarks(
@@ -66,9 +66,10 @@ export class BookmarkService extends BaseService {
     const response = await this.searchBookmarksOnlySites(request.query);
 
     // queryが文字列かオブジェクトかを判定して適切な値を取得
-    const queryString = typeof request.query === 'string'
-      ? request.query
-      : (request.query.query || '');
+    const queryString =
+      typeof request.query === "string"
+        ? request.query
+        : request.query.query || "";
 
     const bookmarks = BookmarkConverter.convertToBookmarks(
       response,
@@ -81,7 +82,7 @@ export class BookmarkService extends BaseService {
   /**
    * ブックマークを検索する
    */
-  async queryBookmarks(request: Type.QueryMessage): Promise<{
+  async query(request: Type.QueryBookmarkRequest): Promise<{
     type: MessageType.QUERY_BOOKMARK;
     result: Type.Bookmark[];
   }> {
