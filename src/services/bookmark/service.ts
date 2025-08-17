@@ -1,7 +1,7 @@
 import { BaseService } from "@/services/base";
 import { MessageType } from "@/types/result";
-import * as Type from "./bookmark.types";
-import { BookmarkConverter } from "./bookmark.converter";
+import * as Type from "./types";
+import { convertToBookmarks } from "./converter";
 
 /**
  * ブックマーク関連の操作を担当するサービス
@@ -55,7 +55,7 @@ export class BookmarkService extends BaseService {
     request: Type.QueryBookmarkRequest
   ): Promise<Type.Bookmark[]> {
     if (request.query == null) {
-      return BookmarkConverter.convertToBookmarks(
+      return convertToBookmarks(
         await this.getRecentBookmarksOnlySites(
           request.count || BookmarkService.DEFAULT_RECENT_COUNT
         ),
@@ -71,7 +71,7 @@ export class BookmarkService extends BaseService {
         ? request.query
         : request.query.query || "";
 
-    const bookmarks = BookmarkConverter.convertToBookmarks(
+    const bookmarks = convertToBookmarks(
       response,
       queryString
     );

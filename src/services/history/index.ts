@@ -1,4 +1,4 @@
-export { HistoryService } from './history.service';
+export { HistoryService } from './service';
 export * as HistoryTypes from './history.types';
-export { HistoryConverter } from './history.converter';
+export * from './converter';
 export * as HistoryUtils from './history.utils';

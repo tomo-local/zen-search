@@ -1,3 +1,3 @@
-export * from './tab.service';
-export * from './tab.types';
-export * from './tab.converter';
+export * from './service';
+export * from './types';
+export * from './converter';

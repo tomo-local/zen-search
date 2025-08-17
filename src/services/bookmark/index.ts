@@ -1,3 +1,3 @@
-export * from './bookmark.service';
-export * from './bookmark.converter';
-export * from './bookmark.types';
+export * from './service';
+export * from './converter';
+export * from './types';
