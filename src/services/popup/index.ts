@@ -1,1 +1,2 @@
-export { PopupService } from './popup.service';
+export * from './service';
+export * from './types';

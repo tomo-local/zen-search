@@ -23,9 +23,12 @@ import {
 import ResultFooter from "@/components/widgets/common/ResultFooter";
 import ResultLine from "@/components/widgets/common/ResultLine/ResultLine";
 
-import { closeContent } from "@/function/chrome/open";
+import { PopupService } from "@/services/popup";
 import { ActionType } from "@/types/chrome";
 import { ResultType } from "@/types/result";
+
+// PopupServiceのインスタンスを作成
+const popupService = new PopupService();
 
 export default function App() {
   const { query, type, suggestion, setQuery, setType, reset } =
@@ -37,7 +40,7 @@ export default function App() {
     useArrowKeyControl(result);
   const { onAction } = useEnterKeyControl();
 
-  const handleClose = () => closeContent(ActionType.runtime);
+  const handleClose = () => popupService.closeContent(ActionType.runtime);
 
   const handleEnterKey = (e: React.KeyboardEvent) => {
     if (isComposing) {
