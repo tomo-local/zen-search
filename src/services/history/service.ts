@@ -1,7 +1,7 @@
 import { BaseService } from "@/services/base";
 import { MessageType } from "@/types/result";
 import * as Type from "./history.types";
-import { HistoryConverter } from "./history.converter";
+import { convertToHistories } from "./converter";
 import { normalizeHistoryQueryParams, filterValidHistoryItems } from "./history.utils";
 
 /**
@@ -39,7 +39,7 @@ export class HistoryService extends BaseService {
     request: Type.HistoryQueryRequest
   ): Promise<Type.History[]> {
     const response = await this.searchChromeHistory(request);
-    return HistoryConverter.convertToHistories(response, request.query);
+    return convertToHistories(response, request.query);
   }
 
   /**

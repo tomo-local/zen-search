@@ -1,8 +1,8 @@
 import { BaseService } from "@/services/base";
 import { MessageType } from "@/types/result";
-import * as Type from "./tab.types";
-import { TabConverter } from "./tab.converter";
-import { filterTabsByQuery } from "./tab.utils";
+import * as Type from "./types";
+import { convertToTabs } from "./converter";
+import { filterTabsByQuery } from "./utils";
 
 /**
  * タブ関連の操作を担当するサービス
@@ -42,7 +42,7 @@ export class TabService extends BaseService {
       currentWindow: request.currentWindow,
     });
 
-    const tabs = TabConverter.convertToTabs(response, request.query);
+    const tabs = convertToTabs(response, request.query);
 
     return request.count ? tabs.slice(0, request.count) : tabs;
   }

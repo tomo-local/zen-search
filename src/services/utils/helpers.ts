@@ -15,35 +15,30 @@ export function MessageHandler(messageType: string) {
 }
 
 /**
- * サービスクラス用のベースヘルパー
+ * レスポンス形式を統一する
  */
-export class ServiceHelper {
-  /**
-   * レスポンス形式を統一する
-   */
-  static createResponse(type: string, result: any, error?: string): any {
-    return {
-      type,
-      result,
-      ...(error && { error }),
-      timestamp: Date.now(),
-    };
-  }
+export const createResponse = (type: string, result: any, error?: string): any => {
+  return {
+    type,
+    result,
+    ...(error && { error }),
+    timestamp: Date.now(),
+  };
+};
 
-  /**
-   * エラーレスポンスを作成する
-   */
-  static createErrorResponse(type: string, error: Error): any {
-    return this.createResponse(type, null, error.message);
-  }
+/**
+ * エラーレスポンスを作成する
+ */
+export const createErrorResponse = (type: string, error: Error): any => {
+  return createResponse(type, null, error.message);
+};
 
-  /**
-   * 成功レスポンスを作成する
-   */
-  static createSuccessResponse(type: string, result: any): any {
-    return this.createResponse(type, result);
-  }
-}
+/**
+ * 成功レスポンスを作成する
+ */
+export const createSuccessResponse = (type: string, result: any): any => {
+  return createResponse(type, result);
+};
 
 /**
  * パフォーマンス測定デコレータ
