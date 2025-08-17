@@ -14,7 +14,7 @@ export interface HistoryQueryRequest {
  * 履歴
  */
 export interface History {
-  id: number;
+  id: string;
   title: string;
   url: string;
   match: number;

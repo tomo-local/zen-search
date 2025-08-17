@@ -2,6 +2,9 @@
  * 履歴に関するユーティリティ関数
  */
 
+/** 30日間のミリ秒数 */
+const THIRTY_DAYS_IN_MS = 30 * 24 * 60 * 60 * 1000;
+
 /**
  * デフォルトの終了時刻を取得（現在時刻）
  */
@@ -14,7 +17,7 @@ export function getDefaultEndTime(): number {
  */
 export function getDefaultStartTime(endTime?: number): number {
   const targetEndTime = endTime ?? getDefaultEndTime();
-  return targetEndTime - 1000 * 60 * 60 * 24 * 30; // 30日前
+  return targetEndTime - THIRTY_DAYS_IN_MS; // 30日前
 }
 
 /**

@@ -26,10 +26,10 @@ export class HistoryConverter {
   }
 
   /**
-   * ランダムIDを生成する（10桁の乱数）
+   * ランダムIDを生成する（UUIDを使用）
    * @private
    */
-  private static createRandomId(): number {
-    return Math.floor(Math.random() * 10000000000);
+  private static createRandomId(): string {
+    return crypto.randomUUID();
   }
 }
