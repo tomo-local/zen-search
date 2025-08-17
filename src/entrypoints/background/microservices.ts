@@ -1,6 +1,5 @@
 import { ServiceRegistry } from "@/services/registry";
 import { MessageType } from "@/types/result";
-import { QueryMessage } from "@/types/chrome";
 
 /**
  * バックグラウンドマイクロサービス
@@ -92,9 +91,7 @@ export class BackgroundMicroservices {
           break;
 
         case MessageType.QUERY_HISTORY:
-          response = await this.serviceRegistry.historyService.queryHistory(
-            message as QueryMessage
-          );
+          response = await this.serviceRegistry.historyService.query(message);
           break;
 
         case MessageType.QUERY_BOOKMARK:
