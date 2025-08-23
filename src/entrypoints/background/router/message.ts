@@ -1,6 +1,6 @@
 import { queryBookmarks } from "@/function/chrome/bookmark";
 import { openContent } from "@/function/chrome/open";
-import { historyService } from "@/services/history/service";
+import { get30DaysAgo, getNow, historyService } from "@/services/history";
 import { tabService } from "@/services/tab/service";
 
 import {
@@ -26,7 +26,7 @@ const {
 function sendResponse(
   type: string,
   result: unknown,
-  response: (res: object) => void,
+  response: (res: object) => void
 ) {
   response({ type, result });
 }
@@ -34,7 +34,7 @@ function sendResponse(
 export function routeMessage(
   message: { type: string },
   _sender: chrome.runtime.MessageSender,
-  response: (res?: object) => void,
+  response: (res?: object) => void
 ): boolean {
   switch (message.type) {
     case OPEN_POPUP:
@@ -72,9 +72,15 @@ export function routeMessage(
     }
     case QUERY_HISTORY: {
       const { query } = message as QueryMessage;
-      historyService.search({ query }).then((history) => {
-        sendResponse(QUERY_HISTORY, history, response);
-      });
+
+      const end = getNow();
+      const start = get30DaysAgo(end);
+
+      historyService
+        .search({ query, startTime: start.getTime(), endTime: end.getTime() })
+        .then((history) => {
+          sendResponse(QUERY_HISTORY, history, response);
+        });
       return true;
     }
     case QUERY_BOOKMARK: {
