@@ -3,7 +3,7 @@ import EqualsIcon from "@heroicons/react/16/solid/EqualsIcon";
 import CommonItem, {
   commonClassName as common,
 } from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import SquareIcon from "@/components/modules/icon/SquareIcon";
+import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import { Calculation } from "@/types/action";
 import clsx from "clsx";
 

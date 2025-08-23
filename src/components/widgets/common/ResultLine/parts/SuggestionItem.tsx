@@ -3,7 +3,7 @@ import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 import CommonItem, {
   commonClassName as common,
 } from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import SquareIcon from "@/components/modules/icon/SquareIcon";
+import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import { Suggestion } from "@/types/google";
 import clsx from "clsx";
 

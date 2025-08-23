@@ -1,9 +1,9 @@
-interface BadgeProps {
+interface SquareBadgeProps {
   children: React.ReactNode; // バッジのラベル
   className?: string; // オプション: カスタムクラス
 }
 
-export default function SquareBadge({ children, className }: BadgeProps) {
+export default function SquareBadge({ children, className }: SquareBadgeProps) {
   return (
     <div
       className={`inline-flex items-center px-2 py-1 text-xs font-medium text-white rounded-sm ${className}`}
@@ -12,3 +12,5 @@ export default function SquareBadge({ children, className }: BadgeProps) {
     </div>
   );
 }
+
+export type { SquareBadgeProps };

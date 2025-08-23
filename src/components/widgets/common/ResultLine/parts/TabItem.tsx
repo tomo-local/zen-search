@@ -3,7 +3,7 @@ import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
 import CommonItem, {
   commonClassName as common,
 } from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import SquareIcon from "@/components/modules/icon/SquareIcon";
+import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import { Tab } from "@/types/chrome";
 import clsx from "clsx";
 

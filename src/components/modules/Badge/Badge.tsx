@@ -1,4 +1,4 @@
-interface BadgeProps {
+export interface BadgeProps {
   label: string; // バッジのラベル
   count?: number; // オプション: カウント
   className?: string; // オプション: カスタムクラス

@@ -3,7 +3,7 @@ import ClockIcon from "@heroicons/react/16/solid/ClockIcon";
 import CommonItem, {
   commonClassName as common,
 } from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import SquareIcon from "@/components/modules/icon/SquareIcon";
+import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import { History } from "@/types/chrome";
 import clsx from "clsx";
 

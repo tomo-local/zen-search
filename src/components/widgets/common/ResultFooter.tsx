@@ -1,6 +1,6 @@
 import ThemeSelectButton from "@/components/widgets/common/ThemeSelectButton";
-import Footer from "@/components/modules/Footer";
-import LinearProgress from "@/components/modules/LoadingSpinner";
+import Footer from "@/components/modules/Footer/Footer";
+import  Modules from "@/components/modules";
 import { Result } from "@/types/result";
 
 interface ResultFooterProps {
@@ -21,7 +21,7 @@ export default function ResultFooter({
           <ThemeSelectButton className="dark:text-gray-400" />
           <div className="flex flex-row items-center justify-center space-x-2">
             <p className="text-gray-400 ">Loading...</p>
-            <LinearProgress active={loading} size="xs" />
+            <Modules.Spinner active={loading} size="xs" />
           </div>
         </div>
       </Footer>

@@ -3,7 +3,7 @@ import BookmarkIcon from "@heroicons/react/16/solid/BookmarkIcon";
 import CommonItem, {
   commonClassName as common,
 } from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import SquareIcon from "@/components/modules/icon/SquareIcon";
+import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import { Bookmark } from "@/types/chrome";
 import clsx from "clsx";
 
