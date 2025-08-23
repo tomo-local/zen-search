@@ -7,9 +7,11 @@ import type { Suggestion } from "./types";
 /**
  * 結果数を制限する
  */
-export const limitResults = (count?: number) => (suggestions: Suggestion[]): Suggestion[] => {
-  return count ? suggestions.slice(0, count) : suggestions;
-};
+export const limitResults =
+  (count?: number) =>
+  (suggestions: Suggestion[]): Suggestion[] => {
+    return count ? suggestions.slice(0, count) : suggestions;
+  };
 
 /**
  * Google Suggest APIのエンドポイントURLを構築
