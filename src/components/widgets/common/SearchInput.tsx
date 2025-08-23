@@ -56,7 +56,9 @@ export default function SearchInput({
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "/") {
       e.preventDefault();
-      onChange?.({ target: { value: `${value}` } } as React.ChangeEvent<HTMLInputElement>);
+      onChange?.({
+        target: { value: `${value}` },
+      } as React.ChangeEvent<HTMLInputElement>);
       return;
     }
 
