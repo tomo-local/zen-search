@@ -1,7 +1,7 @@
 import { queryBookmarks } from "@/function/chrome/bookmark";
 import { queryHistory } from "@/function/chrome/history";
 import { openContent } from "@/function/chrome/open";
-import { queryTabs, removeTab, updateTab } from "@/function/chrome/tab";
+import { tabService } from "@/services/tab/service";
 import {
   ActionType,
   type CreateMessage,
@@ -25,7 +25,7 @@ const {
 function sendResponse(
   type: string,
   result: unknown,
-  response: (res: object) => void,
+  response: (res: object) => void
 ) {
   response({ type, result });
 }
@@ -33,7 +33,7 @@ function sendResponse(
 export function routeMessage(
   message: { type: string },
   _sender: chrome.runtime.MessageSender,
-  response: (res?: object) => void,
+  response: (res?: object) => void
 ): boolean {
   switch (message.type) {
     case OPEN_POPUP:
@@ -43,26 +43,26 @@ export function routeMessage(
 
     case QUERY_TAB: {
       const { query, count } = message as QueryMessage;
-      queryTabs(query, { count }).then((tabs) => {
+      tabService.query({ query, option: { count } }).then((tabs) => {
         sendResponse(QUERY_TAB, tabs, response);
       });
       return true;
     }
     case CREATE_TAB: {
       const { url } = message as CreateMessage;
-      chrome.tabs.create({ url });
+      tabService.create({ url });
       sendResponse(CREATE_TAB, true, response);
       return true;
     }
     case UPDATE_TAB: {
       const { tabId, windowId } = message as UpdateMessage;
-      updateTab({ tabId, windowId });
+      tabService.update({ tabId, windowId });
       sendResponse(UPDATE_TAB, true, response);
       return true;
     }
     case REMOVE_TAB: {
       const { tabId } = message as RemoveMessage;
-      removeTab({ tabId });
+      tabService.remove({ tabId });
       sendResponse(REMOVE_TAB, true, response);
       return true;
     }
