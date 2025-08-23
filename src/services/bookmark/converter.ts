@@ -15,8 +15,8 @@ export function convertBookmarkToResult(
     url: bookmark.url || "",
     data: {
       parentId: bookmark?.parentId || "",
-      dateAdded: bookmark?.dateAdded || 0,
-      dateGroupModified: bookmark?.dateGroupModified || 0,
+      dateAdded: bookmark?.dateAdded,
+      dateGroupModified: bookmark?.dateGroupModified,
       unmodifiable: bookmark?.unmodifiable,
     },
   };
