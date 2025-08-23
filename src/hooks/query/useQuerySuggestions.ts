@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
-import { querySuggestions } from "@/function/google/query";
-import type { Suggestion } from "@/types/google";
+import { useCallback, useEffect, useState } from "react";
+import { type Suggestion, suggestionService } from "@/services/suggestion";
 import { ResultType } from "@/types/result";
 
 export default function useQuerySuggestions(
@@ -10,6 +9,23 @@ export default function useQuerySuggestions(
 ) {
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);
+
+  const fetchSuggestions = useCallback(async (query: string) => {
+    if (!query.trim()) {
+      setSuggestions([]);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const result = await suggestionService.query({ query });
+      setSuggestions(result);
+    } catch (error) {
+      console.error("Error fetching suggestions:", error);
+    }
+
+    setLoading(false);
+  }, []);
 
   useEffect(() => {
     if (!init) {
@@ -26,12 +42,8 @@ export default function useQuerySuggestions(
       return;
     }
 
-    setLoading(true);
-    querySuggestions(query).then((result) => {
-      setSuggestions(result);
-      setLoading(false);
-    });
-  }, [query, type, init]);
+    fetchSuggestions(query);
+  }, [query, type, init, fetchSuggestions]);
 
   return {
     suggestions,
