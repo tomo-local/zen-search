@@ -33,7 +33,7 @@ export default function useQueryHistories(
         setLoading(false);
       },
     );
-  }, [query]);
+  }, [query, type, init]);
 
   return {
     histories: history,

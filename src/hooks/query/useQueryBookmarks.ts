@@ -33,7 +33,7 @@ export default function useQueryBookmarks(
         setLoading(false);
       },
     );
-  }, [query]);
+  }, [query, type, init]);
 
   return {
     bookmarks,

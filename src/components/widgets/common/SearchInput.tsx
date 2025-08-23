@@ -56,7 +56,9 @@ export default function SearchInput({
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "/") {
       e.preventDefault();
-      onChange?.({ target: { value: value + "/" } } as any);
+      onChange?.({
+        target: { value: `${value}` },
+      } as React.ChangeEvent<HTMLInputElement>);
       return;
     }
 
@@ -101,7 +103,6 @@ export default function SearchInput({
         value={value}
         placeholder="Search or Enter URL ..."
         className={`grow px-3 py-2 text-lg rounded-md focus:outline-none ${className}`}
-        autoFocus
         onFocus={onFocus}
         onBlur={onBlur}
         onChange={onChange}

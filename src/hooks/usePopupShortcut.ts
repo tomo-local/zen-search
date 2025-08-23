@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { MessageType } from "@/types/result";
 
 const keyMap: Record<string, string> = {
@@ -15,11 +15,11 @@ const keyMap: Record<string, string> = {
 export default function usePopupShortCut() {
   const [shortcut, setShortcut] = useState<string[]>([]);
 
-  const getCommandShortcut = async () => {
+  const getCommandShortcut = useCallback(async () => {
     const commands = await chrome.commands.getAll();
 
     return commands.find((command) => command.name === MessageType.OPEN_POPUP);
-  };
+  }, []);
   useEffect(() => {
     getCommandShortcut().then((command) => {
       if (!command) {
@@ -35,7 +35,7 @@ export default function usePopupShortCut() {
 
       setShortcut(normalizedShortcut ?? []);
     });
-  }, []);
+  }, [getCommandShortcut]);
 
   return {
     shortcut,
