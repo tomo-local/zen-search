@@ -25,7 +25,7 @@ const queryTabs = async ({ query, option }: QueryRequest): Promise<Tab[]> => {
     console.error("Failed to query tabs via runtime:", error);
     throw new RuntimeServiceError(
       "タブの検索に失敗しました",
-      error instanceof Error ? error : new Error(String(error))
+      error instanceof Error ? error : new Error(String(error)),
     );
   }
 };

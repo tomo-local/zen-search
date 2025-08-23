@@ -9,7 +9,7 @@ import type { Tab, TabData } from "./types";
 // Chrome Tab から アプリ用 Tab への変換
 export const convertTabToResult = (
   tab: chrome.tabs.Tab,
-  currentWindow: boolean
+  currentWindow: boolean,
 ): Tab => ({
   type: ResultType.Tab,
   id: tab.id ?? 0,
@@ -20,7 +20,7 @@ export const convertTabToResult = (
 
 export const convertTabToData = (
   tab: chrome.tabs.Tab,
-  currentWindow?: boolean
+  currentWindow?: boolean,
 ): TabData => ({
   icon: tab.favIconUrl ?? "",
   active: tab.active ?? false,
@@ -32,7 +32,7 @@ export const convertTabToData = (
 // 複数タブの変換（バッチ処理用）
 export const convertMultipleTabsToResult = (
   tabs: chrome.tabs.Tab[],
-  currentWindow: boolean
+  currentWindow: boolean,
 ): Tab[] => {
   return tabs.map((tab) => convertTabToResult(tab, currentWindow));
 };
