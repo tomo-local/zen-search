@@ -1,4 +1,7 @@
-import type { Bookmark, QueryBookmarksRequest } from "@/services/bookmark/types";
+import type {
+  Bookmark,
+  QueryBookmarksRequest,
+} from "@/services/bookmark/types";
 import type { History, SearchHistoryRequest } from "@/services/history/types";
 import type { QueryTabsRequest, Tab } from "@/services/tab/types";
 import { MessageType } from "@/types/result";
