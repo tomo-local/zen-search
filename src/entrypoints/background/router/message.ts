@@ -25,15 +25,15 @@ const {
 function sendResponse(
   type: string,
   result: unknown,
-  response: (res: any) => void,
+  response: (res: object) => void
 ) {
   response({ type, result });
 }
 
 export function routeMessage(
-  message: any,
-  sender: any,
-  response: (res: any) => void,
+  message: { type: string },
+  _sender: chrome.runtime.MessageSender,
+  response: (res?: object) => void
 ): boolean {
   switch (message.type) {
     case OPEN_POPUP:

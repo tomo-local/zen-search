@@ -31,6 +31,7 @@ export default function ThemeSelectButton(props: ThemeSelectorProps) {
 
   return (
     <button
+      type="button"
       className={`flex items-center hover:cursor-pointer group relative space-x-2 ${props.className}`}
       onClick={handleThemeChange}
     >

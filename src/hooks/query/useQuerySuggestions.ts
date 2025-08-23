@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { querySuggestions } from "@/function/google/query";
 import type { Suggestion } from "@/types/google";
-import { MessageType, ResultType } from "@/types/result";
+import { ResultType } from "@/types/result";
 
 export default function useQuerySuggestions(
   query: string,
@@ -31,7 +31,7 @@ export default function useQuerySuggestions(
       setSuggestions(result);
       setLoading(false);
     });
-  }, [query]);
+  }, [query, type, init]);
 
   return {
     suggestions,

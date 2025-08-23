@@ -3,8 +3,8 @@ import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 import clsx from "clsx";
 import type React from "react";
 import { useState } from "react";
-import Badge from "@/components/modules/icon/Badge";
-import SquareBadge from "@/components/modules/icon/SquareBadge";
+import Badge from "@/components/modules/Badge/Badge";
+import SquareBadge from "@/components/modules/SquareBadge/SquareBadge";
 import Layout, {
   commonClassName as layoutClassName,
 } from "@/components/widgets/common/Layout";
@@ -52,7 +52,7 @@ export default function App() {
   };
 
   const handleBackspaceKeyDown = (e: React.KeyboardEvent) => {
-    if (query || (type! == ResultType.All && query)) {
+    if (query || (type !== ResultType.All && query)) {
       return;
     }
     e.preventDefault();
@@ -94,7 +94,7 @@ export default function App() {
           layoutClassName.border,
           layoutClassName.shadow,
           layoutClassName.p,
-          layoutClassName.space,
+          layoutClassName.space
         )}
       >
         <SearchInput
@@ -105,7 +105,7 @@ export default function App() {
               <MagnifyingGlassIcon
                 className={clsx(
                   searchInputClassName.icon.text,
-                  searchInputClassName.icon.size,
+                  searchInputClassName.icon.size
                 )}
               />
             ) : (
@@ -147,7 +147,7 @@ export default function App() {
               >
                 {result.map((item, index) => (
                   <ResultLine
-                    key={index}
+                    key={item.id}
                     onClick={() => onAction(item)}
                     item={item}
                     isSelected={index === selectedIndex}

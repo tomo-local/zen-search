@@ -9,7 +9,7 @@ const search_url = "https://www.google.com/search";
 
 export const querySuggestions = async (
   query: string,
-  option?: SuggestionOptions,
+  _option?: SuggestionOptions,
 ) => {
   if (!query) return [];
 
@@ -58,7 +58,7 @@ const createUrl = (query: string) => {
   try {
     const url = new URL(query);
     return url.href;
-  } catch (e) {
+  } catch (_e) {
     return `${search_url}?q=${encodeURIComponent(query)}`;
   }
 };

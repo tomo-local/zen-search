@@ -20,7 +20,7 @@ export default function useQueryTabs(query: string, type: ResultType) {
         setLoading(false);
       },
     );
-  }, [query]);
+  }, [query, type]);
 
   return {
     tabs: filteredTabs,
