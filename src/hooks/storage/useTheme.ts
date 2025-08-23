@@ -55,7 +55,7 @@ function themeReducer(state: ThemeState, action: Action): ThemeState {
 export default function useTheme() {
   const [{ theme, isDarkMode }, dispatch] = useReducer(
     themeReducer,
-    initialState
+    initialState,
   );
 
   useEffect(() => {

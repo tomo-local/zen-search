@@ -8,7 +8,7 @@ import type { SyncStorage, SyncStorageKey, ThemeValue } from "./types";
  * Promise化されたchrome.storage.sync.get
  */
 export const chromeStorageGet = <K extends SyncStorageKey>(
-  key: K
+  key: K,
 ): Promise<SyncStorage[K] | undefined> => {
   return new Promise((resolve) => {
     chrome.storage.sync.get(key, (result) => {
@@ -22,7 +22,7 @@ export const chromeStorageGet = <K extends SyncStorageKey>(
  */
 export const chromeStorageSet = <K extends SyncStorageKey>(
   key: K,
-  value: SyncStorage[K]
+  value: SyncStorage[K],
 ): Promise<boolean> => {
   return new Promise((resolve) => {
     chrome.storage.sync.set({ [key]: value }, () => {
