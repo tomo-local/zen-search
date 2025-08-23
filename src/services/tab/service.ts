@@ -9,17 +9,17 @@ import type * as Type from "./types";
 
 // 型定義
 export interface TabService {
-  query: (request: Type.QueryRequest) => Promise<Type.Tab[]>;
-  create: (request: Type.CreateRequest) => Promise<void>;
-  update: (request: Type.UpdateRequest) => Promise<void>;
-  remove: (request: Type.RemoveRequest) => Promise<void>;
+  query: (request: Type.QueryTabsRequest) => Promise<Type.Tab[]>;
+  create: (request: Type.CreateTabRequest) => Promise<void>;
+  update: (request: Type.UpdateTabRequest) => Promise<void>;
+  remove: (request: Type.RemoveTabRequest) => Promise<void>;
 }
 
 // サービス実装
 const queryTabs = async ({
   query,
   option,
-}: Type.QueryRequest): Promise<Type.Tab[]> => {
+}: Type.QueryTabsRequest): Promise<Type.Tab[]> => {
   try {
     const response = await chrome.tabs.query({
       currentWindow: option?.currentWindow,
@@ -36,7 +36,7 @@ const queryTabs = async ({
   }
 };
 
-const createTab = async ({ url }: Type.CreateRequest): Promise<void> => {
+const createTab = async ({ url }: Type.CreateTabRequest): Promise<void> => {
   try {
     await chrome.tabs.create({ url });
   } catch (error) {
@@ -48,7 +48,7 @@ const createTab = async ({ url }: Type.CreateRequest): Promise<void> => {
 const updateTab = async ({
   tabId,
   windowId,
-}: Type.UpdateRequest): Promise<void> => {
+}: Type.UpdateTabRequest): Promise<void> => {
   try {
     await chrome.tabs.update(tabId, { active: true });
 
@@ -62,7 +62,7 @@ const updateTab = async ({
   }
 };
 
-const removeTab = async ({ tabId }: Type.RemoveRequest): Promise<void> => {
+const removeTab = async ({ tabId }: Type.RemoveTabRequest): Promise<void> => {
   try {
     await chrome.tabs.remove(tabId);
   } catch (error) {
