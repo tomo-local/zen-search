@@ -13,17 +13,17 @@ export default function useResults(query: string, type: ResultType) {
   const { suggestions, loading: suggestionLoading } = useQuerySuggestions(
     query,
     type,
-    init
+    init,
   );
   const { histories, loading: historyLoading } = useQueryHistories(
     query,
     type,
-    init
+    init,
   );
   const { bookmarks, loading: bookmarkLoading } = useQueryBookmarks(
     query,
     type,
-    init
+    init,
   );
 
   const { result: calculationResult } = useActionCalculation(query);
