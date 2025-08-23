@@ -1,7 +1,8 @@
 import { queryBookmarks } from "@/function/chrome/bookmark";
-import { queryHistory } from "@/function/chrome/history";
 import { openContent } from "@/function/chrome/open";
+import { historyService } from "@/services/history/service";
 import { tabService } from "@/services/tab/service";
+
 import {
   ActionType,
   type CreateMessage,
@@ -71,7 +72,7 @@ export function routeMessage(
     }
     case QUERY_HISTORY: {
       const { query } = message as QueryMessage;
-      queryHistory({ query }).then((history) => {
+      historyService.search({ query }).then((history) => {
         sendResponse(QUERY_HISTORY, history, response);
       });
       return true;
