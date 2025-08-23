@@ -3,9 +3,13 @@ import CalculationItem from "@/components/widgets/common/ResultLine/parts/Calcul
 import HistoryItem from "@/components/widgets/common/ResultLine/parts/HistoryItem";
 import SuggestionItem from "@/components/widgets/common/ResultLine/parts/SuggestionItem";
 import TabItem from "@/components/widgets/common/ResultLine/parts/TabItem";
+import type { Bookmark } from "@/services/bookmark/types";
+import type { History } from "@/services/history/types";
+import type { Suggestion } from "@/services/suggestion/types";
+import type { Tab } from "@/services/tab/types";
+
 import { ActionType, type Calculation } from "@/types/action";
-import type { Bookmark, History, Tab } from "@/types/chrome";
-import type { Suggestion } from "@/types/google";
+
 import { type Result, ResultType } from "@/types/result";
 
 type LineProps = {
