@@ -17,10 +17,13 @@ Here's an overview of the project's structure:
 src/
   assets/         # Global CSS and assets like images
   components/     # Reusable UI components
-  entrypoints/    # Main entry points (e.g., popup, background)
-  hooks/          # Custom React hooks
+  context/        # React context providers (e.g., ThemeProvider)
+  entrypoints/    # Main entry points (popup, background, content)
+  hooks/          # Custom React hooks for state management and actions
+  public/         # Static assets (icons, images)
+  services/       # Business logic and API services
   types/          # TypeScript type definitions
-  utils/          # Utility functions
+  utils/          # Utility functions and helpers
 ```
 
 ## Installation

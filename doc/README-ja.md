@@ -18,10 +18,13 @@ Zen Searchは、ブラウザでの検索体験をシンプルかつ効率的に�
 src/
   assets/         # グローバルCSSや画像などのアセット
   components/     # 再利用可能なUIコンポーネント
-  entrypoints/    # 各エントリーポイント (例: popup, background)
-  hooks/          # Reactカスタムフック
+  context/        # Reactコンテキストプロバイダー (例: ThemeProvider)
+  entrypoints/    # 各エントリーポイント (popup, background, content)
+  hooks/          # 状態管理とアクション用のReactカスタムフック
+  public/         # 静的アセット (アイコン、画像)
+  services/       # ビジネスロジックとAPIサービス
   types/          # TypeScriptの型定義
-  utils/          # ユーティリティ関数
+  utils/          # ユーティリティ関数とヘルパー
 ```
 
 ## インストール方法
