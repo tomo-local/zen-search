@@ -1,6 +1,9 @@
 import { useEffect, useReducer } from "react";
-import { getTheme, setTheme } from "@/function/chrome/storage";
-import type { ThemeValue } from "@/types/storage";
+import {
+  isWindowDarkMode,
+  storageService,
+  type ThemeValue,
+} from "@/services/storage";
 
 export interface ThemeState {
   theme: ThemeValue;
@@ -16,22 +19,17 @@ export const initialState: ThemeState = {
   isDarkMode: false,
 };
 
-const getWindowTheme = () => {
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  return mediaQuery.matches;
-};
-
 function themeReducer(state: ThemeState, action: Action): ThemeState {
   switch (action.type) {
     case "SET_THEME": {
       const theme = action.payload;
 
-      setTheme(theme);
+      storageService.setTheme({ theme });
 
       return {
         ...state,
         theme: theme,
-        isDarkMode: theme === "system" ? getWindowTheme() : theme === "dark",
+        isDarkMode: theme === "system" ? isWindowDarkMode() : theme === "dark",
       };
     }
     case "NEXT_THEME": {
@@ -40,13 +38,13 @@ function themeReducer(state: ThemeState, action: Action): ThemeState {
 
       const nextTheme = themeMap[nextIndex];
 
-      setTheme(nextTheme);
+      storageService.setTheme({ theme: nextTheme });
 
       return {
         ...state,
         theme: themeMap[nextIndex],
         isDarkMode:
-          nextTheme === "system" ? getWindowTheme() : nextTheme === "dark",
+          nextTheme === "system" ? isWindowDarkMode() : nextTheme === "dark",
       };
     }
     default:
@@ -62,7 +60,7 @@ export default function useTheme() {
 
   useEffect(() => {
     const fetchTheme = async () => {
-      const theme = await getTheme();
+      const theme = await storageService.getTheme();
       dispatch({ type: "SET_THEME", payload: theme });
     };
     fetchTheme();
