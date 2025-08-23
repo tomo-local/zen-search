@@ -1,29 +1,44 @@
-import { useEffect, useState } from "react";
-import type { Tab } from "@/types/chrome";
-import { MessageType, ResultType } from "@/types/result";
+import { useCallback, useEffect, useState } from "react";
+import { runtimeService } from "@/services/runtime/service";
+import type { Tab } from "@/services/tab/types";
+import { ResultType } from "@/types/result";
 
 export default function useQueryTabs(query: string, type: ResultType) {
   const [loading, setLoading] = useState(false);
   const [filteredTabs, setFilteredTabs] = useState<Tab[]>([]);
+
+  const queryTabs = useCallback(async (searchQuery: string) => {
+    if (!searchQuery.trim()) {
+      setFilteredTabs([]);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const result = await runtimeService.queryTabs({
+        query: searchQuery,
+      });
+      setFilteredTabs(result);
+    } catch (err) {
+      console.error("Failed to query tabs:", err);
+      setFilteredTabs([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (type !== ResultType.Tab && type !== ResultType.All) {
       setFilteredTabs([]);
       return;
     }
-
-    setLoading(true);
-    chrome.runtime.sendMessage(
-      { type: MessageType.QUERY_TAB, query },
-      (response) => {
-        setFilteredTabs(response.result);
-        setLoading(false);
-      },
-    );
-  }, [query, type]);
+    queryTabs(query);
+  }, [query, type, queryTabs]);
 
   return {
     tabs: filteredTabs,
     loading,
+    refetch: () => queryTabs(query), // 手動で再取得する関数
   };
 }
