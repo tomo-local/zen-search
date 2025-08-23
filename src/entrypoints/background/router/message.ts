@@ -50,20 +50,23 @@ export function routeMessage(
     }
     case CREATE_TAB: {
       const { url } = message as CreateMessage;
-      tabService.create({ url });
-      sendResponse(CREATE_TAB, true, response);
+      tabService.create({ url }).then(() => {
+        sendResponse(CREATE_TAB, true, response);
+      });
       return true;
     }
     case UPDATE_TAB: {
       const { tabId, windowId } = message as UpdateMessage;
-      tabService.update({ tabId, windowId });
-      sendResponse(UPDATE_TAB, true, response);
+      tabService.update({ tabId, windowId }).then(() => {
+        sendResponse(UPDATE_TAB, true, response);
+      });
       return true;
     }
     case REMOVE_TAB: {
       const { tabId } = message as RemoveMessage;
-      tabService.remove({ tabId });
-      sendResponse(REMOVE_TAB, true, response);
+      tabService.remove({ tabId }).then(() => {
+        sendResponse(REMOVE_TAB, true, response);
+      });
       return true;
     }
     case QUERY_HISTORY: {
