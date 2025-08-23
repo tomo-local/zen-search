@@ -1,15 +1,22 @@
-import { openContent } from "@/function/chrome/open";
-import { bookmarkService } from "@/services/bookmark";
-import { get30DaysAgo, getNow, historyService } from "@/services/history";
-import { tabService } from "@/services/tab/service";
-
 import {
-  ActionType,
-  type CreateMessage,
-  type QueryMessage,
-  type RemoveMessage,
-  type UpdateMessage,
-} from "@/types/chrome";
+  bookmarkService,
+  type QueryBookmarksRequest,
+} from "@/services/bookmark";
+import { contentService } from "@/services/content";
+import {
+  get30DaysAgo,
+  getNow,
+  historyService,
+  type SearchHistoryRequest,
+} from "@/services/history";
+import {
+  type CreateTabRequest,
+  type QueryTabsRequest,
+  type RemoveTabRequest,
+  tabService,
+  type UpdateTabRequest,
+} from "@/services/tab";
+
 import { MessageType } from "@/types/result";
 
 const {
@@ -31,48 +38,57 @@ function sendResponse(
   response({ type, result });
 }
 
+type Message =
+  | { type: "OPEN_POPUP" }
+  | { type: "CLOSE_POPUP" }
+  | QueryTabsRequest
+  | CreateTabRequest
+  | UpdateTabRequest
+  | RemoveTabRequest
+  | SearchHistoryRequest
+  | QueryBookmarksRequest;
+
 export function routeMessage(
-  message: { type: string },
+  message: { type: MessageType } & Message,
   _sender: chrome.runtime.MessageSender,
   response: (res?: object) => void,
 ): boolean {
   switch (message.type) {
     case OPEN_POPUP:
     case CLOSE_POPUP:
-      openContent(ActionType.tabs);
+      contentService.openTabs(contentService.open());
       return true;
 
     case QUERY_TAB: {
-      const { query, count } = message as QueryMessage;
-      tabService.query({ query, option: { count } }).then((tabs) => {
+      const { query, option } = message as QueryTabsRequest;
+      tabService.query({ query, option }).then((tabs) => {
         sendResponse(QUERY_TAB, tabs, response);
       });
       return true;
     }
     case CREATE_TAB: {
-      const { url } = message as CreateMessage;
+      const { url } = message as CreateTabRequest;
       tabService.create({ url }).then(() => {
         sendResponse(CREATE_TAB, true, response);
       });
       return true;
     }
     case UPDATE_TAB: {
-      const { tabId, windowId } = message as UpdateMessage;
+      const { tabId, windowId } = message as UpdateTabRequest;
       tabService.update({ tabId, windowId }).then(() => {
         sendResponse(UPDATE_TAB, true, response);
       });
       return true;
     }
     case REMOVE_TAB: {
-      const { tabId } = message as RemoveMessage;
+      const { tabId } = message as RemoveTabRequest;
       tabService.remove({ tabId }).then(() => {
         sendResponse(REMOVE_TAB, true, response);
       });
       return true;
     }
     case QUERY_HISTORY: {
-      const { query } = message as QueryMessage;
-
+      const { query } = message as SearchHistoryRequest;
       const end = getNow();
       const start = get30DaysAgo(end);
 
@@ -84,7 +100,7 @@ export function routeMessage(
       return true;
     }
     case QUERY_BOOKMARK: {
-      const { query } = message as QueryMessage;
+      const { query } = message as QueryBookmarksRequest;
       bookmarkService.query({ query }).then((bookmarks) => {
         sendResponse(QUERY_BOOKMARK, bookmarks, response);
       });

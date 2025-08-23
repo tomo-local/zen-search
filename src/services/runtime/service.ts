@@ -2,6 +2,7 @@ import type {
   Bookmark,
   QueryBookmarksRequest,
 } from "@/services/bookmark/types";
+import { contentService } from "@/services/content";
 import type { History, SearchHistoryRequest } from "@/services/history/types";
 import type {
   CreateTabRequest,
@@ -21,6 +22,8 @@ export interface RuntimeService {
   removeTab: (request: RemoveTabRequest) => Promise<void>;
   searchHistory: (request: SearchHistoryRequest) => Promise<History[]>;
   searchBookmarks: (request: QueryBookmarksRequest) => Promise<Bookmark[]>;
+  openContent: () => Promise<void>;
+  closeContent: () => Promise<void>;
 }
 
 // サービス実装
@@ -156,6 +159,28 @@ const searchBookmarks = async ({
   }
 };
 
+const openContent = async (): Promise<void> => {
+  try {
+    await chrome.runtime.sendMessage({ type: MessageType.OPEN_POPUP });
+  } catch (error) {
+    console.error(`Failed to open Content:`, error);
+    // WARN: 処理が失敗した場合はPopup のサービスを表示する
+    // Contentが表示できない場合はにPopupを表示する
+    contentService.open();
+  }
+};
+
+const closeContent = async (): Promise<void> => {
+  try {
+    await chrome.runtime.sendMessage({ type: MessageType.CLOSE_POPUP });
+  } catch (error) {
+    console.error(`Failed to close Content:`, error);
+    // WARN: 処理が失敗した場合は Popup のサービスを表示する
+    // Contentが表示できない場合はにPopupを表示する
+    contentService.close();
+  }
+};
+
 export const createRuntimeService = (): RuntimeService => ({
   queryTabs,
   createTab,
@@ -163,6 +188,8 @@ export const createRuntimeService = (): RuntimeService => ({
   removeTab,
   searchHistory,
   searchBookmarks,
+  openContent,
+  closeContent,
 });
 
 export const runtimeService = createRuntimeService();
