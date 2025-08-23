@@ -26,27 +26,6 @@ const actionPopupContent = async () => {
   await chrome.action.openPopup();
 };
 
-const actionQuery = async (
-  query: string,
-  option: chrome.tabs.QueryInfo,
-): Promise<chrome.tabs.Tab[]> => {
-  const response = await chrome.tabs.query(option);
-
-  if (!query) {
-    return response;
-  }
-
-  return response.filter((tab) => {
-    const title = tab.title || "";
-    const url = tab.url ? new URL(tab.url).hostname : "";
-
-    const isTitleMatch = title.toLowerCase().includes(query.toLowerCase());
-    const isUrlMatch = url.toLowerCase().includes(query.toLowerCase());
-
-    return isTitleMatch || isUrlMatch;
-  }) as chrome.tabs.Tab[];
-};
-
 const actionBookmarkQuery = async (
   query: string,
 ): Promise<chrome.bookmarks.BookmarkTreeNode[]> => {
@@ -67,7 +46,6 @@ export {
   actionRuntimeContent,
   actionTabsContent,
   actionPopupContent,
-  actionQuery,
   actionBookmarkQuery,
   actionRecentBookmarks,
 };

@@ -3,9 +3,8 @@
  * 責任: タブの検索、作成、更新、削除を担当
  */
 
-import { actionQuery } from "@/utils/chrome";
 import { convertTabToResult } from "./converter";
-import { limitResults, sortByLastAccessed } from "./helper";
+import { limitResults, queryFiltered, sortByLastAccessed } from "./helper";
 import type * as Type from "./types";
 
 // 型定義
@@ -22,11 +21,11 @@ const queryTabs = async ({
   option,
 }: Type.QueryRequest): Promise<Type.Tab[]> => {
   try {
-    const response = await actionQuery(query, {
+    const response = await chrome.tabs.query({
       currentWindow: option?.currentWindow,
     });
 
-    const tabs = response
+    const tabs = queryFiltered(response, query)
       .map((tab) => convertTabToResult(tab, option?.currentWindow ?? false))
       .sort(sortByLastAccessed);
 
