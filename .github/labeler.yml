@@ -1,0 +1,18 @@
+doc:
+  - "docs/**"
+popup:
+  - "src/entrypoints/popup/**"
+content:
+  - "src/entrypoints/content/**"
+components:
+  - "src/components/**"
+  - "src/context/**"
+backend:
+  - "src/functions/**"
+  - "src/entrypoints/background/**"
+hooks:
+  - "src/hooks/**"
+utilities:
+  - "src/utils/**"
+ci:
+  - ".github/workflows/**"
