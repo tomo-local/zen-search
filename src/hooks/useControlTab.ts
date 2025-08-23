@@ -1,18 +1,10 @@
 import { useCallback } from "react";
-import type {
-  CreateMessage,
-  RemoveMessage,
-  UpdateMessage,
-} from "@/types/chrome";
-import { MessageType } from "@/types/result";
-
-const { CREATE_TAB, UPDATE_TAB, REMOVE_TAB } = MessageType;
+import { runtimeService } from "@/services/runtime";
 
 export default function useTabControl() {
   const createTab = useCallback(async (url: string) => {
     try {
-      const message: Omit<CreateMessage, "type"> = { url };
-      await chrome.runtime.sendMessage({ type: CREATE_TAB, ...message });
+      await runtimeService.createTab({ url });
     } catch (error) {
       console.error("Failed to create tab:", error);
     }
@@ -20,8 +12,7 @@ export default function useTabControl() {
 
   const updateTab = useCallback(async (tabId: number, windowId?: number) => {
     try {
-      const message: Omit<UpdateMessage, "type"> = { tabId, windowId };
-      await chrome.runtime.sendMessage({ type: UPDATE_TAB, ...message });
+      await runtimeService.updateTab({ tabId, windowId });
     } catch (error) {
       console.error("Failed to update tab:", error);
     }
@@ -29,8 +20,7 @@ export default function useTabControl() {
 
   const removeTab = useCallback(async (tabId: number) => {
     try {
-      const message: Omit<RemoveMessage, "type"> = { tabId };
-      await chrome.runtime.sendMessage({ type: REMOVE_TAB, ...message });
+      await runtimeService.removeTab({ tabId });
     } catch (error) {
       console.error("Failed to remove tab:", error);
     }
