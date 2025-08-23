@@ -1,14 +1,14 @@
-import { openContent } from "@/function/chrome/open";
 import { bookmarkService } from "@/services/bookmark";
+import { contentService } from "@/services/content";
 import { get30DaysAgo, getNow, historyService } from "@/services/history";
+import { runtimeService } from "@/services/runtime";
 import { tabService } from "@/services/tab/service";
 
-import {
-  ActionType,
-  type CreateMessage,
-  type QueryMessage,
-  type RemoveMessage,
-  type UpdateMessage,
+import type {
+  CreateMessage,
+  QueryMessage,
+  RemoveMessage,
+  UpdateMessage,
 } from "@/types/chrome";
 import { MessageType } from "@/types/result";
 
@@ -26,7 +26,7 @@ const {
 function sendResponse(
   type: string,
   result: unknown,
-  response: (res: object) => void,
+  response: (res: object) => void
 ) {
   response({ type, result });
 }
@@ -34,12 +34,12 @@ function sendResponse(
 export function routeMessage(
   message: { type: string },
   _sender: chrome.runtime.MessageSender,
-  response: (res?: object) => void,
+  response: (res?: object) => void
 ): boolean {
   switch (message.type) {
     case OPEN_POPUP:
     case CLOSE_POPUP:
-      openContent(ActionType.tabs);
+      contentService.openTabs(contentService.open());
       return true;
 
     case QUERY_TAB: {

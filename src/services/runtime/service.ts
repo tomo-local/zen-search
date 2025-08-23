@@ -2,6 +2,7 @@ import type {
   Bookmark,
   QueryBookmarksRequest,
 } from "@/services/bookmark/types";
+import { contentService } from "@/services/content";
 import type { History, SearchHistoryRequest } from "@/services/history/types";
 import type {
   CreateTabRequest,
@@ -21,6 +22,8 @@ export interface RuntimeService {
   removeTab: (request: RemoveTabRequest) => Promise<void>;
   searchHistory: (request: SearchHistoryRequest) => Promise<History[]>;
   searchBookmarks: (request: QueryBookmarksRequest) => Promise<Bookmark[]>;
+  openContent: () => Promise<void>;
+  closeContent: () => Promise<void>;
 }
 
 // サービス実装
@@ -44,7 +47,7 @@ const queryTabs = async ({
     console.error("Failed to query tabs via runtime:", error);
     throw new RuntimeServiceError(
       "タブの検索に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
+      error instanceof Error ? error : new Error(String(error))
     );
   }
 };
@@ -63,7 +66,7 @@ const createTab = async ({ url }: CreateTabRequest): Promise<void> => {
     console.error("Failed to create tab via runtime:", error);
     throw new RuntimeServiceError(
       "タブの作成に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
+      error instanceof Error ? error : new Error(String(error))
     );
   }
 };
@@ -86,7 +89,7 @@ const updateTab = async ({
     console.error("Failed to update tab via runtime:", error);
     throw new RuntimeServiceError(
       "タブの更新に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
+      error instanceof Error ? error : new Error(String(error))
     );
   }
 };
@@ -105,7 +108,7 @@ const removeTab = async ({ tabId }: RemoveTabRequest): Promise<void> => {
     console.error("Failed to remove tab via runtime:", error);
     throw new RuntimeServiceError(
       "タブの削除に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
+      error instanceof Error ? error : new Error(String(error))
     );
   }
 };
@@ -128,7 +131,7 @@ const searchHistory = async ({
     console.error("Failed to search history via runtime:", error);
     throw new RuntimeServiceError(
       "履歴の検索に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
+      error instanceof Error ? error : new Error(String(error))
     );
   }
 };
@@ -151,8 +154,30 @@ const searchBookmarks = async ({
     console.error("Failed to search bookmarks via runtime:", error);
     throw new RuntimeServiceError(
       "ブックマークの検索に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
+      error instanceof Error ? error : new Error(String(error))
     );
+  }
+};
+
+const openContent = async (): Promise<void> => {
+  try {
+    await chrome.runtime.sendMessage({ type: MessageType.OPEN_POPUP });
+  } catch (error) {
+    console.error(`Failed to open Content:`, error);
+    // WARN: 処理が失敗した場合はPopup のサービスを表示する
+    // Contentが表示できない場合はにPopupを表示する
+    contentService.open();
+  }
+};
+
+const closeContent = async (): Promise<void> => {
+  try {
+    await chrome.runtime.sendMessage({ type: MessageType.CLOSE_POPUP });
+  } catch (error) {
+    console.error(`Failed to close Content:`, error);
+    // WARN: 処理が失敗した場合は Popup のサービスを表示する
+    // Contentが表示できない場合はにPopupを表示する
+    contentService.close();
   }
 };
 
@@ -163,6 +188,8 @@ export const createRuntimeService = (): RuntimeService => ({
   removeTab,
   searchHistory,
   searchBookmarks,
+  openContent,
+  closeContent,
 });
 
 export const runtimeService = createRuntimeService();

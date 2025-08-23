@@ -16,12 +16,11 @@ import {
   ModalContainer,
   ModalOverlay,
 } from "@/components/widgets/content/Modal";
-import { closeContent } from "@/function/chrome/open";
 import useQueryControl from "@/hooks/query/useQueryControl";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
 import useEnterKeyControl from "@/hooks/useEnterKeyControl";
 import useQueryResult from "@/hooks/useResults";
-import { ActionType } from "@/types/chrome";
+import { contentService } from "@/services/content";
 import { ResultType } from "@/types/result";
 
 export default function App() {
@@ -34,7 +33,7 @@ export default function App() {
     useArrowKeyControl(result);
   const { onAction } = useEnterKeyControl();
 
-  const handleClose = () => closeContent(ActionType.runtime);
+  const handleClose = () => contentService.open();
 
   const handleEnterKey = (e: React.KeyboardEvent) => {
     if (isComposing) {
