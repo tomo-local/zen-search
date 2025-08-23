@@ -1,6 +1,6 @@
-import { MessageType } from "@/types/result";
-import { ActionType } from "@/types/chrome";
 import { openContent } from "@/function/chrome/open";
+import { ActionType } from "@/types/chrome";
+import { MessageType } from "@/types/result";
 
 export const routeCommand = (command: string, _tab: chrome.tabs.Tab) => {
   switch (command) {

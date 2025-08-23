@@ -1,4 +1,4 @@
-import { ResultType, MessageType } from "@/types/result";
+import type { MessageType, ResultType } from "@/types/result";
 
 export enum ActionType {
   runtime = "runtime",

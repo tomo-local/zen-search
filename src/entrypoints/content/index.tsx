@@ -1,6 +1,6 @@
 import ReactDOM from "react-dom/client";
-import App from "./App";
 import { MessageType } from "@/types/result";
+import App from "./App";
 
 const matches = ["<all_urls>"];
 

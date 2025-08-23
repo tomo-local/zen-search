@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { isCalculation, calculate } from "@/utils/calculation";
-import { ActionType, Action } from "@/types/action";
+import { type Action, ActionType } from "@/types/action";
+import { calculate, isCalculation } from "@/utils/calculation";
 
 export const useActionCalculation = (query: string) => {
   const [result, setResult] = useState<Action | null>(null);

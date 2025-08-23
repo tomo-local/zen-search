@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { Bookmark } from "@/types/chrome";
-import { ResultType, MessageType } from "@/types/result";
+import { useEffect, useState } from "react";
+import type { Bookmark } from "@/types/chrome";
+import { MessageType, ResultType } from "@/types/result";
 
 export default function useQueryBookmarks(
   query: string,
   type: ResultType,
-  init: boolean = false
+  init: boolean = false,
 ) {
   const [loading, setLoading] = useState(false);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
@@ -31,7 +31,7 @@ export default function useQueryBookmarks(
       (response) => {
         setBookmarks(response.result);
         setLoading(false);
-      }
+      },
     );
   }, [query]);
 

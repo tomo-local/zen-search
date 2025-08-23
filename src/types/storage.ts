@@ -10,4 +10,3 @@ export interface SyncStorage {
   [SyncStorageKey.Theme]: ThemeValue;
   [SyncStorageKey.Language]: LanguageValue;
 }
-

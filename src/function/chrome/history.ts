@@ -1,4 +1,4 @@
-import { History, QueryHistoryMessage } from "@/types/chrome";
+import type { History, QueryHistoryMessage } from "@/types/chrome";
 import { ResultType } from "@/types/result";
 
 import { calcMatchRateResult } from "@/utils/match";

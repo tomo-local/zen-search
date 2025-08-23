@@ -1,4 +1,4 @@
-import { Suggestion, SuggestionOptions } from "@/types/google";
+import type { Suggestion, SuggestionOptions } from "@/types/google";
 import { ResultType } from "@/types/result";
 
 import { calcMatchRateResult } from "@/utils/match";
@@ -9,7 +9,7 @@ const search_url = "https://www.google.com/search";
 
 export const querySuggestions = async (
   query: string,
-  option?: SuggestionOptions
+  option?: SuggestionOptions,
 ) => {
   if (!query) return [];
 
@@ -39,7 +39,7 @@ export const querySuggestions = async (
 
 const createSuggestion = (
   query: string,
-  option?: { match: boolean }
+  option?: { match: boolean },
 ): Suggestion => ({
   id: createRandomId(),
   title: query,
@@ -50,7 +50,7 @@ const createSuggestion = (
     : calcMatchRateResult(
         query,
         query,
-        `${search_url}?q=${encodeURIComponent(query)}`
+        `${search_url}?q=${encodeURIComponent(query)}`,
       ),
 });
 

@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { History } from "@/types/chrome";
-import { ResultType, MessageType } from "@/types/result";
+import { useEffect, useState } from "react";
+import type { History } from "@/types/chrome";
+import { MessageType, ResultType } from "@/types/result";
 
 export default function useQueryHistories(
   query: string,
   type: ResultType,
-  init: boolean = false
+  init: boolean = false,
 ) {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<History[]>([]);
@@ -31,7 +31,7 @@ export default function useQueryHistories(
       (response) => {
         setHistory(response.result);
         setLoading(false);
-      }
+      },
     );
   }, [query]);
 

@@ -1,16 +1,15 @@
-import {
-  QueryMessage,
-  CreateMessage,
-  UpdateMessage,
-  RemoveMessage,
-  ActionType,
-} from "@/types/chrome";
-import { MessageType } from "@/types/result";
-
-import { queryTabs, updateTab, removeTab } from "@/function/chrome/tab";
 import { queryBookmarks } from "@/function/chrome/bookmark";
 import { queryHistory } from "@/function/chrome/history";
 import { openContent } from "@/function/chrome/open";
+import { queryTabs, removeTab, updateTab } from "@/function/chrome/tab";
+import {
+  ActionType,
+  type CreateMessage,
+  type QueryMessage,
+  type RemoveMessage,
+  type UpdateMessage,
+} from "@/types/chrome";
+import { MessageType } from "@/types/result";
 
 const {
   OPEN_POPUP,
@@ -23,11 +22,19 @@ const {
   QUERY_BOOKMARK,
 } = MessageType;
 
-function sendResponse(type: string, result: unknown, response: (res: any) => void) {
+function sendResponse(
+  type: string,
+  result: unknown,
+  response: (res: any) => void,
+) {
   response({ type, result });
 }
 
-export function routeMessage(message: any, sender: any, response: (res: any) => void): boolean {
+export function routeMessage(
+  message: any,
+  sender: any,
+  response: (res: any) => void,
+): boolean {
   switch (message.type) {
     case OPEN_POPUP:
     case CLOSE_POPUP:

@@ -1,9 +1,9 @@
+import ComputerDesktopIcon from "@heroicons/react/16/solid/ComputerDesktopIcon";
+import MoonIcon from "@heroicons/react/16/solid/MoonIcon";
+import SunIcon from "@heroicons/react/16/solid/SunIcon";
 import { useContext } from "react";
 import { ThemeContext } from "@/context/ThemeProvider";
-import { ThemeValue } from "@/types/storage";
-import SunIcon from "@heroicons/react/16/solid/SunIcon";
-import MoonIcon from "@heroicons/react/16/solid/MoonIcon";
-import ComputerDesktopIcon from "@heroicons/react/16/solid/ComputerDesktopIcon";
+import type { ThemeValue } from "@/types/storage";
 
 export type ThemeSelectorProps = {
   className?: string;

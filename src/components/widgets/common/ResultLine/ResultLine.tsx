@@ -1,13 +1,12 @@
-import TabItem from "@/components/widgets/common/ResultLine/parts/TabItem";
-import SuggestionItem from "@/components/widgets/common/ResultLine/parts/SuggestionItem";
-import HistoryItem from "@/components/widgets/common/ResultLine/parts/HistoryItem";
 import BookmarkItem from "@/components/widgets/common/ResultLine/parts/BookmarkItem";
 import CalculationItem from "@/components/widgets/common/ResultLine/parts/CalculationItem";
-
-import { Tab, History, Bookmark } from "@/types/chrome";
-import { Suggestion } from "@/types/google";
-import { ResultType, Result } from "@/types/result";
-import { ActionType, Calculation } from "@/types/action";
+import HistoryItem from "@/components/widgets/common/ResultLine/parts/HistoryItem";
+import SuggestionItem from "@/components/widgets/common/ResultLine/parts/SuggestionItem";
+import TabItem from "@/components/widgets/common/ResultLine/parts/TabItem";
+import { ActionType, type Calculation } from "@/types/action";
+import type { Bookmark, History, Tab } from "@/types/chrome";
+import type { Suggestion } from "@/types/google";
+import { type Result, ResultType } from "@/types/result";
 
 type LineProps = {
   key: React.Key;

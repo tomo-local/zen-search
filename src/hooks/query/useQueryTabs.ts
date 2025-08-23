@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
-import { Tab } from "@/types/chrome";
-import { ResultType, MessageType } from "@/types/result";
+import { useEffect, useState } from "react";
+import type { Tab } from "@/types/chrome";
+import { MessageType, ResultType } from "@/types/result";
 
 export default function useQueryTabs(query: string, type: ResultType) {
   const [loading, setLoading] = useState(false);
@@ -18,7 +18,7 @@ export default function useQueryTabs(query: string, type: ResultType) {
       (response) => {
         setFilteredTabs(response.result);
         setLoading(false);
-      }
+      },
     );
   }, [query]);
 

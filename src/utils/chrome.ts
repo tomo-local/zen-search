@@ -1,7 +1,7 @@
-import { MessageType } from "@/types/result";
+import type { MessageType } from "@/types/result";
 
 const actionRuntimeContent = (
-  message: MessageType.OPEN_POPUP | MessageType.CLOSE_POPUP
+  message: MessageType.OPEN_POPUP | MessageType.CLOSE_POPUP,
 ) =>
   chrome.runtime.sendMessage({ type: message }).catch((e) => {
     console.log(e);
@@ -9,9 +9,9 @@ const actionRuntimeContent = (
   });
 
 const actionTabsContent = async (
-  message: MessageType.OPEN_POPUP | MessageType.CLOSE_POPUP
+  message: MessageType.OPEN_POPUP | MessageType.CLOSE_POPUP,
 ) => {
-  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
     const tabId = tabs[0].id;
     if (tabId) {
       return chrome.tabs.sendMessage(tabId, { type: message }).catch((e) => {
@@ -28,7 +28,7 @@ const actionPopupContent = async () => {
 
 const actionQuery = async (
   query: string,
-  option: chrome.tabs.QueryInfo
+  option: chrome.tabs.QueryInfo,
 ): Promise<chrome.tabs.Tab[]> => {
   const response = await chrome.tabs.query(option);
 
@@ -48,7 +48,7 @@ const actionQuery = async (
 };
 
 const actionBookmarkQuery = async (
-  query: string
+  query: string,
 ): Promise<chrome.bookmarks.BookmarkTreeNode[]> => {
   const response = await chrome.bookmarks.search(query);
 
@@ -56,7 +56,7 @@ const actionBookmarkQuery = async (
 };
 
 const actionRecentBookmarks = async (
-  count: number
+  count: number,
 ): Promise<chrome.bookmarks.BookmarkTreeNode[]> => {
   const response = await chrome.bookmarks.getRecent(count);
 

@@ -1,24 +1,23 @@
 import "@/assets/global.css";
-import React, { useState } from "react";
 import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 import clsx from "clsx";
-
-import useQueryResult from "@/hooks/useResults";
+import type React from "react";
+import { useState } from "react";
+import Badge from "@/components/modules/icon/Badge";
+import SquareBadge from "@/components/modules/icon/SquareBadge";
+import Layout, {
+  commonClassName as layoutClassName,
+} from "@/components/widgets/common/Layout";
+import ResultFooter from "@/components/widgets/common/ResultFooter";
+import ResultLine from "@/components/widgets/common/ResultLine/ResultLine";
+import SearchInput, {
+  commonClassName as searchInputClassName,
+} from "@/components/widgets/common/SearchInput";
 import useQueryControl from "@/hooks/query/useQueryControl";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
 import useEnterKeyControl from "@/hooks/useEnterKeyControl";
 import usePopupShortcut from "@/hooks/usePopupShortcut";
-
-import Layout, {
-  commonClassName as layoutClassName,
-} from "@/components/widgets/common/Layout";
-import SearchInput, {
-  commonClassName as searchInputClassName,
-} from "@/components/widgets/common/SearchInput";
-import Badge from "@/components/modules/icon/Badge";
-import SquareBadge from "@/components/modules/icon/SquareBadge";
-import ResultFooter from "@/components/widgets/common/ResultFooter";
-import ResultLine from "@/components/widgets/common/ResultLine/ResultLine";
+import useQueryResult from "@/hooks/useResults";
 
 import { ResultType } from "@/types/result";
 
@@ -95,7 +94,7 @@ export default function App() {
           layoutClassName.border,
           layoutClassName.shadow,
           layoutClassName.p,
-          layoutClassName.space
+          layoutClassName.space,
         )}
       >
         <SearchInput
@@ -106,7 +105,7 @@ export default function App() {
               <MagnifyingGlassIcon
                 className={clsx(
                   searchInputClassName.icon.text,
-                  searchInputClassName.icon.size
+                  searchInputClassName.icon.size,
                 )}
               />
             ) : (

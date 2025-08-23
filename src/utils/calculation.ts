@@ -2,12 +2,12 @@ import { evaluate } from "mathjs";
 
 // 数値と計算符号の両方がある場合にtrueを返す
 export const isCalculation = (input: string): boolean => {
-  const regex = /[0-9]+(\s*[\+\-\*\/]\s*[0-9]+)+/;
+  const regex = /[0-9]+(\s*[+\-*/]\s*[0-9]+)+/;
   return regex.test(input);
 };
 
 export const calculate = (
-  input: string
+  input: string,
 ): {
   success: boolean;
   result: number;

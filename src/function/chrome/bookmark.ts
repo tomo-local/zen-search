@@ -1,6 +1,6 @@
-import { actionBookmarkQuery, actionRecentBookmarks } from "@/utils/chrome";
-import { Bookmark, QueryBookmarkMessage } from "@/types/chrome";
+import type { Bookmark, QueryBookmarkMessage } from "@/types/chrome";
 import { ResultType } from "@/types/result";
+import { actionBookmarkQuery, actionRecentBookmarks } from "@/utils/chrome";
 import { calcMatchRateResult } from "@/utils/match";
 
 const queryBookmarks = async ({
@@ -21,7 +21,7 @@ const queryBookmarks = async ({
           title: bookmark.title || "",
           url: bookmark.url || "",
           match: calcMatchRateResult(query, bookmark.title, bookmark.url),
-        } as Bookmark)
+        }) as Bookmark,
     );
 
   return count ? bookmarks.slice(0, count) : bookmarks;
