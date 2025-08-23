@@ -12,7 +12,7 @@ const SEARCH_URL = "https://www.google.com/search";
  */
 export function convertSuggestion(
   suggestion: string,
-  originalQuery: string
+  originalQuery: string,
 ): Suggestion {
   return {
     id: generateRandomId(),
