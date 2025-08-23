@@ -17,3 +17,4 @@ const SquareIcon: React.FC<SquareIconProps> = ({
 };
 
 export default SquareIcon;
+export type { SquareIconProps };

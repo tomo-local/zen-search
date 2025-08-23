@@ -1,4 +1,4 @@
-interface FooterProps {
+export interface FooterProps {
   className?: string;
   children?: React.ReactNode;
 }

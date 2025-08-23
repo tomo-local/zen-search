@@ -1,4 +1,4 @@
-type LinearProgressProps = {
+export type SpinnerProps = {
   active: boolean;
   size?: "xs" | "sm" | "md" | "lg" | "xl"; // プリセットサイズ
 };
@@ -11,7 +11,7 @@ const sizeMap = {
   xl: "w-16 h-16 border-6", // 60px
 };
 
-const LinearProgress: React.FC<LinearProgressProps> = ({
+const Spinner: React.FC<SpinnerProps> = ({
   active,
   size = "md",
 }) => {
@@ -30,4 +30,4 @@ const LinearProgress: React.FC<LinearProgressProps> = ({
   );
 };
 
-export default LinearProgress;
+export default Spinner;
