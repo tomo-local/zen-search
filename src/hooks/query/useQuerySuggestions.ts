@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { ResultType, MessageType } from "@/types/result";
+import { ResultType } from "@/types/result";
 import { SuggestionService, Suggestion } from "@/services/suggestion";
 
 const suggestionService = new SuggestionService();

@@ -14,10 +14,10 @@ export interface HistoryQueryRequest {
  * 履歴
  */
 export interface History {
+  type: ResultType.History;
   id: string;
   title: string;
   url: string;
-  match: number;
 }
 
 /**

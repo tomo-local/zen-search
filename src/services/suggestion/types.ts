@@ -5,9 +5,8 @@ export interface SuggestionOptions {
 }
 
 export interface Suggestion {
-  id: number;
+  id: string;
   type: ResultType.Google;
   title: string;
   url: string;
-  match: number;
 }

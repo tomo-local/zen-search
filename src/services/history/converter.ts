@@ -1,6 +1,5 @@
 import { ResultType } from "@/types/result";
-import { calcMatchRateResult } from "@/utils/match";
-import * as Type from "./history.types";
+import * as Type from "./types";
 
 /**
  * ランダムIDを生成する（UUIDを使用）
@@ -21,7 +20,7 @@ export const convertToHistories = (
       id: createRandomId(),
       title: chromeHistory.title || "",
       url: chromeHistory.url || "",
-      match: calcMatchRateResult(query, chromeHistory.title, chromeHistory.url),
+      type: ResultType.History,
     };
 
     return history;

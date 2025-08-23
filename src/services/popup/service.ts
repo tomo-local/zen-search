@@ -1,6 +1,6 @@
 import { BaseService } from '@/services/base';
-import { ActionType } from '@/types/chrome';
 import { MessageType } from '@/types/result';
+import { ActionType } from './types';
 
 /**
  * ポップアップ関連の操作を担当するサービス

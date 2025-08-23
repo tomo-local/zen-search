@@ -1,8 +1,8 @@
 import { BaseService } from "@/services/base";
 import { MessageType } from "@/types/result";
-import * as Type from "./history.types";
+import * as Type from "./types";
 import { convertToHistories } from "./converter";
-import { normalizeHistoryQueryParams, filterValidHistoryItems } from "./history.utils";
+import { normalizeHistoryQueryParams, filterValidHistoryItems } from "./utils";
 
 /**
  * 履歴関連の操作を担当するサービス

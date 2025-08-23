@@ -1,5 +1,10 @@
 import { MessageType } from "@/types/result";
-import { ActionType } from "@/types/chrome";
+
+export enum ActionType {
+  runtime = "runtime",
+  tabs = "tabs",
+  popup = "popup",
+}
 
 /**
  * ポップアップ開くリクエスト

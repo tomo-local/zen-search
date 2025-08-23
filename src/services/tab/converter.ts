@@ -1,5 +1,4 @@
 import { ResultType } from "@/types/result";
-import { calcMatchRateResult } from "@/utils/match";
 import * as Type from "./types";
 
 /**
@@ -19,10 +18,8 @@ export const convertToTabs = (
       active: chromeTab.active || false,
       lastAccessed: chromeTab.lastAccessed || 0,
       windowId: chromeTab.windowId || 0,
-      currentWindow: false, // TODO: 現在のウィンドウかどうかの判定ロジックが必要な場合
-      match: query
-        ? calcMatchRateResult(query, chromeTab.title, chromeTab.url)
-        : 0,
+      // TODO: 現在のウィンドウかどうかの判定ロジックが必要な場合
+      currentWindow: false,
     };
 
     return tab;

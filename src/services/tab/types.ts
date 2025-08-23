@@ -30,7 +30,6 @@ export interface Tab {
   lastAccessed: number;
   windowId: number;
   currentWindow: boolean;
-  match: number;
 }
 
 /**

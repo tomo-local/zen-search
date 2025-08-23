@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Tab } from "@/types/chrome";
+import { Tab } from "@/services/tab";
 import { ResultType, MessageType } from "@/types/result";
 
 export default function useQueryTabs(query: string, type: ResultType) {

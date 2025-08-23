@@ -8,11 +8,10 @@ export const convertSuggestions = (suggestions: string[]): Suggestion[] => {
       type: ResultType.Google,
       title: suggestion,
       url: `https://www.google.com/search?q=${encodeURIComponent(suggestion)}`,
-      match: 100,
     };
   });
 };
 
 const randomId = () => {
-  return Math.floor(Math.random() * 1000000);
+  return crypto.randomUUID();
 };
