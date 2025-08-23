@@ -18,7 +18,7 @@ backend:
       - "src/functions/**"
       - "src/entrypoints/background/**"
 service:
-   - changed-files:
+  - changed-files:
     - any-glob-to-any-file:
       - "src/services/**"
 hooks:
