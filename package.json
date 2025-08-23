@@ -18,7 +18,8 @@
     "storybook:build": "storybook build",
     "format": "biome format --write .",
     "lint": "biome lint --write .",
-    "check": "biome check --write ."
+    "check": "biome check --write .",
+    "ci:check": "biome check"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",

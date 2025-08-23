@@ -5,7 +5,7 @@ import { calcMatchRateResult } from "@/utils/match";
 
 type InputQueryHistory = Omit<QueryHistoryMessage, "type">;
 
-const defaultEndTime = new Date().getTime();
+const defaultEndTime = Date.now();
 const defaultStartTime = defaultEndTime - 1000 * 60 * 60 * 24 * 30;
 
 const defaultCount = 20;

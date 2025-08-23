@@ -41,7 +41,7 @@ export default function useResults(query: string, type: ResultType) {
     ].sort((a, b) => b.match - a.match);
 
     return calculationResult ? [calculationResult, ...queryList] : queryList;
-  }, [tabs, suggestions, histories, bookmarks]);
+  }, [tabs, suggestions, histories, bookmarks, calculationResult]);
 
   return {
     result,

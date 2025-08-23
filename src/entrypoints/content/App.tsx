@@ -55,7 +55,7 @@ export default function App() {
   };
 
   const handleBackspaceKeyDown = (e: React.KeyboardEvent) => {
-    if (query || (type! == ResultType.All && query)) {
+    if (query || (type !== ResultType.All && query)) {
       return;
     }
     e.preventDefault();
@@ -128,7 +128,7 @@ export default function App() {
                 >
                   {result.map((item, index) => (
                     <ResultLine
-                      key={index}
+                      key={item.id}
                       onClick={() => {
                         handleClose();
                         onAction(item);
