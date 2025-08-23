@@ -14,8 +14,8 @@ import Layout, {
 import SearchInput, {
   commonClassName as searchInputClassName,
 } from "@/components/widgets/common/SearchInput";
-import Badge from "@/components/modules/icon/Badge";
-import SquareBadge from "@/components/modules/icon/SquareBadge";
+import Badge from "@/components/modules/Badge/Badge";
+import SquareBadge from "@/components/modules/SquareBadge/SquareBadge";
 import {
   ModalOverlay,
   ModalContainer,
