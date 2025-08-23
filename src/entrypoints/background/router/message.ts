@@ -1,5 +1,5 @@
-import { queryBookmarks } from "@/function/chrome/bookmark";
 import { openContent } from "@/function/chrome/open";
+import { bookmarkService } from "@/services/bookmark";
 import { get30DaysAgo, getNow, historyService } from "@/services/history";
 import { tabService } from "@/services/tab/service";
 
@@ -85,7 +85,7 @@ export function routeMessage(
     }
     case QUERY_BOOKMARK: {
       const { query } = message as QueryMessage;
-      queryBookmarks({ query }).then((bookmarks) => {
+      bookmarkService.query({ query }).then((bookmarks) => {
         sendResponse(QUERY_BOOKMARK, bookmarks, response);
       });
       return true;

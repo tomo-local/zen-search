@@ -1,6 +1,7 @@
-import { useEffect, useState } from "react";
-import type { Bookmark } from "@/types/chrome";
-import { MessageType, ResultType } from "@/types/result";
+import { useCallback, useEffect, useState } from "react";
+import type { Bookmark } from "@/services/bookmark/types";
+import { runtimeService } from "@/services/runtime/service";
+import { ResultType } from "@/types/result";
 
 export default function useQueryBookmarks(
   query: string,
@@ -9,6 +10,24 @@ export default function useQueryBookmarks(
 ) {
   const [loading, setLoading] = useState(false);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
+
+  const fetchBookmarks = useCallback(async (query: string) => {
+    if (!query.trim()) {
+      setBookmarks([]);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const response = await runtimeService.searchBookmarks({ query });
+      setBookmarks(response);
+    } catch (error) {
+      console.error("Failed to fetch bookmarks:", error);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (!init) {
@@ -25,15 +44,8 @@ export default function useQueryBookmarks(
       return;
     }
 
-    setLoading(true);
-    chrome.runtime.sendMessage(
-      { type: MessageType.QUERY_BOOKMARK, query },
-      (response) => {
-        setBookmarks(response.result);
-        setLoading(false);
-      },
-    );
-  }, [query, type, init]);
+    fetchBookmarks(query);
+  }, [query, type, init, fetchBookmarks]);
 
   return {
     bookmarks,
