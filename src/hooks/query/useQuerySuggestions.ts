@@ -18,10 +18,12 @@ export default function useQuerySuggestions(
 
     try {
       setLoading(true);
+      setError(null);
       const result = await suggestionService.query({ query });
       setSuggestions(result);
     } catch (error) {
       console.error("Error fetching suggestions:", error);
+      setError(error instanceof Error ? error : new Error(String(error)));
     }
 
     setLoading(false);
