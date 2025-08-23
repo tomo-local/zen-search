@@ -94,7 +94,7 @@ export default function App() {
           layoutClassName.border,
           layoutClassName.shadow,
           layoutClassName.p,
-          layoutClassName.space,
+          layoutClassName.space
         )}
       >
         <SearchInput
@@ -105,7 +105,7 @@ export default function App() {
               <MagnifyingGlassIcon
                 className={clsx(
                   searchInputClassName.icon.text,
-                  searchInputClassName.icon.size,
+                  searchInputClassName.icon.size
                 )}
               />
             ) : (
