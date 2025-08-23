@@ -8,10 +8,14 @@ import type { SyncStorage, SyncStorageKey, ThemeValue } from "./types";
  * Promise化されたchrome.storage.sync.get
  */
 export const chromeStorageGet = <K extends SyncStorageKey>(
-  key: K,
+  key: K
 ): Promise<SyncStorage[K] | undefined> => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     chrome.storage.sync.get(key, (result) => {
+      if (chrome.runtime.lastError) {
+        reject(chrome.runtime.lastError);
+        return;
+      }
       resolve(result[key]);
     });
   });
@@ -22,10 +26,13 @@ export const chromeStorageGet = <K extends SyncStorageKey>(
  */
 export const chromeStorageSet = <K extends SyncStorageKey>(
   key: K,
-  value: SyncStorage[K],
+  value: SyncStorage[K]
 ): Promise<boolean> => {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     chrome.storage.sync.set({ [key]: value }, () => {
+      if (chrome.runtime.lastError) {
+        return reject(chrome.runtime.lastError);
+      }
       resolve(true);
     });
   });
