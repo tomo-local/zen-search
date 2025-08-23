@@ -6,7 +6,7 @@ export interface SuggestionOptions {
 
 export interface Suggestion {
   id: number;
-  // type: ResultType.Google;
+  type: ResultType.Google;
   title: string;
   url: string;
   match: number;

@@ -1,4 +1,5 @@
 import { BaseService } from "@/services/base";
+import { ResultType } from "@/types/result";
 import { convertSuggestions } from "./converter";
 import { Suggestion, SuggestionOptions } from "./types";
 
