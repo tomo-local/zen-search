@@ -16,7 +16,7 @@ export interface TabData {
   currentWindow: boolean;
 }
 
-export interface QueryRequest {
+export interface QueryTabsRequest {
   query: string;
   option?: QueryOption;
 }
@@ -25,15 +25,15 @@ export type QueryOption = Pick<chrome.tabs.QueryInfo, "currentWindow"> & {
   count?: number;
 };
 
-export interface CreateRequest {
+export interface CreateTabRequest {
   url: string;
 }
 
-export interface UpdateRequest {
+export interface UpdateTabRequest {
   tabId: number;
   windowId?: number;
 }
 
-export interface RemoveRequest {
+export interface RemoveTabRequest {
   tabId: number;
 }
