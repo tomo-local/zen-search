@@ -1,18 +1,28 @@
 doc:
-  - "docs/**"
+  - changed-files:
+    - any-glob-to-any-file: "docs/**"
 popup:
-  - "src/entrypoints/popup/**"
+  - changed-files:
+    - any-glob-to-any-file: "src/entrypoints/popup/**"
 content:
-  - "src/entrypoints/content/**"
+  - changed-files:
+    - any-glob-to-any-file: "src/entrypoints/content/**"
 components:
-  - "src/components/**"
-  - "src/context/**"
+  - changed-files:
+    - any-glob-to-any-file:
+      - "src/components/**"
+      - "src/context/**"
 backend:
-  - "src/functions/**"
-  - "src/entrypoints/background/**"
+  - changed-files:
+    - any-glob-to-any-file:
+      - "src/functions/**"
+      - "src/entrypoints/background/**"
 hooks:
-  - "src/hooks/**"
+  - changed-files:
+    - any-glob-to-any-file: "src/hooks/**"
 utilities:
-  - "src/utils/**"
+  - changed-files:
+    - any-glob-to-any-file: "src/utils/**"
 ci:
-  - ".github/workflows/**"
+  - changed-files:
+    - any-glob-to-any-file: ".github/workflows/**"
