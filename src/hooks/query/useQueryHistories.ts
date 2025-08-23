@@ -51,6 +51,6 @@ export default function useQueryHistories(
   return {
     histories: history,
     loading,
-    refetch: () => fetchHistory(query)
+    refetch: () => fetchHistory(query),
   };
 }
