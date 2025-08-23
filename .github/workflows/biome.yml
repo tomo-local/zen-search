@@ -15,7 +15,7 @@ env:
 
 jobs:
   test:
-    name: 'Run Biome'
+    name: "Run Biome"
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source code
