@@ -21,10 +21,10 @@ const open = async (): Promise<void> => {
 };
 
 const openTabs = async (action: Promise<void>): Promise<void> => {
-  chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+  chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
     const tabId = tabs[0].id;
     if (tabId) {
-      action;
+      await action;
     }
   });
 };
