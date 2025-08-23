@@ -3,7 +3,7 @@
  * 責任: 履歴の検索
  */
 
-import { DEFAULT_COUNT, defaultEndTime, defaultStartTime } from "./constant";
+import { DEFAULT_COUNT } from "./constant";
 import { convertMultipleItemsToHistory } from "./converter";
 import type * as Type from "./types";
 
@@ -13,8 +13,8 @@ export interface HistoryService {
 
 const searchHistory = async ({
   query,
-  startTime = defaultStartTime,
-  endTime = defaultEndTime,
+  startTime,
+  endTime,
   count = DEFAULT_COUNT,
 }: Type.SearchHistoryRequest): Promise<Type.History[]> => {
   const response = await chrome.history.search({
