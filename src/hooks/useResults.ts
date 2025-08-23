@@ -33,9 +33,13 @@ export default function useResults(query: string, type: ResultType) {
   }, []);
 
   const result = useMemo<Result[]>(() => {
-    const queryList = [...tabs, ...suggestions, ...histories, ...bookmarks];
+    // Combine all results, including calculationResult if present
+    const combinedList = calculationResult
+      ? [calculationResult, ...tabs, ...suggestions, ...histories, ...bookmarks]
+      : [...tabs, ...suggestions, ...histories, ...bookmarks];
 
-    return calculationResult ? [calculationResult, ...queryList] : queryList;
+    // Sort by match in descending order
+    return combinedList.sort((a, b) => b.match - a.match);
   }, [tabs, suggestions, histories, bookmarks, calculationResult]);
 
   return {
