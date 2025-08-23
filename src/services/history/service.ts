@@ -17,14 +17,19 @@ const searchHistory = async ({
   endTime,
   count = DEFAULT_COUNT,
 }: Type.SearchHistoryRequest): Promise<Type.History[]> => {
-  const response = await chrome.history.search({
-    text: query,
-    startTime,
-    endTime,
-    maxResults: count,
-  });
+  try {
+    const response = await chrome.history.search({
+      text: query,
+      startTime,
+      endTime,
+      maxResults: count,
+    });
 
-  return convertMultipleItemsToHistory(response);
+    return convertMultipleItemsToHistory(response);
+  } catch (error) {
+    console.error("Failed to search history:", error);
+    throw new Error("履歴の検索に失敗しました");
+  }
 };
 
 export const createHistoryService = (): HistoryService => ({
