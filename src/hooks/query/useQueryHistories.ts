@@ -1,14 +1,34 @@
-import { useEffect, useState } from "react";
-import type { History } from "@/types/chrome";
-import { MessageType, ResultType } from "@/types/result";
+import { useCallback, useEffect, useState } from "react";
+import type { History } from "@/services/history/types";
+import { runtimeService } from "@/services/runtime/service";
+import { ResultType } from "@/types/result";
 
 export default function useQueryHistories(
   query: string,
   type: ResultType,
-  init: boolean = false,
+  init: boolean = false
 ) {
   const [loading, setLoading] = useState(false);
   const [history, setHistory] = useState<History[]>([]);
+
+  const fetchHistory = useCallback(async (query: string) => {
+    if (!query.trim()) {
+      setHistory([]);
+      setLoading(false);
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const result = await runtimeService.searchHistory({ query });
+      setHistory(result);
+    } catch (err) {
+      console.error("Failed to search history:", err);
+      setHistory([]);
+    } finally {
+      setLoading(false);
+    }
+  }, []);
 
   useEffect(() => {
     if (!init) {
@@ -25,18 +45,12 @@ export default function useQueryHistories(
       return;
     }
 
-    setLoading(true);
-    chrome.runtime.sendMessage(
-      { type: MessageType.QUERY_HISTORY, query },
-      (response) => {
-        setHistory(response.result);
-        setLoading(false);
-      },
-    );
-  }, [query, type, init]);
+    fetchHistory(query);
+  }, [query, type, init, fetchHistory]);
 
   return {
     histories: history,
     loading,
+    refetch: () => fetchHistory(query)
   };
 }
