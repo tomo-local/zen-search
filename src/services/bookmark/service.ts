@@ -24,7 +24,7 @@ const queryBookmarks = async ({
       : await actionRecentBookmarks(option?.count || 10);
 
     const bookmarks = filterValidBookmarks(response).map((bookmark) =>
-      convertBookmarkToResult(bookmark)
+      convertBookmarkToResult(bookmark),
     );
 
     return limitResults(option?.count)(bookmarks);

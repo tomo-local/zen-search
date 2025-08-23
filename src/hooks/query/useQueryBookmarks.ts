@@ -6,7 +6,7 @@ import { ResultType } from "@/types/result";
 export default function useQueryBookmarks(
   query: string,
   type: ResultType,
-  init: boolean = false
+  init: boolean = false,
 ) {
   const [loading, setLoading] = useState(false);
   const [bookmarks, setBookmarks] = useState<Bookmark[]>([]);
