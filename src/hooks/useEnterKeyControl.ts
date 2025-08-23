@@ -1,7 +1,6 @@
 import useControlTab from "@/hooks/useControlTab";
-
-import { Result, ResultType } from "@/types/result";
 import { ActionType } from "@/types/action";
+import { type Result, ResultType } from "@/types/result";
 
 export default function useEnterKeyControl() {
   const { updateTab, createTab } = useControlTab();

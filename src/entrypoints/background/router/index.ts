@@ -1,2 +1,2 @@
-export { routeMessage } from "./message";
 export { routeCommand } from "./command";
+export { routeMessage } from "./message";

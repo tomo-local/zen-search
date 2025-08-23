@@ -1,6 +1,6 @@
 import { useEffect, useReducer } from "react";
 import { getTheme, setTheme } from "@/function/chrome/storage";
-import { ThemeValue } from "@/types/storage";
+import type { ThemeValue } from "@/types/storage";
 
 export interface ThemeState {
   theme: ThemeValue;
@@ -23,7 +23,7 @@ const getWindowTheme = () => {
 
 function themeReducer(state: ThemeState, action: Action): ThemeState {
   switch (action.type) {
-    case "SET_THEME":
+    case "SET_THEME": {
       const theme = action.payload;
 
       setTheme(theme);
@@ -33,7 +33,8 @@ function themeReducer(state: ThemeState, action: Action): ThemeState {
         theme: theme,
         isDarkMode: theme === "system" ? getWindowTheme() : theme === "dark",
       };
-    case "NEXT_THEME":
+    }
+    case "NEXT_THEME": {
       const themeMap = ["light", "dark", "system"] as ThemeValue[];
       const nextIndex = (themeMap.indexOf(state.theme) + 1) % themeMap.length;
 
@@ -47,6 +48,7 @@ function themeReducer(state: ThemeState, action: Action): ThemeState {
         isDarkMode:
           nextTheme === "system" ? getWindowTheme() : nextTheme === "dark",
       };
+    }
     default:
       return state;
   }
@@ -55,7 +57,7 @@ function themeReducer(state: ThemeState, action: Action): ThemeState {
 export default function useTheme() {
   const [{ theme, isDarkMode }, dispatch] = useReducer(
     themeReducer,
-    initialState
+    initialState,
   );
 
   useEffect(() => {

@@ -2,7 +2,7 @@ function ngramSimilarity(
   str1: string,
   str2: string,
   n: number = 2,
-  threshold: number = 0.2
+  threshold: number = 0.2,
 ): boolean {
   const ngrams1 = getNgrams(str1, n);
   const ngrams2 = getNgrams(str2, n);

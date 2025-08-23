@@ -1,9 +1,9 @@
 import { createContext } from "react";
 import useTheme, {
-  type ThemeState,
   initialState,
+  type ThemeState,
 } from "@/hooks/storage/useTheme";
-import { ThemeValue } from "@/types/storage";
+import type { ThemeValue } from "@/types/storage";
 
 type Props = {
   children: React.ReactNode;

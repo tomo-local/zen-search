@@ -11,10 +11,7 @@ const sizeMap = {
   xl: "w-16 h-16 border-6", // 60px
 };
 
-const Spinner: React.FC<SpinnerProps> = ({
-  active,
-  size = "md",
-}) => {
+const Spinner: React.FC<SpinnerProps> = ({ active, size = "md" }) => {
   if (!active) {
     return null;
   }

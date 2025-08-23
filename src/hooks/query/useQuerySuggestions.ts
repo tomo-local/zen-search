@@ -1,12 +1,12 @@
-import { useState, useEffect } from "react";
-import { Suggestion } from "@/types/google";
-import { ResultType, MessageType } from "@/types/result";
+import { useEffect, useState } from "react";
 import { querySuggestions } from "@/function/google/query";
+import type { Suggestion } from "@/types/google";
+import { MessageType, ResultType } from "@/types/result";
 
 export default function useQuerySuggestions(
   query: string,
   type: ResultType,
-  init: boolean = false
+  init: boolean = false,
 ) {
   const [loading, setLoading] = useState(false);
   const [suggestions, setSuggestions] = useState<Suggestion[]>([]);

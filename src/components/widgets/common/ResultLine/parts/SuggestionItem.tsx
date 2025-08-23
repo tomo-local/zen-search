@@ -1,11 +1,11 @@
-import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
 import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
+import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
+import clsx from "clsx";
+import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import CommonItem, {
   commonClassName as common,
 } from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
-import { Suggestion } from "@/types/google";
-import clsx from "clsx";
+import type { Suggestion } from "@/types/google";
 
 type SuggestionItemProps = {
   key: React.Key;
@@ -30,7 +30,7 @@ export default function SuggestionItem({
         common.border,
         common.hover,
         isSelected && common.selected,
-        className
+        className,
       )}
       onClick={onClick}
       LeftContent={
@@ -38,7 +38,7 @@ export default function SuggestionItem({
           <MagnifyingGlassIcon
             className={clsx(
               isSelected ? common.icon.selected : common.icon.text,
-              common.icon.size
+              common.icon.size,
             )}
           />
         </SquareIcon>
@@ -50,7 +50,7 @@ export default function SuggestionItem({
             <PlusIcon
               className={clsx(
                 common.icon.size,
-                isSelected ? common.icon.selected : common.icon.text
+                isSelected ? common.icon.selected : common.icon.text,
               )}
             />
           </SquareIcon>

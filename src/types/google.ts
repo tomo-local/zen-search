@@ -1,4 +1,4 @@
-import { ResultType } from "@/types/result";
+import type { ResultType } from "@/types/result";
 
 export interface SuggestionOptions {
   count?: number;

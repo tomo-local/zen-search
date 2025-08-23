@@ -1,11 +1,10 @@
-import { useEffect, useState, useMemo } from "react";
-
-import useQueryTabs from "@/hooks/query/useQueryTabs";
-import useQuerySuggestions from "@/hooks/query/useQuerySuggestions";
-import useQueryHistories from "@/hooks/query/useQueryHistories";
+import { useEffect, useMemo, useState } from "react";
 import useQueryBookmarks from "@/hooks/query/useQueryBookmarks";
+import useQueryHistories from "@/hooks/query/useQueryHistories";
+import useQuerySuggestions from "@/hooks/query/useQuerySuggestions";
+import useQueryTabs from "@/hooks/query/useQueryTabs";
 
-import { ResultType, Result } from "@/types/result";
+import type { Result, ResultType } from "@/types/result";
 import { useActionCalculation } from "./action/useActionCalculation";
 
 export default function useResults(query: string, type: ResultType) {
@@ -14,17 +13,17 @@ export default function useResults(query: string, type: ResultType) {
   const { suggestions, loading: suggestionLoading } = useQuerySuggestions(
     query,
     type,
-    init
+    init,
   );
   const { histories, loading: historyLoading } = useQueryHistories(
     query,
     type,
-    init
+    init,
   );
   const { bookmarks, loading: bookmarkLoading } = useQueryBookmarks(
     query,
     type,
-    init
+    init,
   );
 
   const { result: calculationResult } = useActionCalculation(query);

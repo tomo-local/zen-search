@@ -1,5 +1,5 @@
-import { useState, useRef, useEffect, useCallback } from "react";
-import { Result } from "@/types/result";
+import { useCallback, useEffect, useRef, useState } from "react";
+import type { Result } from "@/types/result";
 
 export default function useArrowKeyControl(tabs: Result[]) {
   const [selectedIndex, setSelectedIndex] = useState(0);
@@ -23,7 +23,7 @@ export default function useArrowKeyControl(tabs: Result[]) {
         setSelectedIndex((prev) => (prev < tabs.length - 1 ? prev + 1 : 0));
       }
     },
-    [tabs.length]
+    [tabs.length],
   );
 
   return { selectedIndex, listRef, handleArrowUpDownKey };

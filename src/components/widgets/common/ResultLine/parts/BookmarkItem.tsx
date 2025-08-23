@@ -1,11 +1,11 @@
-import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
 import BookmarkIcon from "@heroicons/react/16/solid/BookmarkIcon";
+import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
+import clsx from "clsx";
+import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import CommonItem, {
   commonClassName as common,
 } from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
-import { Bookmark } from "@/types/chrome";
-import clsx from "clsx";
+import type { Bookmark } from "@/types/chrome";
 
 const getFavicon = (url: string) => {
   const urlObj = new URL(url);
@@ -32,7 +32,7 @@ export default function BookmarkItem({
         common.border,
         common.hover,
         isSelected && common.selected,
-        className
+        className,
       )}
       onClick={onClick}
       LeftContent={
@@ -52,7 +52,7 @@ export default function BookmarkItem({
             <PlusIcon
               className={clsx(
                 common.icon.size,
-                isSelected ? common.icon.selected : common.icon.text
+                isSelected ? common.icon.selected : common.icon.text,
               )}
             />
           </SquareIcon>

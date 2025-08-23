@@ -1,6 +1,6 @@
-import { Tab, History, Bookmark } from "@/types/chrome";
-import { Suggestion } from "@/types/google";
-import { Action } from "@/types/action";
+import type { Action } from "@/types/action";
+import type { Bookmark, History, Tab } from "@/types/chrome";
+import type { Suggestion } from "@/types/google";
 
 export enum ResultType {
   All = "All",

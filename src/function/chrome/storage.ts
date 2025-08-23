@@ -1,4 +1,8 @@
-import { SyncStorageKey, SyncStorage, ThemeValue } from "@/types/storage";
+import {
+  type SyncStorage,
+  SyncStorageKey,
+  type ThemeValue,
+} from "@/types/storage";
 
 export const getSync = async (key: SyncStorageKey) => {
   return new Promise((resolve) => {

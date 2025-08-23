@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from "@storybook/react";
 
-import SquareBadge, { SquareBadgeProps } from "./SquareBadge";
+import SquareBadge, { type SquareBadgeProps } from "./SquareBadge";
 
 const meta: Meta = {
   component: SquareBadge,

@@ -1,11 +1,11 @@
 import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
 import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
+import clsx from "clsx";
+import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import CommonItem, {
   commonClassName as common,
 } from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
-import { Tab } from "@/types/chrome";
-import clsx from "clsx";
+import type { Tab } from "@/types/chrome";
 
 type TabItemProps = {
   key: React.Key;
@@ -30,7 +30,7 @@ export default function TabItem({
         common.border,
         common.hover,
         isSelected && common.selected,
-        className
+        className,
       )}
       onClick={onClick}
       LeftContent={
@@ -41,7 +41,7 @@ export default function TabItem({
             <WindowIcon
               className={clsx(
                 isSelected ? common.icon.selected : common.icon.text,
-                common.icon.size
+                common.icon.size,
               )}
             />
           )}
@@ -54,7 +54,7 @@ export default function TabItem({
             <ArrowLongRightIcon
               className={clsx(
                 common.icon.size,
-                isSelected ? common.icon.selected : common.icon.text
+                isSelected ? common.icon.selected : common.icon.text,
               )}
             />
           </SquareIcon>

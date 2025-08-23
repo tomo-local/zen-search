@@ -1,8 +1,8 @@
-import Badge, { BadgeProps } from "./Badge/Badge";
-import Footer, { FooterProps } from "./Footer/Footer";
-import Spinner, { SpinnerProps } from "./Spinner/Spinner";
-import SquareBadge, { SquareBadgeProps } from "./SquareBadge/SquareBadge";
-import SquareIcon, { SquareIconProps } from "./SquareIcon/SquareIcon";
+import Badge, { type BadgeProps } from "./Badge/Badge";
+import Footer, { type FooterProps } from "./Footer/Footer";
+import Spinner, { type SpinnerProps } from "./Spinner/Spinner";
+import SquareBadge, { type SquareBadgeProps } from "./SquareBadge/SquareBadge";
+import SquareIcon, { type SquareIconProps } from "./SquareIcon/SquareIcon";
 
 export default { Badge, Footer, Spinner, SquareBadge, SquareIcon };
 

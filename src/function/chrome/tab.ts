@@ -1,12 +1,12 @@
-import { actionQuery } from "@/utils/chrome";
-import {
-  Tab,
-  QueryOption,
+import type {
   CreateMessage,
-  UpdateMessage,
+  QueryOption,
   RemoveMessage,
+  Tab,
+  UpdateMessage,
 } from "@/types/chrome";
 import { ResultType } from "@/types/result";
+import { actionQuery } from "@/utils/chrome";
 import { calcMatchRateResult } from "@/utils/match";
 
 const queryTabs = async (query: string, option: QueryOption) => {

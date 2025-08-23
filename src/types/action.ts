@@ -1,5 +1,5 @@
 export enum ActionType {
-  Calculation= "calculation",
+  Calculation = "calculation",
 }
 
 export type CommonAction = {
@@ -14,7 +14,7 @@ export type Calculation = CommonAction & {
   calculation: {
     expression: string;
     result: number;
-  }
-}
+  };
+};
 
 export type Action = Calculation;

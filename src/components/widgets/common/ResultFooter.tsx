@@ -1,7 +1,7 @@
-import ThemeSelectButton from "@/components/widgets/common/ThemeSelectButton";
+import Modules from "@/components/modules";
 import Footer from "@/components/modules/Footer/Footer";
-import  Modules from "@/components/modules";
-import { Result } from "@/types/result";
+import ThemeSelectButton from "@/components/widgets/common/ThemeSelectButton";
+import type { Result } from "@/types/result";
 
 interface ResultFooterProps {
   className?: string;

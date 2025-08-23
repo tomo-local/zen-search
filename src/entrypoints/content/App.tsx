@@ -1,29 +1,26 @@
 import "@/assets/global.css";
-import { useState } from "react";
-import clsx from "clsx";
 import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
-
-import useQueryResult from "@/hooks/useResults";
-import useQueryControl from "@/hooks/query/useQueryControl";
-import useArrowKeyControl from "@/hooks/useArrowKeyControl";
-import useEnterKeyControl from "@/hooks/useEnterKeyControl";
-
+import clsx from "clsx";
+import { useState } from "react";
+import Badge from "@/components/modules/Badge/Badge";
+import SquareBadge from "@/components/modules/SquareBadge/SquareBadge";
 import Layout, {
   commonClassName as layoutClassName,
 } from "@/components/widgets/common/Layout";
+import ResultFooter from "@/components/widgets/common/ResultFooter";
+import ResultLine from "@/components/widgets/common/ResultLine/ResultLine";
 import SearchInput, {
   commonClassName as searchInputClassName,
 } from "@/components/widgets/common/SearchInput";
-import Badge from "@/components/modules/Badge/Badge";
-import SquareBadge from "@/components/modules/SquareBadge/SquareBadge";
 import {
-  ModalOverlay,
   ModalContainer,
+  ModalOverlay,
 } from "@/components/widgets/content/Modal";
-import ResultFooter from "@/components/widgets/common/ResultFooter";
-import ResultLine from "@/components/widgets/common/ResultLine/ResultLine";
-
 import { closeContent } from "@/function/chrome/open";
+import useQueryControl from "@/hooks/query/useQueryControl";
+import useArrowKeyControl from "@/hooks/useArrowKeyControl";
+import useEnterKeyControl from "@/hooks/useEnterKeyControl";
+import useQueryResult from "@/hooks/useResults";
 import { ActionType } from "@/types/chrome";
 import { ResultType } from "@/types/result";
 
@@ -76,7 +73,7 @@ export default function App() {
             layoutClassName.shadow,
             layoutClassName.p,
             layoutClassName.space,
-            "rounded-lg"
+            "rounded-lg",
           )}
         >
           <SearchInput
@@ -87,7 +84,7 @@ export default function App() {
                 <MagnifyingGlassIcon
                   className={clsx(
                     searchInputClassName.icon.text,
-                    searchInputClassName.icon.size
+                    searchInputClassName.icon.size,
                   )}
                 />
               ) : (

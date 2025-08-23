@@ -12,7 +12,7 @@ const calculateMatchRate = (query: string, target: string): number => {
 const calcMatchRateResult = (
   query: string,
   title?: string,
-  url?: string
+  url?: string,
 ): number => {
   const titleMatch = title ? calculateMatchRate(query, title) : 0;
   const urlMatch = url ? calculateMatchRate(query, url) : 0;
