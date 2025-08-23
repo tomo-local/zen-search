@@ -39,7 +39,7 @@ export default function useResults(query: string, type: ResultType) {
       : [...tabs, ...suggestions, ...histories, ...bookmarks];
 
     // Sort by match in descending order
-    return combinedList.sort((a, b) => b.match - a.match);
+    return combinedList;
   }, [tabs, suggestions, histories, bookmarks, calculationResult]);
 
   return {

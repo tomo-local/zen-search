@@ -33,7 +33,7 @@ const {
 function sendResponse(
   type: string,
   result: unknown,
-  response: (res: object) => void
+  response: (res: object) => void,
 ) {
   response({ type, result });
 }
@@ -51,7 +51,7 @@ type Message =
 export function routeMessage(
   message: { type: MessageType } & Message,
   _sender: chrome.runtime.MessageSender,
-  response: (res?: object) => void
+  response: (res?: object) => void,
 ): boolean {
   switch (message.type) {
     case OPEN_POPUP:
