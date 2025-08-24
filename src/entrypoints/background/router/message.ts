@@ -33,7 +33,7 @@ const {
 function sendResponse(
   type: string,
   result: unknown,
-  response: (res: object) => void
+  response: (res: object) => void,
 ) {
   response({ type, result });
 }
@@ -51,7 +51,7 @@ type Message =
 export function routeMessage(
   message: { type: MessageType } & Message,
   _sender: chrome.runtime.MessageSender,
-  response: (res?: object) => void
+  response: (res?: object) => void,
 ): boolean {
   switch (message.type) {
     case OPEN_POPUP:
@@ -102,7 +102,7 @@ export function routeMessage(
     case QUERY_BOOKMARK: {
       const { query, option } = message as QueryBookmarksRequest;
 
-        // queryが空の場合、最近のブックマークを取得
+      // queryが空の場合、最近のブックマークを取得
       if (!query) {
         bookmarkService.getRecent({ option }).then((bookmarks) => {
           sendResponse(QUERY_BOOKMARK, bookmarks, response);

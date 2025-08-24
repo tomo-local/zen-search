@@ -11,7 +11,7 @@ import type * as Type from "./types";
 export interface BookmarkService {
   search: (request: Type.QueryBookmarksRequest) => Promise<Type.Bookmark[]>;
   getRecent: (
-    request: Type.GetRecentBookmarksRequest
+    request: Type.GetRecentBookmarksRequest,
   ) => Promise<Type.Bookmark[]>;
 }
 
@@ -24,7 +24,7 @@ const searchBookmarks = async ({
     const response = await chrome.bookmarks.search(query);
 
     const bookmarks = filterValidBookmarks(response).map((bookmark) =>
-      convertBookmarkToResult(bookmark)
+      convertBookmarkToResult(bookmark),
     );
 
     return limitResults(option?.count)(bookmarks);
@@ -43,7 +43,7 @@ const getRecentBookmarks = async ({
     const response = await chrome.bookmarks.getRecent(count);
 
     const bookmarks = filterValidBookmarks(response).map((bookmark) =>
-      convertBookmarkToResult(bookmark)
+      convertBookmarkToResult(bookmark),
     );
 
     return bookmarks;

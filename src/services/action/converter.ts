@@ -4,7 +4,7 @@ const SEARCH_URL = "https://www.google.com/search";
 
 export const convertCalculationAction = (
   expression: string,
-  result: number
+  result: number,
 ): ActionCalculation => ({
   type: ActionType.Calculation,
   id: generateRandomId(),
