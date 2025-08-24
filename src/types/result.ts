@@ -1,8 +1,8 @@
+import type { ActionCalculation } from "@/services/action/types";
 import type { Bookmark } from "@/services/bookmark/types";
 import type { History } from "@/services/history/types";
 import type { Suggestion } from "@/services/suggestion/types";
 import type { Tab } from "@/services/tab/types";
-import type { Action } from "@/types/action";
 
 export enum ResultType {
   All = "All",
@@ -24,4 +24,4 @@ export enum MessageType {
   QUERY_BOOKMARK = "QUERY_BOOKMARK",
 }
 
-export type Result = Tab | Suggestion | History | Bookmark | Action;
+export type Result = Tab | Suggestion | History | Bookmark | ActionCalculation;
