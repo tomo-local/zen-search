@@ -31,7 +31,7 @@ export interface CreateTabRequest {
 
 export interface UpdateTabRequest {
   tabId: number;
-  windowId?: number;
+  windowId: number;
 }
 
 export interface RemoveTabRequest {

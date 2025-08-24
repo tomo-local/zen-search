@@ -3,12 +3,11 @@ import CalculationItem from "@/components/widgets/common/ResultLine/parts/Calcul
 import HistoryItem from "@/components/widgets/common/ResultLine/parts/HistoryItem";
 import SuggestionItem from "@/components/widgets/common/ResultLine/parts/SuggestionItem";
 import TabItem from "@/components/widgets/common/ResultLine/parts/TabItem";
+import { type ActionCalculation, ActionType } from "@/services/action/types";
 import type { Bookmark } from "@/services/bookmark/types";
 import type { History } from "@/services/history/types";
 import type { Suggestion } from "@/services/suggestion/types";
 import type { Tab } from "@/services/tab/types";
-
-import { ActionType, type Calculation } from "@/types/action";
 
 import { type Result, ResultType } from "@/types/result";
 
@@ -80,7 +79,7 @@ export default function ResultLine({
       <CalculationItem
         key={key}
         className={className}
-        item={item as Calculation}
+        item={item as ActionCalculation}
         onClick={onClick}
         isSelected={isSelected}
       />

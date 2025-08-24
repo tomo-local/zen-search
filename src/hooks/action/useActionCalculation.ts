@@ -1,9 +1,12 @@
-import { useState } from "react";
-import { type Action, ActionType } from "@/types/action";
-import { calculate, isCalculation } from "@/utils/calculation";
+import { useEffect, useState } from "react";
+import {
+  type ActionCalculation,
+  actionService,
+  isCalculation,
+} from "@/services/action";
 
 export const useActionCalculation = (query: string) => {
-  const [result, setResult] = useState<Action | null>(null);
+  const [result, setResult] = useState<ActionCalculation | null>(null);
 
   useEffect(() => {
     if (!isCalculation(query)) {
@@ -11,25 +14,13 @@ export const useActionCalculation = (query: string) => {
       return;
     }
 
-    const calculationResult = calculate(query);
-
-    if (!calculationResult.success) {
+    try {
+      const action = actionService.calculate({ expression: query });
+      setResult(action);
+    } catch (error) {
+      console.error("Error calculating action:", error);
       setResult(null);
-      return;
     }
-
-    const action: Action = {
-      type: ActionType.Calculation,
-      id: Date.now(),
-      title: `${query}=${calculationResult}`,
-      url: `https://www.google.com/search?q=${encodeURIComponent(query)}`,
-      match: 1,
-      calculation: {
-        expression: query,
-        result: calculationResult.result,
-      },
-    };
-    setResult(action);
   }, [query]);
 
   return {

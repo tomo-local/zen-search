@@ -1,5 +1,5 @@
 import useControlTab from "@/hooks/useControlTab";
-import { ActionType } from "@/types/action";
+import { ActionType } from "@/services/action/types";
 import { type Result, ResultType } from "@/types/result";
 
 export default function useEnterKeyControl() {
@@ -19,8 +19,8 @@ export default function useEnterKeyControl() {
     }
 
     if (result.type === ResultType.Tab) {
-      const { id, windowId } = result;
-      updateTab(id, windowId);
+      const { id, data } = result;
+      updateTab(id, data.windowId);
       return;
     }
   };

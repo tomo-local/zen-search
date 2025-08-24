@@ -5,12 +5,12 @@ import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import CommonItem, {
   commonClassName as common,
 } from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import type { Calculation } from "@/types/action";
+import type { ActionCalculation } from "@/services/action/types";
 
 type TabItemProps = {
   key: React.Key;
   className?: string | undefined;
-  item: Calculation;
+  item: ActionCalculation;
   onClick?: (event: React.MouseEvent) => void;
   isSelected: boolean;
 };
@@ -60,9 +60,9 @@ export default function CalculationItem({
     >
       <div className="relative flex-col items-center justify-center inline-block max-w-fit">
         <div className="text-xs truncate max-w-[224px] md:max-w-md whitespace-nowrap">
-          {item.calculation.expression}
+          {item.data.expression}
           <p className="text-sm font-bold text-gray-900 dark:text-gray-100">
-            {` = ${item.calculation.result}`}
+            {` = ${item.data.result}`}
           </p>
         </div>
       </div>

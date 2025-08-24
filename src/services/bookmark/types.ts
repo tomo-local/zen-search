@@ -27,3 +27,7 @@ export interface QueryBookmarksRequest {
 export interface QueryOption {
   count?: number;
 }
+
+export interface GetRecentBookmarksRequest {
+  option?: QueryOption;
+}

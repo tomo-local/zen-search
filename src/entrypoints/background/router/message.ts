@@ -100,8 +100,16 @@ export function routeMessage(
       return true;
     }
     case QUERY_BOOKMARK: {
-      const { query } = message as QueryBookmarksRequest;
-      bookmarkService.query({ query }).then((bookmarks) => {
+      const { query, option } = message as QueryBookmarksRequest;
+
+      // queryが空の場合、最近のブックマークを取得
+      if (!query) {
+        bookmarkService.getRecent({ option }).then((bookmarks) => {
+          sendResponse(QUERY_BOOKMARK, bookmarks, response);
+        });
+        return true;
+      }
+      bookmarkService.search({ query, option }).then((bookmarks) => {
         sendResponse(QUERY_BOOKMARK, bookmarks, response);
       });
       return true;
