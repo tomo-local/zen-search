@@ -5,13 +5,13 @@
 
 import { convertCalculationAction } from "./converter";
 import { calculate } from "./helper";
-import type { Action, CalculationRequest } from "./types";
+import type { ActionCalculation, CalculationRequest } from "./types";
 
 export interface ActionService {
-  calculate(request: CalculationRequest): Action;
+  calculate(request: CalculationRequest): ActionCalculation;
 }
 
-const calculateAction = (request: CalculationRequest): Action => {
+const calculateAction = (request: CalculationRequest): ActionCalculation => {
   const response = calculate(request.expression);
 
   if (!response.success) {
