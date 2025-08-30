@@ -1,5 +1,4 @@
-name: Run Biome
-
+name: build
 on:
   pull_request:
     branches:
@@ -11,18 +10,17 @@ on:
       - "src/**"
       - "!**/*.test.ts"
       - "!**/*.spec.ts"
-  workflow_dispatch:
 
 env:
-  NODE_VERSION: 20.19.4
+  NODE_ENV: 20.19.4
   PNPM_VERSION: 10
 
 jobs:
-  test:
-    name: "Run Biome"
+  build:
+    name: Run Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout source code
+      - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Install pnpm
@@ -30,14 +28,14 @@ jobs:
         with:
           version: ${{ env.PNPM_VERSION }}
 
-      - name: Set Node.js version to ${{ env.NODE_VERSION }}
+      - name: Set Node.js version to ${{ env.NODE_ENV }}
         uses: actions/setup-node@v4
         with:
-          node-version: ${{ env.NODE_VERSION }}
-          cache: pnpm
+          node-version: ${{ env.NODE_ENV }}
+          cache: "pnpm"
 
       - name: Install dependencies
         run: pnpm install
 
-      - name: Run Biome
-        run: pnpm ci:check
+      - name: Run build
+        run: pnpm run build
