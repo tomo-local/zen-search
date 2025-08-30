@@ -1,5 +1,10 @@
 name: build
-on: [pull_request_target]
+on:
+  pull_request_target:
+    paths:
+      - "src/**"
+      - "!**/*.test.ts"
+      - "!**/*.spec.ts"
 
 env:
   NODE_ENV: 20.19.4
