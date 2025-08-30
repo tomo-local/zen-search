@@ -7,12 +7,12 @@ import Badge from "@/components/modules/Badge/Badge";
 import SquareBadge from "@/components/modules/SquareBadge/SquareBadge";
 import Layout, {
   commonClassName as layoutClassName,
-} from "@/components/widgets/common/Layout";
-import ResultFooter from "@/components/widgets/common/ResultFooter";
-import ResultLine from "@/components/widgets/common/ResultLine/ResultLine";
+} from "@/components/widgets/Layout/Layout";
+import ResultFooter from "@/components/widgets/ResultFooter/ResultFooter";
+import ResultLine from "@/components/widgets/ResultLine/ResultLine";
 import SearchInput, {
   commonClassName as searchInputClassName,
-} from "@/components/widgets/common/SearchInput";
+} from "@/components/widgets/SearchInput/SearchInput";
 import useQueryControl from "@/hooks/query/useQueryControl";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
 import useEnterKeyControl from "@/hooks/useEnterKeyControl";
@@ -158,7 +158,7 @@ export default function App() {
           </>
         ) : null}
         <div className="border-t border-gray-700 border-solid" />
-        <ResultFooter result={result} loading={loading} />
+        <ResultFooter count={result.length} loading={loading} />
       </div>
     </Layout>
   );

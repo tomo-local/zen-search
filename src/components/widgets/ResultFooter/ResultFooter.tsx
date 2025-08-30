@@ -1,18 +1,17 @@
 import Modules from "@/components/modules";
 import Footer from "@/components/modules/Footer/Footer";
-import ThemeSelectButton from "@/components/widgets/common/ThemeSelectButton";
-import type { Result } from "@/types/result";
+import ThemeSelectButton from "@/components/widgets/ThemeSelectButton/ThemeSelectButton";
 
-interface ResultFooterProps {
+export interface ResultFooterProps {
   className?: string;
   loading: boolean;
-  result: Result[];
+  count?: number;
 }
 
 export default function ResultFooter({
   className,
-  result,
   loading,
+  count,
 }: ResultFooterProps) {
   if (loading) {
     return (
@@ -32,9 +31,9 @@ export default function ResultFooter({
     <Footer className={`pt-1 text-base ${className}`}>
       <div className="flex flex-row items-center justify-between space-x-2">
         <ThemeSelectButton className="dark:text-gray-400" />
-        {result.length ? (
+        {count ? (
           <p className="text-base font-bold text-right dark:text-gray-400">
-            {result.length} RESULTS
+            {count} RESULTS
           </p>
         ) : (
           <p className="font-bold text-right dark:text-gray-400">NO FOUND</p>

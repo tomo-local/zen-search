@@ -1,23 +1,23 @@
-import BookmarkItem from "@/components/widgets/common/ResultLine/parts/BookmarkItem";
-import CalculationItem from "@/components/widgets/common/ResultLine/parts/CalculationItem";
-import HistoryItem from "@/components/widgets/common/ResultLine/parts/HistoryItem";
-import SuggestionItem from "@/components/widgets/common/ResultLine/parts/SuggestionItem";
-import TabItem from "@/components/widgets/common/ResultLine/parts/TabItem";
 import { type ActionCalculation, ActionType } from "@/services/action/types";
 import type { Bookmark } from "@/services/bookmark/types";
 import type { History } from "@/services/history/types";
 import type { Suggestion } from "@/services/suggestion/types";
 import type { Tab } from "@/services/tab/types";
-
 import { type Result, ResultType } from "@/types/result";
 
-type LineProps = {
+import BookmarkItem from "./parts/BookmarkItem";
+import CalculationItem from "./parts/CalculationItem";
+import HistoryItem from "./parts/HistoryItem";
+import SuggestionItem from "./parts/SuggestionItem";
+import TabItem from "./parts/TabItem";
+
+export interface ResultLineProps {
   key: React.Key;
   className?: string | undefined;
   item: Result;
   onClick?: (event: React.MouseEvent) => void;
   isSelected: boolean;
-};
+}
 
 export default function ResultLine({
   key,
@@ -25,7 +25,7 @@ export default function ResultLine({
   item,
   onClick,
   isSelected,
-}: LineProps) {
+}: ResultLineProps) {
   if (item.type === ResultType.Tab) {
     return (
       <TabItem

@@ -1,4 +1,4 @@
-interface SearchInputProps {
+export interface SearchInputProps {
   className?: string;
   value: string;
   leftContent?: React.ReactNode;

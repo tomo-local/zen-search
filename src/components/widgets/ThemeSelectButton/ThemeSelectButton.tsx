@@ -3,7 +3,7 @@ import MoonIcon from "@heroicons/react/16/solid/MoonIcon";
 import SunIcon from "@heroicons/react/16/solid/SunIcon";
 import { useContext } from "react";
 import { ThemeContext } from "@/context/ThemeProvider";
-import type { ThemeValue } from "@/types/storage";
+import type { ThemeValue } from "@/services/storage/types";
 
 export type ThemeSelectorProps = {
   className?: string;

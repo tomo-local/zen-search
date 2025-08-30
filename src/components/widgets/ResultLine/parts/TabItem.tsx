@@ -4,8 +4,8 @@ import clsx from "clsx";
 import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import CommonItem, {
   commonClassName as common,
-} from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import type { Tab } from "@/types/chrome";
+} from "@/components/widgets/ResultLine/parts/CommonItem";
+import type { Tab } from "@/services/tab/types";
 
 type TabItemProps = {
   key: React.Key;
@@ -35,8 +35,12 @@ export default function TabItem({
       onClick={onClick}
       LeftContent={
         <SquareIcon className={clsx(isSelected && common.icon.bg)}>
-          {item.icon ? (
-            <img src={item.icon} alt="favicon" className={common.icon.size} />
+          {typeof item.data.icon === "string" && item.data.icon ? (
+            <img
+              src={item.data.icon}
+              alt="favicon"
+              className={common.icon.size}
+            />
           ) : (
             <WindowIcon
               className={clsx(

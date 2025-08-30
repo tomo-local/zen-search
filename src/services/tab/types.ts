@@ -2,14 +2,14 @@ import type { ResultType } from "@/types/result";
 
 export interface Tab {
   type: ResultType.Tab;
-  id: number;
+  id: string;
   title: string;
   url: string;
   data: TabData;
 }
 
 export interface TabData {
-  icon: string;
+  icon?: string;
   active: boolean;
   lastAccessed: number;
   windowId: number;

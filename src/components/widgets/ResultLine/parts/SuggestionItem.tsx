@@ -4,8 +4,8 @@ import clsx from "clsx";
 import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import CommonItem, {
   commonClassName as common,
-} from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import type { Suggestion } from "@/types/google";
+} from "@/components/widgets/ResultLine/parts/CommonItem";
+import type { Suggestion } from "@/services/suggestion/types";
 
 type SuggestionItemProps = {
   key: React.Key;

@@ -1,27 +1,32 @@
-import EqualsIcon from "@heroicons/react/16/solid/EqualsIcon";
+import ClockIcon from "@heroicons/react/16/solid/ClockIcon";
 import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
 import clsx from "clsx";
 import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import CommonItem, {
   commonClassName as common,
-} from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import type { ActionCalculation } from "@/services/action/types";
+} from "@/components/widgets/ResultLine/parts/CommonItem";
+import type { History } from "@/services/history/types";
 
-type TabItemProps = {
+const getFavicon = (url: string) => {
+  const urlObj = new URL(url);
+  return `https://www.google.com/s2/favicons?domain=${urlObj.hostname}`;
+};
+
+type HistoryItemProps = {
   key: React.Key;
   className?: string | undefined;
-  item: ActionCalculation;
+  item: History;
   onClick?: (event: React.MouseEvent) => void;
   isSelected: boolean;
 };
 
-export default function CalculationItem({
+export default function HistoryItem({
   key,
   className,
   item,
   onClick,
   isSelected,
-}: TabItemProps) {
+}: HistoryItemProps) {
   return (
     <CommonItem
       key={key}
@@ -35,17 +40,17 @@ export default function CalculationItem({
       onClick={onClick}
       LeftContent={
         <SquareIcon className={clsx(isSelected && common.icon.bg)}>
-          <EqualsIcon
-            className={clsx(
-              isSelected ? common.icon.selected : common.icon.text,
-              common.icon.size,
-            )}
+          <img
+            src={getFavicon(item.url)}
+            alt="favicon"
+            className={common.icon.size}
           />
         </SquareIcon>
       }
       RightContent={
         <div className="flex items-center space-x-2">
-          <span className={common.text}>Go to Calculation</span>
+          <ClockIcon className={clsx(common.icon.text, common.icon.size)} />
+          <span className={common.text}>Go to Page</span>
           <SquareIcon className={clsx(isSelected && common.icon.bg)}>
             <PlusIcon
               className={clsx(
@@ -59,11 +64,8 @@ export default function CalculationItem({
       isSelected={isSelected}
     >
       <div className="relative flex-col items-center justify-center inline-block max-w-fit">
-        <div className="text-xs truncate max-w-[224px] md:max-w-md whitespace-nowrap">
-          {item.data.expression}
-          <p className="text-sm font-bold text-gray-900 dark:text-gray-100">
-            {` = ${item.data.result}`}
-          </p>
+        <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
+          {item.title}
         </div>
       </div>
     </CommonItem>
