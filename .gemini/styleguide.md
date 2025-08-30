@@ -1,6 +1,6 @@
 # Style Guide
 
-This review is written in Japanese.
+<!-- All reviews and documentation should be written in English. -->
 
 ## General
 
