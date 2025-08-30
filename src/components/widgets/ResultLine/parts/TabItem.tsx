@@ -35,8 +35,12 @@ export default function TabItem({
       onClick={onClick}
       LeftContent={
         <SquareIcon className={clsx(isSelected && common.icon.bg)}>
-          {item.data.icon ? (
-            <img src={item.data.icon} alt="favicon" className={common.icon.size} />
+          {typeof item.data.icon === "string" && item.data.icon ? (
+            <img
+              src={item.data.icon}
+              alt="favicon"
+              className={common.icon.size}
+            />
           ) : (
             <WindowIcon
               className={clsx(
