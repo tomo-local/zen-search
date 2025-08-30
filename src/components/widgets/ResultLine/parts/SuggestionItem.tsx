@@ -30,7 +30,7 @@ export default function SuggestionItem({
         common.border,
         common.hover,
         isSelected && common.selected,
-        className
+        className,
       )}
       onClick={onClick}
       LeftContent={
@@ -38,7 +38,7 @@ export default function SuggestionItem({
           <MagnifyingGlassIcon
             className={clsx(
               isSelected ? common.icon.selected : common.icon.text,
-              common.icon.size
+              common.icon.size,
             )}
           />
         </SquareIcon>
@@ -50,7 +50,7 @@ export default function SuggestionItem({
             <PlusIcon
               className={clsx(
                 common.icon.size,
-                isSelected ? common.icon.selected : common.icon.text
+                isSelected ? common.icon.selected : common.icon.text,
               )}
             />
           </SquareIcon>

@@ -32,7 +32,7 @@ export default function BookmarkItem({
         common.border,
         common.hover,
         isSelected && common.selected,
-        className
+        className,
       )}
       onClick={onClick}
       LeftContent={
@@ -52,7 +52,7 @@ export default function BookmarkItem({
             <PlusIcon
               className={clsx(
                 common.icon.size,
-                isSelected ? common.icon.selected : common.icon.text
+                isSelected ? common.icon.selected : common.icon.text,
               )}
             />
           </SquareIcon>
