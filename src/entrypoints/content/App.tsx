@@ -69,7 +69,7 @@ export default function App() {
             layoutClassName.shadow,
             layoutClassName.p,
             layoutClassName.space,
-            "rounded-lg"
+            "rounded-lg",
           )}
         >
           <SearchInput
@@ -80,7 +80,7 @@ export default function App() {
                 <MagnifyingGlassIcon
                   className={clsx(
                     searchInputClassName.icon.text,
-                    searchInputClassName.icon.size
+                    searchInputClassName.icon.size,
                   )}
                 />
               ) : (
