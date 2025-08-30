@@ -29,4 +29,6 @@ utilities:
     - any-glob-to-any-file: "src/utils/**"
 ci:
   - changed-files:
-    - any-glob-to-any-file: ".github/workflows/**"
+    - any-glob-to-any-file:
+      - ".github/workflows/**"
+      - ".gemini/**"
