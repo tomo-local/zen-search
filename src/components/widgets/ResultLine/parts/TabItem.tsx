@@ -1,29 +1,27 @@
-import BookmarkIcon from "@heroicons/react/16/solid/BookmarkIcon";
-import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
+import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
+import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
 import clsx from "clsx";
 import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import CommonItem, {
   commonClassName as common,
-} from "@/components/widgets/common/ResultLine/parts/CommonItem";
-import type { Bookmark } from "@/types/chrome";
+} from "@/components/widgets/ResultLine/parts/CommonItem";
+import type { Tab } from "@/services/tab/types";
 
-const getFavicon = (url: string) => {
-  const urlObj = new URL(url);
-  return `https://www.google.com/s2/favicons?domain=${urlObj.hostname}`;
+type TabItemProps = {
+  key: React.Key;
+  className?: string | undefined;
+  item: Tab;
+  onClick?: (event: React.MouseEvent) => void;
+  isSelected: boolean;
 };
-export default function BookmarkItem({
+
+export default function TabItem({
   key,
   className,
   item,
   onClick,
   isSelected,
-}: {
-  key: React.Key;
-  className?: string | undefined;
-  item: Bookmark;
-  onClick?: (event: React.MouseEvent) => void;
-  isSelected: boolean;
-}) {
+}: TabItemProps) {
   return (
     <CommonItem
       key={key}
@@ -32,27 +30,31 @@ export default function BookmarkItem({
         common.border,
         common.hover,
         isSelected && common.selected,
-        className,
+        className
       )}
       onClick={onClick}
       LeftContent={
         <SquareIcon className={clsx(isSelected && common.icon.bg)}>
-          <img
-            src={getFavicon(item.url)}
-            alt="favicon"
-            className={common.icon.size}
-          />
+          {item.data.icon ? (
+            <img src={item.data.icon} alt="favicon" className={common.icon.size} />
+          ) : (
+            <WindowIcon
+              className={clsx(
+                isSelected ? common.icon.selected : common.icon.text,
+                common.icon.size
+              )}
+            />
+          )}
         </SquareIcon>
       }
       RightContent={
         <div className="flex items-center space-x-2">
-          <BookmarkIcon className={clsx(common.icon.text, common.icon.size)} />
-          <span className={common.text}>Go to Page</span>
+          <span className={common.text}>Go to Tab</span>
           <SquareIcon className={clsx(isSelected && common.icon.bg)}>
-            <PlusIcon
+            <ArrowLongRightIcon
               className={clsx(
                 common.icon.size,
-                isSelected ? common.icon.selected : common.icon.text,
+                isSelected ? common.icon.selected : common.icon.text
               )}
             />
           </SquareIcon>
@@ -62,7 +64,7 @@ export default function BookmarkItem({
     >
       <div className="relative flex-col items-center justify-center inline-block max-w-fit">
         <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
-          {item.title || item.url}
+          {item.title}
         </div>
       </div>
     </CommonItem>

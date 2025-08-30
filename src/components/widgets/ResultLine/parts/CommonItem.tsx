@@ -34,7 +34,7 @@ export default function CommonItem({
   children,
 }: ResultItemProps) {
   return (
-    <li key={key}>
+    <li key={key} className="list-none">
       <button
         type="button"
         className={`

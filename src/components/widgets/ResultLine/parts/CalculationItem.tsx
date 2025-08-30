@@ -4,7 +4,7 @@ import clsx from "clsx";
 import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
 import CommonItem, {
   commonClassName as common,
-} from "@/components/widgets/common/ResultLine/parts/CommonItem";
+} from "@/components/widgets/ResultLine/parts/CommonItem";
 import type { ActionCalculation } from "@/services/action/types";
 
 type TabItemProps = {
@@ -30,7 +30,7 @@ export default function CalculationItem({
         common.border,
         common.hover,
         isSelected && common.selected,
-        className,
+        className
       )}
       onClick={onClick}
       LeftContent={
@@ -38,7 +38,7 @@ export default function CalculationItem({
           <EqualsIcon
             className={clsx(
               isSelected ? common.icon.selected : common.icon.text,
-              common.icon.size,
+              common.icon.size
             )}
           />
         </SquareIcon>
@@ -50,7 +50,7 @@ export default function CalculationItem({
             <PlusIcon
               className={clsx(
                 common.icon.size,
-                isSelected ? common.icon.selected : common.icon.text,
+                isSelected ? common.icon.selected : common.icon.text
               )}
             />
           </SquareIcon>

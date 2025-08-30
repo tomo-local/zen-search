@@ -11,12 +11,12 @@ export const commonClassName = {
   space: "space-y-2",
 };
 
-type Props = {
+export type LayoutProps = {
   className?: string;
   children?: React.ReactNode;
 };
 
-export default function Layout(props: Props) {
+export default function Layout(props: LayoutProps) {
   return (
     <React.StrictMode>
       <ThemeProvider>
