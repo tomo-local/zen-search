@@ -1,6 +1,11 @@
 name: build
 on:
   pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
     paths:
       - "src/**"
       - "!**/*.test.ts"
