@@ -4,6 +4,7 @@
 
 ## General
 
+- This review is written in Japanese.
 - Follow the [Google JavaScript Style Guide](https://google.github.io/styleguide/jsguide.html) for all JavaScript code.
 - Use 2 spaces for indentation, and avoid tabs.
 - Write clear and descriptive variable and function names.
