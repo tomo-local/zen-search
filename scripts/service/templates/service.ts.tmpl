@@ -1,0 +1,22 @@
+/**
+ * {{.ServiceName}} Service - {{.ServiceName}}管理サービス
+ */
+
+import type * as Type from "./types";
+
+// 型定義
+export interface {{.ServiceNamePascal}}Service {
+  search: (query: string) => Promise<Type.{{.ServiceNamePascal}}[]>;
+}
+
+// サンプル実装
+const search{{.ServiceNamePascal}}s = async (query: string): Promise<Type.{{.ServiceNamePascal}}[]> => {
+  // TODO: {{.ServiceName}}の検索ロジックを実装
+  console.log(`Searching {{.ServiceName}}s with query: ${query}`);
+  return [];
+};
+
+// サービスのエクスポート
+export const {{.ServiceNameCamel}}Service: {{.ServiceNamePascal}}Service = {
+  search: search{{.ServiceNamePascal}}s,
+};

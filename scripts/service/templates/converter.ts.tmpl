@@ -1,0 +1,15 @@
+/**
+ * {{.ServiceName}} Service Converter - {{.ServiceName}}の変換ヘルパー
+ */
+
+import type { {{.ServiceNamePascal}} } from "./types";
+
+/**
+ * サンプル変換関数
+ */
+export const convert{{.ServiceNamePascal}}ToResult = (data: any): {{.ServiceNamePascal}} => {
+  return {
+    id: data.id || "",
+    title: data.title || "Untitled",
+  };
+};
