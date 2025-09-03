@@ -19,7 +19,7 @@ func NewStringOperator() Service {
 // ToCamelCase は文字列をキャメルケースに変換
 func (s *stringOperator) ToCamelCase(str string) string {
 	words := strings.Split(str, "-")
-	if len(words) == 0 {
+	if len(words) == 0 && words[0] == "" {
 		return str
 	}
 
