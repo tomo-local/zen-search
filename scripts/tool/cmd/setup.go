@@ -4,13 +4,15 @@ import (
 	"log"
 	"tool/service"
 	"util/file_operator"
+	"util/string_operator"
 
 	"github.com/spf13/cobra"
 )
 
 func setupToolService() service.Service {
 	fileOperator := file_operator.NewFileOperator()
-	return service.NewToolService(fileOperator)
+	stringOperator := string_operator.NewStringOperator()
+	return service.NewToolService(fileOperator, stringOperator)
 }
 
 func setupGenerateService(toolService service.Service) *cobra.Command {

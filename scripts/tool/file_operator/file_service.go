@@ -1,6 +1,7 @@
 package file_service
 
 import (
+	"os"
 	file_operator "util/file_operator"
 )
 
@@ -9,8 +10,8 @@ type Service interface {
 	GetPathList(path string) ([]string, error)
 	HasPath(path string, name string) (bool, error)
 	GetPathContents(path string) ([]byte, error)
-	CreateDirectory(path string) error
-	CopyFile(src string, dest string) error
+	CreateDirectory(path string, perm *os.FileMode) error
+	WriteFileContents(path string, contents []byte, perm *os.FileMode) error
 }
 
 type service struct {
@@ -39,10 +40,10 @@ func (s *service) GetPathContents(path string) ([]byte, error) {
 	return s.client.GetPathContents(path)
 }
 
-func (s *service) CreateDirectory(path string) error {
-	return s.client.CreateDirectory(path)
+func (s *service) CreateDirectory(path string, perm *os.FileMode) error {
+	return s.client.CreateDirectory(path, perm)
 }
 
-func (s *service) CopyFile(src string, dest string) error {
-	return s.client.CopyFile(src, dest)
+func (s *service) WriteFileContents(path string, contents []byte, perm *os.FileMode) error {
+	return s.client.WriteFileContents(path, contents, perm)
 }

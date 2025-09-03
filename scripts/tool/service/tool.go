@@ -2,6 +2,7 @@ package service
 
 import (
 	"util/file_operator"
+	"util/string_operator"
 )
 
 type Service interface {
@@ -9,11 +10,13 @@ type Service interface {
 }
 
 type toolService struct {
-	fileOperator file_operator.Service
+	fileOperator   file_operator.Service
+	stringOperator string_operator.Service
 }
 
-func NewToolService(fileOperator file_operator.Service) Service {
+func NewToolService(fileOperator file_operator.Service, stringOperator string_operator.Service) Service {
 	return &toolService{
-		fileOperator: fileOperator,
+		fileOperator:   fileOperator,
+		stringOperator: stringOperator,
 	}
 }

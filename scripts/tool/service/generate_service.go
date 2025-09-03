@@ -37,7 +37,7 @@ func (t *toolService) GenerateService(serviceName string, outputPath string) err
 	}
 
 	// 出力ディレクトリを作成
-	if err := t.fileOperator.CreateDirectory(outputDir); err != nil {
+	if err := t.fileOperator.CreateDirectory(outputDir, nil); err != nil {
 		return fmt.Errorf("❌ 出力ディレクトリの作成に失敗しました: %v", err)
 	}
 	fmt.Printf("📂 出力ディレクトリを作成しました: %s\n", outputDir)
@@ -63,9 +63,23 @@ func (t *toolService) GenerateService(serviceName string, outputPath string) err
 		outputFileName := strings.TrimSuffix(templateFile, ".tmpl")
 		destPath := filepath.Join(outputDir, outputFileName)
 
-		// ファイルをコピー
-		if err := t.fileOperator.CopyFile(srcPath, destPath); err != nil {
-			return fmt.Errorf("❌ ファイルのコピーに失敗しました (%s -> %s): %v", srcPath, destPath, err)
+		// ファイルをコピー　する際に何かある {{.ServiceName}}をサービス名に置換
+		content, err := t.fileOperator.GetPathContents(srcPath)
+		if err != nil {
+			return fmt.Errorf("❌ テンプレートファイルの読み込みに失敗しました (%s): %v", srcPath, err)
+		}
+
+		ServiceNamePascal := t.stringOperator.ToPascalCase(serviceName)
+		ServiceNameCamel := t.stringOperator.ToCamelCase(serviceName)
+
+		log.Printf("🔧  置換: {{.ServiceNamePascal}} -> %s\n", ServiceNamePascal)
+		log.Printf("🔧  置換: {{.ServiceNameCamel}} -> %s\n", ServiceNameCamel)
+
+		content = []byte(strings.ReplaceAll(string(content), "{{.ServiceNamePascal}}", ServiceNamePascal))
+		content = []byte(strings.ReplaceAll(string(content), "{{.ServiceNameCamel}}", ServiceNameCamel))
+
+		if err := t.fileOperator.WriteFileContents(destPath, content, nil); err != nil {
+			return fmt.Errorf("❌ 出力ファイルの書き込みに失敗しました (%s): %v", destPath, err)
 		}
 
 		fmt.Printf("  ✅ %s -> %s\n", srcPath, destPath)
