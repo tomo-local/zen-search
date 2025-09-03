@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"tool/service"
 	"util/file_operator"
 
@@ -17,7 +18,7 @@ func setupGenerateService(toolService service.Service) *cobra.Command {
 	var outputPath string
 
 	cmd := &cobra.Command{
-		Use:   "generate:service",
+		Use:   "gen:service",
 		Short: "サービスファイルを生成します ✨",
 		Long: `指定されたサービス名でテンプレートファイルを生成します。
 
@@ -33,8 +34,13 @@ func setupGenerateService(toolService service.Service) *cobra.Command {
 	cmd.MarkFlagRequired("name")
 
 	// generateコマンドの実行時に呼び出される関数を設定
-	cmd.RunE = func(cmd *cobra.Command, args []string) error {
-		return toolService.GenerateService(serviceName, outputPath)
+	cmd.Run = func(cmd *cobra.Command, args []string) {
+		log.Println("Generating service:", args)
+
+		err := toolService.GenerateService(serviceName, outputPath)
+		if err != nil {
+			log.Println(err)
+		}
 	}
 
 	return cmd
