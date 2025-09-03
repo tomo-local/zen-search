@@ -1,19 +1,20 @@
 package file_operator
 
 import (
+	"fmt"
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 )
 
 type Service interface {
+	GetSourceFileDir() (string, error)
 	GetPathList(path string) ([]string, error)
 	HasPath(path string, name string) (bool, error)
 	GetPathContents(path string) ([]byte, error)
-	WritePathContents(path string, contents []byte) error
 	CreateDirectory(path string) error
 	CopyFile(src string, dest string) error
-	RenameFile(oldPath string, newPath string) error
 }
 
 // fileOperator はServiceインターフェースの標準実装
@@ -23,6 +24,18 @@ type fileOperator struct {
 // NewFileOperator は新しいfileOperatorのインスタンスを作成
 func NewFileOperator() Service {
 	return &fileOperator{}
+}
+
+// GetSourceFileDir は呼び出し元のソースファイルのディレクトリを取得する
+func (f *fileOperator) GetSourceFileDir() (string, error) {
+	_, callerFile, _, ok := runtime.Caller(1)
+	if !ok {
+		return "", fmt.Errorf("呼び出し元のファイル情報を取得できませんでした")
+	}
+
+	// ソースファイルのディレクトリを取得
+	sourceDir := filepath.Dir(callerFile)
+	return sourceDir, nil
 }
 
 func (f *fileOperator) GetPathList(path string) ([]string, error) {
@@ -54,17 +67,6 @@ func (f *fileOperator) HasPath(path string, name string) (bool, error) {
 // GetPathContents はファイルの内容を読み込む
 func (f *fileOperator) GetPathContents(path string) ([]byte, error) {
 	return os.ReadFile(path)
-}
-
-// WritePathContents はファイルに内容を書き込む
-func (f *fileOperator) WritePathContents(path string, contents []byte) error {
-	// ディレクトリが存在しない場合は作成
-	dir := filepath.Dir(path)
-	if err := os.MkdirAll(dir, 0755); err != nil {
-		return err
-	}
-
-	return os.WriteFile(path, contents, 0644)
 }
 
 // CreateDirectory はディレクトリを作成する
@@ -107,15 +109,4 @@ func (f *fileOperator) CopyFile(src string, dest string) error {
 	}
 
 	return os.Chmod(dest, sourceInfo.Mode())
-}
-
-// RenameFile はファイルの名前を変更する
-func (f *fileOperator) RenameFile(oldPath string, newPath string) error {
-	// 移動先のディレクトリが存在しない場合は作成
-	newDir := filepath.Dir(newPath)
-	if err := os.MkdirAll(newDir, 0755); err != nil {
-		return err
-	}
-
-	return os.Rename(oldPath, newPath)
 }
