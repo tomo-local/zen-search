@@ -2,7 +2,6 @@ package file_operator
 
 import (
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 	"runtime"
@@ -13,8 +12,8 @@ type Service interface {
 	GetPathList(path string) ([]string, error)
 	HasPath(path string, name string) (bool, error)
 	GetPathContents(path string) ([]byte, error)
-	CreateDirectory(path string) error
-	CopyFile(src string, dest string) error
+	CreateDirectory(path string, perm *os.FileMode) error
+	WriteFileContents(path string, contents []byte, perm *os.FileMode) error
 }
 
 // fileOperator はServiceインターフェースの標準実装
@@ -70,43 +69,19 @@ func (f *fileOperator) GetPathContents(path string) ([]byte, error) {
 }
 
 // CreateDirectory はディレクトリを作成する
-func (f *fileOperator) CreateDirectory(path string) error {
-	return os.MkdirAll(path, 0755)
+func (f *fileOperator) CreateDirectory(path string, perm *os.FileMode) error {
+	if perm == nil {
+		defaultPerm := os.FileMode(0755)
+		perm = &defaultPerm
+	}
+	return os.MkdirAll(path, *perm)
 }
 
-// CopyFile はファイルをコピーする
-func (f *fileOperator) CopyFile(src string, dest string) error {
-	// コピー元ファイルを開く
-	sourceFile, err := os.Open(src)
-	if err != nil {
-		return err
+// WriteFileContents はファイルに内容を書き込む ない場合は、新規作成
+func (f *fileOperator) WriteFileContents(path string, contents []byte, perm *os.FileMode) error {
+	if perm == nil {
+		defaultPerm := os.FileMode(0644)
+		perm = &defaultPerm
 	}
-	defer sourceFile.Close()
-
-	// コピー先のディレクトリが存在しない場合は作成
-	destDir := filepath.Dir(dest)
-	if err := os.MkdirAll(destDir, 0755); err != nil {
-		return err
-	}
-
-	// コピー先ファイルを作成
-	destFile, err := os.Create(dest)
-	if err != nil {
-		return err
-	}
-	defer destFile.Close()
-
-	// ファイルをコピー
-	_, err = io.Copy(destFile, sourceFile)
-	if err != nil {
-		return err
-	}
-
-	// ファイルの権限をコピー
-	sourceInfo, err := os.Stat(src)
-	if err != nil {
-		return err
-	}
-
-	return os.Chmod(dest, sourceInfo.Mode())
+	return os.WriteFile(path, contents, *perm)
 }
