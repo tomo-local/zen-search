@@ -1,4 +1,4 @@
-package file_operator
+package fileutil
 
 import (
 	"fmt"

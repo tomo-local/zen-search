@@ -3,15 +3,15 @@ package main
 import (
 	"log"
 	"tool/service"
-	"util/file_operator"
-	"util/string_operator"
+	"util/fileutil"
+	"util/strutil"
 
 	"github.com/spf13/cobra"
 )
 
 func setupToolService() service.Service {
-	fileOperator := file_operator.NewFileOperator()
-	stringOperator := string_operator.NewStringOperator()
+	fileOperator := fileutil.NewFileOperator()
+	stringOperator := strutil.NewStringOperator()
 	return service.NewToolService(fileOperator, stringOperator)
 }
 

@@ -1,4 +1,4 @@
-package string_operator
+package strutil
 
 import (
 	"strings"
