@@ -1,8 +1,8 @@
-package file_service
+package file
 
 import (
 	"os"
-	file_operator "util/file_operator"
+	fileOperator "util/file-operator"
 )
 
 type Service interface {
@@ -15,17 +15,17 @@ type Service interface {
 }
 
 type service struct {
-	client file_operator.Service
+	client fileOperator.Service
 }
 
-func New(fileOperator file_operator.Service) (Service, error) {
+func New(client fileOperator.Service) (Service, error) {
 	return &service{
-		client: fileOperator,
+		client: client,
 	}, nil
 }
 
-func (s *service) GetSourceFileDir() (string, error) {
-	return s.client.GetSourceFileDir()
+func (s *service) GetRepositoryRootDir() (string, error) {
+	return s.client.GetRepositoryRootDir()
 }
 
 func (s *service) GetPathList(path string) ([]string, error) {
