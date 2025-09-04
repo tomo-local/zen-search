@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	templateRootDir = "/scripts/tool/templates/services"
+	templateRootDir = "/templates/services"
 )
 
 func (t *toolService) GenerateService(serviceName string, outputPath string) error {
