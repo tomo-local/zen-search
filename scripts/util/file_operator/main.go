@@ -8,7 +8,6 @@ import (
 )
 
 type Service interface {
-	GetSourceFileDir() (string, error)
 	GetRepositoryRootDir() (string, error)
 	GetPathList(path string) ([]string, error)
 	HasPath(path string, name string) (bool, error)
@@ -24,18 +23,6 @@ type fileOperator struct {
 // NewFileOperator は新しいfileOperatorのインスタンスを作成
 func NewFileOperator() Service {
 	return &fileOperator{}
-}
-
-// GetSourceFileDir は呼び出し元のソースファイルのディレクトリを取得する
-func (f *fileOperator) GetSourceFileDir() (string, error) {
-	_, callerFile, _, ok := runtime.Caller(1)
-	if !ok {
-		return "", fmt.Errorf("呼び出し元のファイル情報を取得できませんでした")
-	}
-
-	// ソースファイルのディレクトリを取得
-	sourceDir := filepath.Dir(callerFile)
-	return sourceDir, nil
 }
 
 func (f *fileOperator) GetPathList(path string) ([]string, error) {

@@ -6,7 +6,7 @@ import (
 )
 
 type Service interface {
-	GetSourceFileDir() (string, error)
+	GetRepositoryRootDir() (string, error)
 	GetPathList(path string) ([]string, error)
 	HasPath(path string, name string) (bool, error)
 	GetPathContents(path string) ([]byte, error)

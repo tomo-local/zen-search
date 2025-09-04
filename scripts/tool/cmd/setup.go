@@ -42,7 +42,10 @@ func setupGenerateService(toolService service.Service) *cobra.Command {
 		err := toolService.GenerateService(serviceName, outputPath)
 		if err != nil {
 			log.Println(err)
+			return err
 		}
+
+		return nil
 	}
 
 	return cmd
