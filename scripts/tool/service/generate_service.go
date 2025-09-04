@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	templateRootDir = "/scripts/tool/service/templates"
+	templateRootDir = "/scripts/tool/templates/services"
 )
 
 func (t *toolService) GenerateService(serviceName string, outputPath string) error {
@@ -28,7 +28,7 @@ func (t *toolService) GenerateService(serviceName string, outputPath string) err
 		return fmt.Errorf("❌ 出力先ディレクトリの確認でエラーが発生しました: %v", err)
 	}
 	if !exists {
-		if err := t.fileOperator.CreateDir(outputDir); err != nil {
+		if err := t.fileOperator.CreateDirectory(outputDir, nil); err != nil {
 			return fmt.Errorf("❌ 出力先ディレクトリの作成に失敗しました: %v", err)
 		}
 		fmt.Printf("📂 出力先ディレクトリを作成しました: %s\n", outputDir)
@@ -73,22 +73,22 @@ func (t *toolService) GenerateService(serviceName string, outputPath string) err
 	return nil
 }
 
-func (t *toolService) setupTemplateDir() (*string, error) {
+func (t *toolService) setupTemplateDir() (string, error) {
 	// Repositoryのルートディレクトリを取得
 	repoRoot, err := t.fileOperator.GetRepositoryRootDir()
 	if err != nil {
-		return nil, fmt.Errorf("❌ リポジトリのルートディレクトリの取得に失敗しました: %v", err)
+		return "", fmt.Errorf("❌ リポジトリのルートディレクトリの取得に失敗しました: %v", err)
 	}
 
 	templatesDir := filepath.Join(repoRoot, templateRootDir)
 
 	exists, err := t.fileOperator.HasPath(templatesDir, ".")
 	if err != nil {
-		return nil, fmt.Errorf("❌ テンプレートディレクトリの確認でエラーが発生しました: %v", err)
+		return "", fmt.Errorf("❌ テンプレートディレクトリの確認でエラーが発生しました: %v", err)
 	}
 
 	if !exists {
-		return nil, fmt.Errorf("❌ テンプレートディレクトリが存在しません: %s", templatesDir)
+		return "", fmt.Errorf("❌ テンプレートディレクトリが存在しません: %s", templatesDir)
 	}
 
 	return templatesDir, nil

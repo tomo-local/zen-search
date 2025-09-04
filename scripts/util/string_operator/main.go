@@ -1,4 +1,4 @@
-package service
+package string_operator
 
 import (
 	"strings"

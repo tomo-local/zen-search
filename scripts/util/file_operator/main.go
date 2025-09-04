@@ -1,10 +1,9 @@
-package service
+package file_operator
 
 import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"runtime"
 )
 
 type Service interface {
