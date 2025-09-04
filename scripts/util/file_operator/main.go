@@ -9,6 +9,7 @@ import (
 
 type Service interface {
 	GetSourceFileDir() (string, error)
+	GetRepositoryRootDir() (string, error)
 	GetPathList(path string) ([]string, error)
 	HasPath(path string, name string) (bool, error)
 	GetPathContents(path string) ([]byte, error)
@@ -48,6 +49,28 @@ func (f *fileOperator) GetPathList(path string) ([]string, error) {
 		fileList = append(fileList, file.Name())
 	}
 	return fileList, nil
+}
+
+func (f *fileOperator) GetRepositoryRootDir() (string, error) {
+	currentDir, err := os.Getwd()
+	if err != nil {
+		return "", fmt.Errorf("現在の作業ディレクトリの取得に失敗しました: %v", err)
+	}
+
+	// .git ディレクトリを探してリポジトリのルートを特定
+	for {
+		if _, err := os.Stat(filepath.Join(currentDir, ".git")); err == nil {
+			return currentDir, nil
+		}
+
+		parentDir := filepath.Dir(currentDir)
+		if parentDir == currentDir {
+			break // ルートディレクトリに到達
+		}
+		currentDir = parentDir
+	}
+
+	return "", fmt.Errorf(".git ディレクトリが見つかりません。リポジトリのルートを特定できませんでした。")
 }
 
 // 特定のフォルダーに特定の名前のファイルやディレクトリが存在するか確認

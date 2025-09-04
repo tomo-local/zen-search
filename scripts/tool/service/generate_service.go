@@ -7,40 +7,32 @@ import (
 	"strings"
 )
 
+var (
+	templateRootDir = "/scripts/tool/service/templates"
+)
+
 func (t *toolService) GenerateService(serviceName string, outputPath string) error {
 	fmt.Printf("🎯 サービス名: %s でテンプレートをコピーします...\n", serviceName)
 	fmt.Printf("📁 出力先ベースパス: %s\n", outputPath)
 
-	// 実行可能ファイルのディレクトリを取得
-	execDir, err := t.fileOperator.GetSourceFileDir()
+	templatesDir, err := t.setupTemplateDir()
 	if err != nil {
-		return fmt.Errorf("❌ 実行可能ファイルのディレクトリ取得に失敗しました: %v", err)
+		return err
 	}
 
-	log.Printf("🔍 実行可能ファイルのディレクトリ: %s\n", execDir)
+	// 出力先ディレクトリのパスを設定
+	outputDir := filepath.Join(outputPath, serviceName)
 
-	// テンプレートディレクトリのパス（実行可能ファイルから相対的に取得）
-	templatesDir := filepath.Join(execDir, "..", "templates")
-
-	// 出力先ディレクトリのパス（指定されたパス配下にサービス名のディレクトリを作成）
-	outputDir := filepath.Join(execDir, "../../..", outputPath, serviceName)
-
-	// 出力ディレクトリが存在するかチェック
-	exists, err := t.fileOperator.HasPath(filepath.Dir(outputDir), filepath.Base(outputDir))
-
+	exists, err := t.fileOperator.HasPath(outputPath, serviceName)
 	if err != nil {
-		return fmt.Errorf("❌ ディレクトリの確認でエラーが発生しました: %v", err)
+		return fmt.Errorf("❌ 出力先ディレクトリの確認でエラーが発生しました: %v", err)
 	}
-
-	if exists {
-		fmt.Printf("⚠️  警告: ディレクトリ %s は既に存在します。\n", outputDir)
+	if !exists {
+		if err := t.fileOperator.CreateDir(outputDir); err != nil {
+			return fmt.Errorf("❌ 出力先ディレクトリの作成に失敗しました: %v", err)
+		}
+		fmt.Printf("📂 出力先ディレクトリを作成しました: %s\n", outputDir)
 	}
-
-	// 出力ディレクトリを作成
-	if err := t.fileOperator.CreateDirectory(outputDir, nil); err != nil {
-		return fmt.Errorf("❌ 出力ディレクトリの作成に失敗しました: %v", err)
-	}
-	fmt.Printf("📂 出力ディレクトリを作成しました: %s\n", outputDir)
 
 	// テンプレートファイルの一覧を取得
 	templateFiles, err := t.fileOperator.GetPathList(templatesDir)
@@ -58,25 +50,15 @@ func (t *toolService) GenerateService(serviceName string, outputPath string) err
 
 		// テンプレートファイルのパス
 		srcPath := filepath.Join(templatesDir, templateFile)
-
-		// 出力ファイル名（.tmplを.tsに変更）
 		outputFileName := strings.TrimSuffix(templateFile, ".tmpl")
 		destPath := filepath.Join(outputDir, outputFileName)
 
-		// ファイルをコピー　する際に何かある {{.ServiceName}}をサービス名に置換
-		content, err := t.fileOperator.GetPathContents(srcPath)
+		// テンプレート内容を変換
+		content, err := t.convertToTemplateContent(srcPath, serviceName)
 		if err != nil {
-			return fmt.Errorf("❌ テンプレートファイルの読み込みに失敗しました (%s): %v", srcPath, err)
+			log.Printf("❌ テンプレート内容の変換に失敗しました (%s): %v", srcPath, err)
+			continue
 		}
-
-		ServiceNamePascal := t.stringOperator.ToPascalCase(serviceName)
-		ServiceNameCamel := t.stringOperator.ToCamelCase(serviceName)
-
-		log.Printf("🔧  置換: {{.ServiceNamePascal}} -> %s\n", ServiceNamePascal)
-		log.Printf("🔧  置換: {{.ServiceNameCamel}} -> %s\n", ServiceNameCamel)
-
-		content = []byte(strings.ReplaceAll(string(content), "{{.ServiceNamePascal}}", ServiceNamePascal))
-		content = []byte(strings.ReplaceAll(string(content), "{{.ServiceNameCamel}}", ServiceNameCamel))
 
 		if err := t.fileOperator.WriteFileContents(destPath, content, nil); err != nil {
 			return fmt.Errorf("❌ 出力ファイルの書き込みに失敗しました (%s): %v", destPath, err)
@@ -89,4 +71,42 @@ func (t *toolService) GenerateService(serviceName string, outputPath string) err
 	fmt.Printf("📍 出力先: %s\n", outputDir)
 
 	return nil
+}
+
+func (t *toolService) setupTemplateDir() (*string, error) {
+	// Repositoryのルートディレクトリを取得
+	repoRoot, err := t.fileOperator.GetRepositoryRootDir()
+	if err != nil {
+		return nil, fmt.Errorf("❌ リポジトリのルートディレクトリの取得に失敗しました: %v", err)
+	}
+
+	templatesDir := filepath.Join(repoRoot, templateRootDir)
+
+	exists, err := t.fileOperator.HasPath(templatesDir, ".")
+	if err != nil {
+		return nil, fmt.Errorf("❌ テンプレートディレクトリの確認でエラーが発生しました: %v", err)
+	}
+
+	if !exists {
+		return nil, fmt.Errorf("❌ テンプレートディレクトリが存在しません: %s", templatesDir)
+	}
+
+	return templatesDir, nil
+}
+
+func (t *toolService) convertToTemplateContent(path string, serviceName string) ([]byte, error) {
+	content, err := t.fileOperator.GetPathContents(path)
+
+	if err != nil {
+		return nil, fmt.Errorf("❌ テンプレートファイルの読み込みに失敗しました (%s): %v", path, err)
+	}
+
+	ServiceNamePascal := t.stringOperator.ToPascalCase(serviceName)
+	ServiceNameCamel := t.stringOperator.ToCamelCase(serviceName)
+
+	content = []byte(strings.ReplaceAll(string(content), "{{.ServiceNamePascal}}", ServiceNamePascal))
+	content = []byte(strings.ReplaceAll(string(content), "{{.ServiceNameCamel}}", ServiceNameCamel))
+
+
+	return content, nil
 }
