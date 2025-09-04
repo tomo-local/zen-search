@@ -1,0 +1,12 @@
+/**
+ * {{.ServiceNamePascal}} Service Helper - {{.ServiceNamePascal}}サービスのヘルパー関数
+ */
+
+import type { {{.ServiceNamePascal}} } from "./types";
+
+/**
+ * サンプルヘルパー関数
+ */
+export const filterValid{{.ServiceNamePascal}}s = (items: any[]): any[] => {
+  return items.filter(item => item && item.id);
+};

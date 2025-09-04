@@ -1,3 +1,8 @@
 [tools]
 node = "20.19.4"
 "npm:pnpm" = "10.0.0"
+go = "1.22.0"
+
+[tasks.service]
+description = "Create a new service"
+run = "go run ./scripts/tool/cmd gen:service"
