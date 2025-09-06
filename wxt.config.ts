@@ -1,24 +1,21 @@
 import { defineConfig } from "wxt";
+import tailwindcss from "@tailwindcss/vite";
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
-  runner: {
+  webExt: {
     disabled: true,
   },
-  modules: ["@wxt-dev/module-react"],
+  modules: ["@wxt-dev/module-react", "@wxt-dev/auto-icons"],
+  vite: () => ({
+    plugins: [tailwindcss()],
+  }),
   srcDir: "src",
   outDir: "dist",
   manifest: {
     name: "Zen Search",
     description: "Search your bookmarks and history",
     version: "1.2.0",
-    icons: {
-      16: "icon/16.png",
-      32: "icon/32.png",
-      48: "icon/48.png",
-      96: "icon/96.png",
-      128: "icon/128.png",
-    },
     permissions: ["tabs", "history", "activeTab", "bookmarks", "storage"],
     commands: {
       OPEN_POPUP: {
