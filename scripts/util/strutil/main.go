@@ -7,6 +7,7 @@ import (
 type Service interface {
 	ToCamelCase(s string) string
 	ToPascalCase(s string) string
+	ReplaceAllMapping(original string, mapping map[string]string) string
 }
 
 type stringOperator struct{}
@@ -42,4 +43,11 @@ func (s *stringOperator) ToPascalCase(str string) string {
 		}
 	}
 	return result
+}
+
+func (s *stringOperator) ReplaceAllMapping(original string, mapping map[string]string) string {
+	for old, new := range mapping {
+		original = strings.ReplaceAll(original, old, new)
+	}
+	return original
 }
