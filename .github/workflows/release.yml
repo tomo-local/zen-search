@@ -2,10 +2,12 @@ name: Release
 
 on:
   pull_request:
-    types: [closed]
-    branches: [main]
+    types:
+      - closed
+    branches:
+      - main
     paths:
-      - "wxt.config.ts"
+      - "!**/wxt.config.ts"
 
 jobs:
   create-release:
