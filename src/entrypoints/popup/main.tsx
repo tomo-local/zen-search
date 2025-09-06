@@ -15,5 +15,5 @@ chrome.runtime.onMessage.addListener((message) => {
 ReactDOM.createRoot(rootElement).render(
   <React.StrictMode>
     <App />
-  </React.StrictMode>
+  </React.StrictMode>,
 );
