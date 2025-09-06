@@ -31,9 +31,6 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Install semver
-        run: npm install semver
-
       - name: Create Release
         uses: actions/github-script@v7
         with:
