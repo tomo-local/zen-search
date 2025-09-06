@@ -3,12 +3,14 @@ import { MessageType } from "@/types/result";
 
 export const routeCommand = (command: string, _tab: chrome.tabs.Tab) => {
   switch (command) {
-    case MessageType.OPEN_POPUP:
-      contentService.open();
+    case MessageType.OPEN_POPUP: {
+      contentService.open({}).then((res) => {
+        if (!res.success) {
+          chrome.runtime.sendMessage({ type: "CLOSE_POPUP" });
+        }
+      });
       return true;
-    case MessageType.CLOSE_POPUP:
-      contentService.close();
-      return true;
+    }
     default:
       return false;
   }

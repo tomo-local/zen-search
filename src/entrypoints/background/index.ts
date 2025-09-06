@@ -4,9 +4,9 @@ export default defineBackground(() => {
   /**
    * @description コマンドのルーティング
    */
-  chrome.commands.onCommand.addListener((command, tab) =>
-    routeCommand(command, tab),
-  );
+  chrome.commands.onCommand.addListener((command, tab) => {
+    routeCommand(command, tab);
+  });
 
   /**
    * @description メッセージのルーティング
