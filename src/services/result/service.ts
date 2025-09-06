@@ -7,16 +7,27 @@ import type * as Type from "./types";
 // 型定義
 export interface ResultService {
   query: (
-    request: Type.QueryResultsRequest,
+    request: Type.QueryResultsRequest
   ) => Promise<Type.Result<Type.Kind>[]>;
 }
 
 // サンプル実装
 const queryResults = async (
-  request: Type.QueryResultsRequest,
+  request: Type.QueryResultsRequest
 ): Promise<Type.Result<Type.Kind>[]> => {
   const results: Type.Result<Type.Kind>[] = [];
   const { filters } = request;
+
+  if (filters.categories.includes("Tab")) {
+    const item = {
+      id: "1",
+      type: "Tab",
+      title: "Sample Tab Result",
+      url: "https://example.com/tab",
+    } as Type.Result<"Tab">;
+
+    results.push(item);
+  }
 
   if (filters.categories.includes("Bookmark")) {
     const item = {
@@ -24,17 +35,6 @@ const queryResults = async (
       type: "Bookmark",
       title: "Sample Bookmark Result",
       url: "https://example.com/bookmark",
-      data: {
-        id: "2",
-        title: "Sample Bookmark Result",
-        url: "https://example.com/bookmark",
-        data: {
-          dateAdded: Date.now(),
-          parentId: "0",
-          unmodifiable: undefined,
-          dateGroupModified: undefined,
-        },
-      },
     } as Type.Result<"Bookmark">;
 
     results.push(item);
@@ -46,16 +46,6 @@ const queryResults = async (
       type: "History",
       title: "Sample History Result",
       url: "https://example.com/history",
-      data: {
-        id: "3",
-        title: "Sample History Result",
-        url: "https://example.com/history",
-        data: {
-          lastVisitTime: Date.now(),
-          typedCount: 1,
-          visitCount: 5,
-        },
-      },
     } as Type.Result<"History">;
 
     results.push(item);
@@ -67,12 +57,6 @@ const queryResults = async (
       type: "Suggestion",
       title: "Sample Suggestion Result",
       url: "https://example.com/suggestion",
-      data: {
-        id: "4",
-        title: "Sample Suggestion Result",
-        url: "https://example.com/suggestion",
-        data: {},
-      },
     } as Type.Result<"Suggestion">;
 
     results.push(item);
@@ -84,7 +68,7 @@ const queryResults = async (
     return results.filter(
       (result) =>
         result.title.toLowerCase().includes(query.toLowerCase()) ||
-        result.url.toLowerCase().includes(query.toLowerCase()),
+        result.url.toLowerCase().includes(query.toLowerCase())
     );
   }
   return results;
