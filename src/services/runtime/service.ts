@@ -5,15 +5,19 @@ import type {
 import { contentService } from "@/services/content";
 import type { History, SearchHistoryRequest } from "@/services/history/types";
 import type {
+  Kind,
+  QueryResultsRequest,
+  Result,
+} from "@/services/result/types";
+import type {
   CreateTabRequest,
   QueryTabsRequest,
   RemoveTabRequest,
   Tab,
   UpdateTabRequest,
 } from "@/services/tab/types";
-import { MessageType } from "@/types/result";
 import { RuntimeServiceError } from "./error";
-import type { RuntimeResponse } from "./types";
+import { MessageType, type RuntimeResponse } from "./types";
 
 export interface RuntimeService {
   queryTabs: (request: QueryTabsRequest) => Promise<Tab[]>;
@@ -22,6 +26,7 @@ export interface RuntimeService {
   removeTab: (request: RemoveTabRequest) => Promise<void>;
   searchHistory: (request: SearchHistoryRequest) => Promise<History[]>;
   searchBookmarks: (request: QueryBookmarksRequest) => Promise<Bookmark[]>;
+  queryResults: (request: QueryResultsRequest) => Promise<Result<Kind>[]>;
   openContent: () => Promise<void>;
   closeContent: () => Promise<void>;
 }
@@ -159,6 +164,29 @@ const searchBookmarks = async ({
   }
 };
 
+const queryResults = async ({
+  filters,
+}: QueryResultsRequest): Promise<Result<Kind>[]> => {
+  try {
+    const response = (await chrome.runtime.sendMessage({
+      type: MessageType.QUERY_RESULT,
+      filters,
+    })) as RuntimeResponse<Result<Kind>[]>;
+
+    return response.result;
+  } catch (error) {
+    if (error instanceof RuntimeServiceError) {
+      throw error;
+    }
+
+    console.error("Failed to query results via runtime:", error);
+    throw new RuntimeServiceError(
+      "結果の検索に失敗しました",
+      error instanceof Error ? error : new Error(String(error)),
+    );
+  }
+};
+
 const openContent = async (): Promise<void> => {
   try {
     await chrome.runtime.sendMessage({ type: MessageType.OPEN_POPUP });
@@ -188,6 +216,7 @@ export const createRuntimeService = (): RuntimeService => ({
   removeTab,
   searchHistory,
   searchBookmarks,
+  queryResults,
   openContent,
   closeContent,
 });
