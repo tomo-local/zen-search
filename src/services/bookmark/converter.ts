@@ -3,7 +3,7 @@
  */
 
 import { ResultType } from "@/types/result";
-import type { Bookmark } from "./types";
+import type { Bookmark, NewBookmark } from "./types";
 
 export function convertBookmarkToResult(
   bookmark: chrome.bookmarks.BookmarkTreeNode,
@@ -19,5 +19,13 @@ export function convertBookmarkToResult(
       dateGroupModified: bookmark?.dateGroupModified,
       unmodifiable: bookmark?.unmodifiable,
     },
+  };
+}
+
+export function convertNewBookmark(
+  bookmark: chrome.bookmarks.BookmarkTreeNode,
+): NewBookmark {
+  return {
+    data: bookmark,
   };
 }
