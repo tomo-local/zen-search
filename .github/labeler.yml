@@ -1,34 +1,36 @@
 doc:
   - changed-files:
-    - any-glob-to-any-file: "docs/**"
+      - any-glob-to-any-file: "docs/**"
 popup:
   - changed-files:
-    - any-glob-to-any-file: "src/entrypoints/popup/**"
-content:
-  - changed-files:
-    - any-glob-to-any-file: "src/entrypoints/content/**"
+      - any-glob-to-any-file: "src/entrypoints/popup/**"
 components:
   - changed-files:
-    - any-glob-to-any-file:
-      - "src/components/**"
-      - "src/context/**"
-backend:
-  - changed-files:
-    - any-glob-to-any-file:
-      - "src/functions/**"
-      - "src/entrypoints/background/**"
-service:
-  - changed-files:
-    - any-glob-to-any-file:
-      - "src/services/**"
+      - any-glob-to-any-file:
+          - "src/components/**"
+          - "src/context/**"
 hooks:
   - changed-files:
-    - any-glob-to-any-file: "src/hooks/**"
+      - any-glob-to-any-file: "src/hooks/**"
+backend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/entrypoints/background/**"
+service:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/services/**"
 utilities:
   - changed-files:
-    - any-glob-to-any-file: "src/utils/**"
+      - any-glob-to-any-file: "src/utils/**"
+scripts:
+  - changed-files:
+      - any-glob-to-any-file: "scripts/**"
+templates:
+  - changed-files:
+      - any-glob-to-any-file: "src/templates/**"
 ci:
   - changed-files:
-    - any-glob-to-any-file:
-      - ".github/workflows/**"
-      - ".gemini/**"
+      - any-glob-to-any-file:
+          - ".github/workflows/**"
+          - ".gemini/**"
