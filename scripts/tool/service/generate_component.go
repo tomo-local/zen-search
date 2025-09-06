@@ -110,10 +110,10 @@ func isValidComponentName(name string) bool {
 	return true
 }
 
-func (t *toolService) generateComponentFile(templateFilePath string, componentName string, fullOutputPath string) error {
+func (t *toolService) generateComponentFile(templateFilePath string, componentName string, outputPath string) error {
 	tmpFileName, err := t.fileOperator.ChooseFileName(templateFilePath)
 	if err != nil {
-		return nil, fmt.Errorf("error getting template file name: %v", err)
+		return fmt.Errorf("error getting template file name: %v", err)
 	}
 
 	outputFileName := strings.TrimSuffix(tmpFileName, ".tmpl")
@@ -125,13 +125,13 @@ func (t *toolService) generateComponentFile(templateFilePath string, componentNa
 
 	content, err := t.replaceMappingValues(templateFilePath, mapping)
 	if err != nil {
-		return nil, err
+		return err
 	}
 
-	destPath := filepath.Join(fullOutputPath, outputFileName)
+	destPath := filepath.Join(outputPath, outputFileName)
 
 	if err := t.fileOperator.WriteFileContents(destPath, []byte(content), nil); err != nil {
-		return nil, fmt.Errorf("❌ Error writing file (%s): %v", destPath, err)
+		return fmt.Errorf("❌ Error writing file (%s): %v", destPath, err)
 	}
 
 	fmt.Printf("  ✅ %s -> %s\n", outputFileName, destPath)
