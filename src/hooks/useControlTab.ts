@@ -10,7 +10,7 @@ export default function useTabControl() {
     }
   }, []);
 
-  const updateTab = useCallback(async (tabId: number, windowId?: number) => {
+  const updateTab = useCallback(async (tabId: number, windowId: number) => {
     try {
       await runtimeService.updateTab({ tabId, windowId });
     } catch (error) {
