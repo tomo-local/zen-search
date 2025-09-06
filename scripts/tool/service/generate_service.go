@@ -8,105 +8,78 @@ import (
 )
 
 var (
-	templateRootDir = "/templates/services"
+	templateServiceRootDir = "/templates/services"
 )
 
 func (t *toolService) GenerateService(serviceName string, outputPath string) error {
-	fmt.Printf("🎯 サービス名: %s でテンプレートをコピーします...\n", serviceName)
-	fmt.Printf("📁 出力先ベースパス: %s\n", outputPath)
-
-	templatesDir, err := t.setupTemplateDir()
-	if err != nil {
-		return err
-	}
+	fmt.Printf("🎯 Copying templates for service: %s...\n", serviceName)
+	fmt.Printf("📁 Output base path: %s\n", outputPath)
 
 	// 出力先ディレクトリのパスを設定
 	outputDir := filepath.Join(outputPath, serviceName)
 
 	exists, err := t.fileOperator.HasPath(outputPath, serviceName)
 	if err != nil {
-		return fmt.Errorf("❌ 出力先ディレクトリの確認でエラーが発生しました: %v", err)
+		return fmt.Errorf("❌ Error occurred while checking output directory: %v", err)
 	}
 	if !exists {
 		if err := t.fileOperator.CreateDirectory(outputDir, nil); err != nil {
-			return fmt.Errorf("❌ 出力先ディレクトリの作成に失敗しました: %v", err)
+			return fmt.Errorf("❌ Error creating output directory: %v", err)
 		}
-		fmt.Printf("📂 出力先ディレクトリを作成しました: %s\n", outputDir)
+		fmt.Printf("📂 Created output directory: %s\n", outputDir)
 	}
 
 	// テンプレートファイルの一覧を取得
-	templateFiles, err := t.fileOperator.GetPathList(templatesDir)
+	templateFilePaths, err := t.listTemplateFilePaths(templateServiceRootDir)
 	if err != nil {
-		return fmt.Errorf("❌ テンプレートディレクトリの読み取りに失敗しました: %v", err)
+		return err
 	}
 
-	fmt.Println("\n📝 ファイルをコピー中...")
-
+	fmt.Println("\n📝 Copying files...")
 	// 各テンプレートファイルをコピー
-	for _, templateFile := range templateFiles {
-		if !strings.HasSuffix(templateFile, ".tmpl") {
+	for _, filePath := range templateFilePaths {
+		if !strings.HasSuffix(filePath, ".tmpl") {
 			continue
 		}
 
-		// テンプレートファイルのパス
-		srcPath := filepath.Join(templatesDir, templateFile)
-		outputFileName := strings.TrimSuffix(templateFile, ".tmpl")
-		destPath := filepath.Join(outputDir, outputFileName)
-
-		// テンプレート内容を変換
-		content, err := t.convertToTemplateContent(srcPath, serviceName)
-		if err != nil {
-			log.Printf("❌ テンプレート内容の変換に失敗しました (%s): %v", srcPath, err)
-			continue
+		if err := t.generateServiceFile(filePath, serviceName, outputDir); err != nil {
+			t.rollbackCreatedDirectory(outputDir)
+			return fmt.Errorf("❌ Error generating service file (%s): %v", filePath, err)
 		}
 
-		if err := t.fileOperator.WriteFileContents(destPath, content, nil); err != nil {
-			return fmt.Errorf("❌ 出力ファイルの書き込みに失敗しました (%s): %v", destPath, err)
-		}
-
-		fmt.Printf("  ✅ %s -> %s\n", srcPath, destPath)
+		fmt.Printf("	✅ Processed template file: %s\n", filePath)
 	}
 
-	fmt.Printf("\n🎉 サービス '%s' のテンプレートファイルのコピーが完了しました！\n", serviceName)
-	fmt.Printf("📍 出力先: %s\n", outputDir)
-
+	fmt.Printf("🎉 Success! Service %s has been generated at %s\n", serviceName, outputDir)
 	return nil
 }
 
-func (t *toolService) setupTemplateDir() (string, error) {
-	// Repositoryのルートディレクトリを取得
-	repoRoot, err := t.fileOperator.GetRepositoryRootDir()
+func (t *toolService) generateServiceFile(filePath string, serviceName string, outputPath string) error {
+	tmpFileName, err := t.fileOperator.ChooseFileName(filePath)
 	if err != nil {
-		return "", fmt.Errorf("❌ リポジトリのルートディレクトリの取得に失敗しました: %v", err)
+		return fmt.Errorf("❌ Error getting template file name: %v", err)
+	}
+	outputFileName := strings.TrimSuffix(tmpFileName, ".tmpl")
+
+	serviceNamePascal := t.stringOperator.ToPascalCase(serviceName)
+	serviceNameCamel := t.stringOperator.ToCamelCase(serviceName)
+
+	mapping := map[string]string{
+		"{{.ServiceNamePascal}}": serviceNamePascal,
+		"{{.ServiceNameCamel}}":  serviceNameCamel,
 	}
 
-	templatesDir := filepath.Join(repoRoot, templateRootDir)
-
-	exists, err := t.fileOperator.HasPath(templatesDir, ".")
+	content, err := t.replaceMappingValues(path, mapping)
 	if err != nil {
-		return "", fmt.Errorf("❌ テンプレートディレクトリの確認でエラーが発生しました: %v", err)
+		return fmt.Errorf("❌ Error replacing mapping values: %v", err)
 	}
 
-	if !exists {
-		return "", fmt.Errorf("❌ テンプレートディレクトリが存在しません: %s", templatesDir)
+	destPath := filepath.Join(outputPath, outputFileName)
+
+	if err := t.fileOperator.WriteFileContents(destPath, []byte(content), nil); err != nil {
+		return fmt.Errorf("❌ Error writing file (%s): %v", destPath, err)
 	}
 
-	return templatesDir, nil
-}
-
-func (t *toolService) convertToTemplateContent(path string, serviceName string) ([]byte, error) {
-	content, err := t.fileOperator.GetPathContents(path)
-
-	if err != nil {
-		return nil, fmt.Errorf("❌ テンプレートファイルの読み込みに失敗しました (%s): %v", path, err)
-	}
-
-	ServiceNamePascal := t.stringOperator.ToPascalCase(serviceName)
-	ServiceNameCamel := t.stringOperator.ToCamelCase(serviceName)
-
-	content = []byte(strings.ReplaceAll(string(content), "{{.ServiceNamePascal}}", ServiceNamePascal))
-	content = []byte(strings.ReplaceAll(string(content), "{{.ServiceNameCamel}}", ServiceNameCamel))
-
-
-	return content, nil
+	fmt.Printf("  ✅ %s -> %s\n", outputFileName, destPath)
+	return nil
 }
