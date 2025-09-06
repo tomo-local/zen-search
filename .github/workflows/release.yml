@@ -6,8 +6,6 @@ on:
       - closed
     branches:
       - main
-    paths:
-      - "!**/wxt.config.ts"
 
 jobs:
   create-release:
