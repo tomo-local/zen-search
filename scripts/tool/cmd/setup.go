@@ -65,8 +65,6 @@ func setupGenerateComponent(toolService service.Service) *cobra.Command {
 
 	// generateコマンドの実行時に呼び出される関数を設定
 	cmd.Run = func(cmd *cobra.Command, args []string) {
-		log.Println("Generating component:", args)
-
 		err := toolService.GenerateComponent(cmd.Flag("name").Value.String(), cmd.Flag("path").Value.String())
 		if err != nil {
 			log.Println(err)
