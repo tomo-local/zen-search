@@ -1,0 +1,111 @@
+name: Create Release
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+
+jobs:
+  create-release:
+    # マージされた かつ release/ ブランチからのPRの場合のみ実行
+    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Install semver
+        run: npm install semver
+
+      - name: Create Release
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+            const semver = require('semver');
+
+            // マージされたブランチ名からバージョンを取得
+            const branchName = '${{ github.event.pull_request.head.ref }}';
+            const versionMatch = branchName.match(/release\/v?(.+)/);
+
+            if (!versionMatch) {
+              throw new Error(`ブランチ名 ${branchName} からバージョンが取得できないよ〜 😢`);
+            }
+
+            const version = versionMatch[1];
+            const tagName = `v${version}`;
+
+            console.log(`🎯 バージョン ${version} のリリースを作成するよ〜！`);
+
+            // 既存のタグをチェック
+            try {
+              await github.rest.git.getRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `tags/${tagName}`
+              });
+              console.log(`⚠️ タグ ${tagName} は既に存在してるよ〜`);
+              return;
+            } catch (error) {
+              if (error.status !== 404) {
+                throw error;
+              }
+              // 404の場合は存在しないので続行
+            }
+
+            // マージコミットのSHAを取得
+            const mergeCommitSha = '${{ github.event.pull_request.merge_commit_sha }}';
+
+            console.log(`📝 マージコミット SHA: ${mergeCommitSha}`);
+
+            // タグを作成
+            const { data: tag } = await github.rest.git.createTag({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag: tagName,
+              message: `Release ${tagName}`,
+              object: mergeCommitSha,
+              type: 'commit'
+            });
+
+            console.log(`🏷️ タグ ${tagName} 作成完了！`);
+
+            // タグのリファレンスを作成
+            await github.rest.git.createRef({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              ref: `refs/tags/${tagName}`,
+              sha: tag.sha
+            });
+
+            // リリースノートを生成（GitHub がコミット履歴から自動生成）
+            const { data: releaseNotes } = await github.rest.repos.generateReleaseNotes({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tagName
+            });
+
+            // リリースを作成
+            const { data: release } = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: tagName,
+              name: `Release ${tagName}`,
+              body: releaseNotes.body,
+              draft: false,
+              prerelease: false,
+              generate_release_notes: true
+            });
+
+            console.log(`🎉 リリース ${tagName} 作成完了！`);
+            console.log(`📋 リリースURL: ${release.html_url}`);
