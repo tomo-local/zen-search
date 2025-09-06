@@ -67,7 +67,7 @@ func (t *toolService) generateServiceFile(filePath string, serviceName string, o
 
 	content, err := t.replaceMappingValues(path, mapping)
 	if err != nil {
-		return "", err
+		return fmt.Errorf("error replacing mapping values: %v", err)
 	}
 
 	destPath := filepath.Join(outputPath, outputFileName)
