@@ -8,100 +8,94 @@ import (
 
 func (t *toolService) GenerateComponent(name string, outputPath string) error {
 	var componentName string
-	var componentType string
 	var fullOutputPath string
+
+	repoRoot, err := t.fileOperator.GetRepositoryRootDir()
+	if err != nil {
+		return fmt.Errorf("❌ Error getting repository root dir: %v", err)
+	}
 
 	// フラグで引数が渡された場合
 	if name != "" && outputPath != "" {
 		componentName = t.stringOperator.ToPascalCase(name)
-		fullOutputPath = outputPath
-		fmt.Printf("✨ 引数指定モード: %s -> %s\n", name, componentName)
-	} else {
-		// プロンプトモードで入力を取得
-		selectedType, err := t.promptOperator.Select("Component の種類を選択してください", []string{"modals", "widgets"}, "widgets")
-		if err != nil {
-			return fmt.Errorf("❌ Component の種類の選択に失敗しました: %v", err)
+
+		if err := t.validateComponentName(name, outputPath); err != nil {
+			return err
 		}
 
-		componentType = selectedType
-		fmt.Printf("🛠 選択された Component の種類: %s\n", componentType)
+		fullOutputPath = outputPath
 
-		// コンポーネント名を入力
+		fmt.Printf("✨ PascalCase to: %s\n", componentName)
+		fmt.Printf("📁 Output base path: %s\n", fullOutputPath)
+	} else {
+		// プロンプトモードで入力を取得
+		selectedType, err := t.promptOperator.Select("Select component type", []string{"modals", "widgets"}, "widgets")
+		if err != nil {
+			return fmt.Errorf("❌ Error selecting component type: %v", err)
+		}
+		outputBasePath := filepath.Join(repoRoot, "src/components", selectedType)
+
 		inputName, err := t.promptOperator.InputWithValidation(
-			"コンポーネント名を入力してください（PascalCaseに自動変換されます）",
+			"Enter component name (to be converted to PascalCase)",
 			func(input string) error {
-				err := t.validateComponentName(input, componentType)
+				err := t.validateComponentName(input, outputBasePath)
 				if err != nil {
 					return err
 				}
-
 				return nil
 			},
 		)
-
 		if err != nil {
-			return fmt.Errorf("❌ コンポーネント名の入力に失敗しました: %v", err)
+			return fmt.Errorf("❌ Error getting component name: %v", err)
 		}
-
-		// PascalCase に変換
 		componentName = t.stringOperator.ToPascalCase(inputName)
-		fmt.Printf("✨ PascalCase変換後: %s\n", componentName)
+		fmt.Printf("✨ PascalCase to: %s\n", componentName)
 
-		// 出力パス設定
-		repoRoot, err := t.fileOperator.GetRepositoryRootDir()
-		if err != nil {
-			return fmt.Errorf("❌ リポジトリのルートディレクトリの取得に失敗しました: %v", err)
-		}
-		fullOutputPath = filepath.Join(repoRoot, "src/components", componentType, componentName)
+		fullOutputPath = filepath.Join(outputBasePath, componentName)
 	}
 
 	// コンポーネントディレクトリの作成
-	if err := t.createComponentDirectory(fullOutputPath); err != nil {
-		return err
+	if err := t.fileOperator.CreateDirectory(fullOutputPath, nil); err != nil {
+		return fmt.Errorf("❌ Error creating component directory: %v", err)
 	}
 
 	// テンプレートファイルの処理
-	if templateFiles, err := t.getTemplateFiles("templates/components"); err != nil {
+	templateFilePaths, err := t.listTemplateFilePaths("templates/components")
+	if err != nil {
 		return err
 	}
 
-	for _, file := range templateFiles {
-		if !strings.HasSuffix(file, ".tmpl") {
+	for _, filePath := range templateFilePaths {
+		if !strings.HasSuffix(filePath, ".tmpl") {
 			continue
 		}
 
-		if err := t.processSingleTemplate(templatesDir, templateFile, componentName, fullOutputPath); err != nil {
-			fmt.Printf("❌ テンプレート処理失敗 (%s): %v\n", templateFile, err)
-			continue
+		if err := t.generateComponentFile(filePath, componentName, fullOutputPath); err != nil {
+			t.rollbackCreatedDirectory(fullOutputPath)
+			return fmt.Errorf("❌ Error generating component file (%s): %v", filePath, err)
 		}
+
+		fmt.Printf("  ✅ Processed template file: %s\n", filePath)
 	}
 
-	fmt.Printf("🎉 コンポーネント %s を %s に生成完了！\n", componentName, fullOutputPath)
+	fmt.Printf("🎉 Success! Component %s has been generated at %s\n", componentName, fullOutputPath)
 	return nil
 }
 
-func (t *toolService) validateComponentName(name string, compType string) error {
+func (t *toolService) validateComponentName(name string, path string) error {
 	if strings.TrimSpace(name) == "" {
-		return fmt.Errorf("コンポーネント名は必須です")
+		return fmt.Errorf("component name is required")
 	}
 
 	if !isValidComponentName(name) {
-		return fmt.Errorf("コンポーネント名は英数字、ハイフン、アンダースコアのみ使用できます")
-	}
-
-	// すでに存在するかチェック
-	repoRoot, err := t.fileOperator.GetRepositoryRootDir()
-	if err != nil {
-		return fmt.Errorf("リポジトリのルートディレクトリの取得に失敗しました: %v", err)
+		return fmt.Errorf("component name must consist of alphanumeric characters, hyphens, and underscores only: %s", name)
 	}
 
 	componentName := t.stringOperator.ToPascalCase(name)
 
-	fullPath := filepath.Join(repoRoot, "src/components", compType)
-
-	exists, _ := t.fileOperator.HasPath(fullPath, componentName)
+	exists, _ := t.fileOperator.HasPath(path, componentName)
 	if exists {
-		return fmt.Errorf("コンポーネントは既に存在します: %s", componentName)
+		return fmt.Errorf("component already exists: %s", componentName)
 	}
 
 	return nil
@@ -116,40 +110,30 @@ func isValidComponentName(name string) bool {
 	return true
 }
 
-func (t *toolService) createComponentDirectory(fullOutputPath string) error {
-	if err := t.fileOperator.CreateDirectory(fullOutputPath, nil); err != nil {
-		return fmt.Errorf("❌ コンポーネントディレクトリの作成に失敗しました: %v", err)
+func (t *toolService) generateComponentFile(templateFilePath string, componentName string, fullOutputPath string) error {
+	tmpFileName, err := t.fileOperator.ChooseFileName(templateFilePath)
+	if err != nil {
+		return nil, fmt.Errorf("error getting template file name: %v", err)
 	}
-	fmt.Printf("📂 コンポーネントディレクトリを作成しました: %s\n", fullOutputPath)
-	return nil
-}
 
-func (t *toolService) processSingleTemplate(templatesDir, templateFile, componentName, fullOutputPath string) error {
-	srcPath := filepath.Join(templatesDir, templateFile)
-	outputFileName := strings.TrimSuffix(templateFile, ".tmpl")
+	outputFileName := strings.TrimSuffix(tmpFileName, ".tmpl")
 	outputFileName = strings.ReplaceAll(outputFileName, "Component", componentName)
+
+	mapping := map[string]string{
+		"{{.Component}}": componentName,
+	}
+
+	content, err := t.replaceMappingValues(templateFilePath, mapping)
+	if err != nil {
+		return nil, err
+	}
+
 	destPath := filepath.Join(fullOutputPath, outputFileName)
 
-	content, err := t.convertToTemplateContentForComponent(srcPath, componentName)
-	if err != nil {
-		return err
-	}
-
 	if err := t.fileOperator.WriteFileContents(destPath, []byte(content), nil); err != nil {
-		return fmt.Errorf("書き込み失敗: %v", err)
+		return nil, fmt.Errorf("❌ Error writing file (%s): %v", destPath, err)
 	}
 
-	fmt.Printf("  ✅ %s -> %s\n", templateFile, outputFileName)
+	fmt.Printf("  ✅ %s -> %s\n", outputFileName, destPath)
 	return nil
-}
-
-// 戻り値をstringに変更 🔧
-func (t *toolService) convertToTemplateContentForComponent(path string, name string) (string, error) {
-	content, err := t.fileOperator.GetPathContents(path)
-	if err != nil {
-		return "", fmt.Errorf("テンプレートファイルの読み込み失敗 (%s): %v", path, err)
-	}
-
-	result := strings.ReplaceAll(string(content), "{{.Component}}", name)
-	return result, nil
 }
