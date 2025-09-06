@@ -92,13 +92,6 @@ jobs:
               sha: tag.sha
             });
 
-            // リリースノートを生成（GitHub がコミット履歴から自動生成）
-            const { data: releaseNotes } = await github.rest.repos.generateReleaseNotes({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: tagName
-            });
-
             // リリースを作成
             const { data: release } = await github.rest.repos.createRelease({
               owner: context.repo.owner,
