@@ -117,9 +117,21 @@ func (f *fileOperator) HasPath(path string, name string) (bool, error) {
 	return true, nil
 }
 
-
-
 func (f *fileOperator) ChooseFileName(pathFileName string) (string, error) {
+	if pathFileName == "" {
+		return "", fmt.Errorf("file path is empty")
+	}
+
 	root := strings.Split(pathFileName, "/")
-	return root[len(root)-1], nil
+
+	if len(root) == 0 {
+		return "", fmt.Errorf("invalid file path: %s", pathFileName)
+	}
+
+	fileName := root[len(root)-1]
+	if fileName == "" {
+		return "", fmt.Errorf("file name is empty in path: %s", pathFileName)
+	}
+
+	return fileName, nil
 }
