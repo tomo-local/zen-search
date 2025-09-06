@@ -194,7 +194,7 @@ const openContent = async (): Promise<void> => {
     console.error(`Failed to open Content:`, error);
     // WARN: 処理が失敗した場合はPopup のサービスを表示する
     // Contentが表示できない場合はにPopupを表示する
-    contentService.open();
+    contentService.open({});
   }
 };
 
