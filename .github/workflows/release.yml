@@ -40,7 +40,6 @@ jobs:
 
             console.log(`🚀 リリース作成開始だ〜！実行方法: ${context.eventName}`);
 
-            // wxt.config.tsから現在のバージョンを取得
             const configPath = 'wxt.config.ts';
             const configContent = fs.readFileSync(configPath, 'utf8');
             const versionMatch = configContent.match(/version:\s*"([^"]+)"/);
@@ -52,80 +51,14 @@ jobs:
             const currentVersion = versionMatch[1];
             const newTagName = `v${currentVersion}`;
 
-            console.log(`🎯 バージョン ${currentVersion} で新しいタグ ${newTagName} を作成するよ〜！`);
-
-            // 既存のタグをチェック
-            try {
-              await github.rest.git.getRef({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                ref: `tags/${newTagName}`
-              });
-              console.log(`⚠️ タグ ${newTagName} は既に存在してるよ〜`);
-            } catch (error) {
-              if (error.status === 404) {
-                // タグが存在しない場合、新しく作成
-                const { data: ref } = await github.rest.git.getRef({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  ref: 'heads/main'
-                });
-
-                // 新しいタグを作成
-                const { data: tag } = await github.rest.git.createTag({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  tag: newTagName,
-                  message: `Release ${newTagName}`,
-                  object: ref.object.sha,
-                  type: 'commit'
-                });
-
-                // タグのリファレンスを作成
-                await github.rest.git.createRef({
-                  owner: context.repo.owner,
-                  repo: context.repo.repo,
-                  ref: `refs/tags/${newTagName}`,
-                  sha: tag.sha
-                });
-
-                console.log(`🏷️ 新しいタグ ${newTagName} 作成完了！`);
-              } else {
-                throw error;
-              }
-            }
-
-            // 既存のリリースをチェック
-            try {
-              await github.rest.repos.getReleaseByTag({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                tag: newTagName
-              });
-              console.log(`⚠️ リリース ${newTagName} は既に存在してるから終了〜`);
-              return;
-            } catch (error) {
-              if (error.status !== 404) {
-                throw error;
-              }
-            }
-
-            // リリースノートを生成
-            const { data: releaseNotes } = await github.rest.repos.generateReleaseNotes({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              tag_name: newTagName
-            });
-
-            // リリースを作成
             const { data: release } = await github.rest.repos.createRelease({
               owner: context.repo.owner,
               repo: context.repo.repo,
               tag_name: newTagName,
-              name: `Release ${newTagName}`,
-              body: releaseNotes.body,
+              name: newTagName,
               draft: false,
-              prerelease: false
+              prerelease: false,
+              generate_release_notes: true
             });
 
             console.log(`🎉 リリース ${newTagName} 作成完了！`);
