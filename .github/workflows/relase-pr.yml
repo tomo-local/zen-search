@@ -82,7 +82,8 @@ jobs:
               owner: context.repo.owner,
               repo: context.repo.repo,
               path: configPath,
-              ref: branchName
+              ref: branchName,
+              force: true
             });
 
             await github.rest.repos.createOrUpdateFileContents({
