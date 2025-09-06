@@ -19,6 +19,8 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      issues: write
+      repository-projects: write
 
     steps:
       - name: Checkout code
@@ -31,9 +33,8 @@ jobs:
         with:
           node-version: "18"
 
-      - name: Install all dependencies
-        run: |
-          npm install semver fs
+      - name: Install dependencies
+        run: npm install semver
 
       - name: Create Release PR
         uses: actions/github-script@v7
@@ -54,36 +55,54 @@ jobs:
             }
 
             const currentVersion = versionMatch[1];
-
             const newVersion = semver.inc(currentVersion, versionType);
-
             const branchName = `release/v${newVersion}`;
 
+            console.log(`🚀 ${currentVersion} → ${newVersion} でいくぞ！`);
+
+            // mainブランチの最新取得
             const { data: ref } = await github.rest.git.getRef({
               owner: context.repo.owner,
               repo: context.repo.repo,
               ref: `heads/main`
             });
 
-            await github.rest.git.createRef({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              ref: `refs/heads/${branchName}`,
-              sha: ref.object.sha
-            });
+            // ブランチ作成（既存あっても強制更新）
+            try {
+              await github.rest.git.createRef({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                ref: `refs/heads/${branchName}`,
+                sha: ref.object.sha
+              });
+              console.log(`🌿 ブランチ ${branchName} 新規作成！`);
+            } catch (error) {
+              if (error.status === 422) {
+                // 既存ブランチを強制更新
+                await github.rest.git.updateRef({
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  ref: `heads/${branchName}`,
+                  sha: ref.object.sha,
+                  force: true
+                });
+                console.log(`💪 既存ブランチを強制更新したぞ！`);
+              } else {
+                throw error;
+              }
+            }
 
+            // wxt.config.ts更新
             const updatedConfig = configContent.replace(
               /version:\s*"[^"]+"/,
               `version: "${newVersion}"`
             );
 
-            // ファイルを更新
             const { data: configFile } = await github.rest.repos.getContent({
               owner: context.repo.owner,
               repo: context.repo.repo,
               path: configPath,
-              ref: branchName,
-              force: true
+              ref: branchName
             });
 
             await github.rest.repos.createOrUpdateFileContents({
@@ -96,19 +115,48 @@ jobs:
               branch: branchName
             });
 
-            const { data: pr } = await github.rest.pulls.create({
+            console.log(`📝 ファイル更新完了！`);
+
+            // 既存PR確認
+            const { data: existingPRs } = await github.rest.pulls.list({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              title: `Release v${newVersion}`,
-              head: branchName,
-              base: 'main',
-              body: `v${newVersion}`,
-              draft: false
+              head: `${context.repo.owner}:${branchName}`,
+              state: 'open'
             });
 
-            await github.rest.issues.addLabels({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: pr.number,
-              labels: ['release']
-            });
+            if (existingPRs.length > 0) {
+              // 既存PR更新
+              const pr = existingPRs[0];
+              await github.rest.pulls.update({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: pr.number,
+                title: `Release v${newVersion}`,
+                body: `v${newVersion}`
+              });
+              console.log(`🔄 既存PR #${pr.number} 更新したよ！`);
+            } else {
+              // 新しいPR作成
+              const { data: pr } = await github.rest.pulls.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: `Release v${newVersion}`,
+                head: branchName,
+                base: 'main',
+                body: `v${newVersion}`,
+                draft: false
+              });
+
+              // releaseラベル追加
+              await github.rest.issues.addLabels({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: pr.number,
+                labels: ['release']
+              });
+
+              console.log(`🎉 新しいPR #${pr.number} 作ったぞ！`);
+            }
+
+            console.log(`✅ 全部完了！お疲れさま〜 😄`);
