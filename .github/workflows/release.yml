@@ -8,13 +8,17 @@ on:
       - main
     paths:
       - "wxt.config.ts"
+  workflow_dispatch:
 
 jobs:
   create-release:
     # マージされた かつ release/ ブランチからのPRの場合のみ実行
-    if: github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')
-    runs-on: ubuntu-latest
+    if: |
+      (github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')) ||
+      github.event_name == 'workflow_dispatch'
 
+    name: "Create Release from Latest Tag"
+    runs-on: ubuntu-latest
     permissions:
       contents: write
 
