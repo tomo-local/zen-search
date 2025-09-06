@@ -2,7 +2,7 @@ import type { ResultType } from "@/types/result";
 
 export interface Tab {
   type: ResultType.Tab;
-  id: string;
+  id: number;
   title: string;
   url: string;
   data: TabData;

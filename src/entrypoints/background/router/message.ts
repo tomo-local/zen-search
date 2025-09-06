@@ -21,7 +21,6 @@ import { MessageType } from "@/types/result";
 
 const {
   OPEN_POPUP,
-  CLOSE_POPUP,
   QUERY_TAB,
   CREATE_TAB,
   UPDATE_TAB,
@@ -40,7 +39,6 @@ function sendResponse(
 
 type Message =
   | { type: "OPEN_POPUP" }
-  | { type: "CLOSE_POPUP" }
   | QueryTabsRequest
   | CreateTabRequest
   | UpdateTabRequest
@@ -55,8 +53,7 @@ export function routeMessage(
 ): boolean {
   switch (message.type) {
     case OPEN_POPUP:
-    case CLOSE_POPUP:
-      contentService.openTabs(contentService.open());
+      contentService.openTabs(contentService.open({}));
       return true;
 
     case QUERY_TAB: {

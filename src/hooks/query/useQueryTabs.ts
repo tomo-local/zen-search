@@ -8,12 +8,6 @@ export default function useQueryTabs(query: string, type: ResultType) {
   const [filteredTabs, setFilteredTabs] = useState<Tab[]>([]);
 
   const queryTabs = useCallback(async (searchQuery: string) => {
-    if (!searchQuery.trim()) {
-      setFilteredTabs([]);
-      setLoading(false);
-      return;
-    }
-
     try {
       setLoading(true);
       const result = await runtimeService.queryTabs({

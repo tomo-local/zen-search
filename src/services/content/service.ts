@@ -3,37 +3,43 @@
  * 責任: 各種コンテンツ（ポップアップ、タブ、ランタイム）の開閉を担当
  */
 
-// 型定義
+import type * as Type from "./types";
+
 export interface ContentService {
-  open: () => Promise<void>;
-  close: () => Promise<void>;
-  openTabs: (action: Promise<void>) => Promise<void>;
+  open: (request: Type.OpenRequest) => Promise<Type.OpenResponse>;
+  close: () => void;
+  openTabs: (action: Promise<Type.OpenResponse>) => Promise<void>;
 }
 
 // サービス実装
-const open = async (): Promise<void> => {
+const open = async ({
+  windowId,
+}: Type.OpenRequest): Promise<Type.OpenResponse> => {
   try {
-    await chrome.action.openPopup();
+    await chrome.action.openPopup({ windowId });
+    return { success: true };
   } catch (error) {
     console.error(`Failed to open Content:`, error);
-    throw new Error("コンテンツの表示に失敗しました");
+    return { success: false };
   }
 };
 
-const openTabs = async (action: Promise<void>): Promise<void> => {
+const close = (): void => {
+  window?.close();
+};
+
+const openTabs = async (action: Promise<Type.OpenResponse>): Promise<void> =>
   chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
     const tabId = tabs[0].id;
     if (tabId) {
       await action;
     }
   });
-};
 
 // サービスオブジェクトのエクスポート
 export const contentService: ContentService = {
   open,
-  // MEMO: openを2回実行するとcloseするため、openをそのまま利用
-  close: open,
+  close,
   openTabs,
 };
 

@@ -7,3 +7,15 @@ export enum ActionType {
   tabs = "tabs",
   popup = "popup",
 }
+
+export interface OpenRequest {
+  windowId?: number;
+}
+
+export interface OpenResponse {
+  success: boolean;
+}
+
+export interface OpenTabsResponse {
+  success: boolean;
+}
