@@ -23,6 +23,14 @@ export const convertItemToHistoryData = (
   };
 };
 
+export const convertItemToNewHistory = (
+  history: chrome.history.HistoryItem,
+): Type.NewHistory => {
+  return {
+    data: history,
+  };
+};
+
 export const convertMultipleItemsToHistory = (
   histories: chrome.history.HistoryItem[],
 ): Type.History[] => {
