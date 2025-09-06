@@ -19,7 +19,8 @@
     "format": "biome format --write .",
     "lint": "biome lint --write .",
     "check": "biome check --write .",
-    "ci:check": "biome check"
+    "ci:check": "biome check",
+    "release": " pnpm run build && pnpm run zip"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
