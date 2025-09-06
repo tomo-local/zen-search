@@ -8,17 +8,12 @@ import (
 )
 
 var (
-	templateRootDir = "/templates/services"
+	templateServiceRootDir = "/templates/services"
 )
 
 func (t *toolService) GenerateService(serviceName string, outputPath string) error {
 	fmt.Printf("🎯 サービス名: %s でテンプレートをコピーします...\n", serviceName)
 	fmt.Printf("📁 出力先ベースパス: %s\n", outputPath)
-
-	templatesDir, err := t.setupTemplateDir()
-	if err != nil {
-		return err
-	}
 
 	// 出力先ディレクトリのパスを設定
 	outputDir := filepath.Join(outputPath, serviceName)
@@ -35,13 +30,12 @@ func (t *toolService) GenerateService(serviceName string, outputPath string) err
 	}
 
 	// テンプレートファイルの一覧を取得
-	templateFiles, err := t.fileOperator.GetPathList(templatesDir)
+	templateFiles, err := t.getTemplateFiles(templateServiceRootDir)
 	if err != nil {
-		return fmt.Errorf("❌ テンプレートディレクトリの読み取りに失敗しました: %v", err)
+		return err
 	}
 
 	fmt.Println("\n📝 ファイルをコピー中...")
-
 	// 各テンプレートファイルをコピー
 	for _, templateFile := range templateFiles {
 		if !strings.HasSuffix(templateFile, ".tmpl") {
@@ -73,27 +67,6 @@ func (t *toolService) GenerateService(serviceName string, outputPath string) err
 	return nil
 }
 
-func (t *toolService) setupTemplateDir() (string, error) {
-	// Repositoryのルートディレクトリを取得
-	repoRoot, err := t.fileOperator.GetRepositoryRootDir()
-	if err != nil {
-		return "", fmt.Errorf("❌ リポジトリのルートディレクトリの取得に失敗しました: %v", err)
-	}
-
-	templatesDir := filepath.Join(repoRoot, templateRootDir)
-
-	exists, err := t.fileOperator.HasPath(templatesDir, ".")
-	if err != nil {
-		return "", fmt.Errorf("❌ テンプレートディレクトリの確認でエラーが発生しました: %v", err)
-	}
-
-	if !exists {
-		return "", fmt.Errorf("❌ テンプレートディレクトリが存在しません: %s", templatesDir)
-	}
-
-	return templatesDir, nil
-}
-
 func (t *toolService) convertToTemplateContent(path string, serviceName string) ([]byte, error) {
 	content, err := t.fileOperator.GetPathContents(path)
 
@@ -106,7 +79,6 @@ func (t *toolService) convertToTemplateContent(path string, serviceName string) 
 
 	content = []byte(strings.ReplaceAll(string(content), "{{.ServiceNamePascal}}", ServiceNamePascal))
 	content = []byte(strings.ReplaceAll(string(content), "{{.ServiceNameCamel}}", ServiceNameCamel))
-
 
 	return content, nil
 }
