@@ -16,6 +16,11 @@ export interface TabData {
   currentWindow: boolean;
 }
 
+export interface NewTab {
+  data: chrome.tabs.Tab;
+  currentWindow: boolean;
+}
+
 export interface QueryTabsRequest {
   query: string;
   option?: QueryOption;
