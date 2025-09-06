@@ -103,6 +103,7 @@ export default function SearchInput({
         value={value}
         placeholder="Search or Enter URL ..."
         className={`grow px-3 py-2 text-lg rounded-md focus:outline-none ${className}`}
+        autoFocus
         onFocus={onFocus}
         onBlur={onBlur}
         onChange={onChange}
