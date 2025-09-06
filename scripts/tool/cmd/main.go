@@ -21,9 +21,11 @@ var rootCmd = &cobra.Command{
 
 func init() {
 	toolService := setupToolService()
-	command := setupGenerateService(toolService)
+	serviceCmd := setupGenerateService(toolService)
+	rootCmd.AddCommand(serviceCmd)
 
-	rootCmd.AddCommand(command)
+	componentCmd := setupGenerateComponent(toolService)
+	rootCmd.AddCommand(componentCmd)
 }
 
 func main() {

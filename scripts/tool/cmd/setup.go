@@ -2,6 +2,7 @@ package main
 
 import (
 	"log"
+	"tool/prompt"
 	"tool/service"
 	"util/fileutil"
 	"util/strutil"
@@ -12,7 +13,8 @@ import (
 func setupToolService() service.Service {
 	fileOperator := fileutil.NewFileOperator()
 	stringOperator := strutil.NewStringOperator()
-	return service.NewToolService(fileOperator, stringOperator)
+	promptOperator := prompt.NewPromptOperator()
+	return service.NewToolService(fileOperator, stringOperator, promptOperator)
 }
 
 func setupGenerateService(toolService service.Service) *cobra.Command {
@@ -40,6 +42,32 @@ func setupGenerateService(toolService service.Service) *cobra.Command {
 		log.Println("Generating service:", args)
 
 		err := toolService.GenerateService(serviceName, outputPath)
+		if err != nil {
+			log.Println(err)
+		}
+	}
+
+	return cmd
+}
+
+func setupGenerateComponent(toolService service.Service) *cobra.Command {
+	cmd := &cobra.Command{
+		Use:   "gen:component",
+		Short: "コンポーネントファイルを生成します ✨",
+		Long: `対話形式でコンポーネント名と出力先パスを取得し、テンプレートファイルを生成します。
+
+	テンプレートファイル（.tmpl）は TypeScript ファイル（.ts）として
+	指定された出力先ディレクトリに生成されます。`,
+	}
+
+	cmd.Flags().StringP("name", "n", "", "コンポーネント名を指定してください（省略可）")
+	cmd.Flags().StringP("path", "p", "", "出力先のベースパスを指定してください（省略可）")
+
+	// generateコマンドの実行時に呼び出される関数を設定
+	cmd.Run = func(cmd *cobra.Command, args []string) {
+		log.Println("Generating component:", args)
+
+		err := toolService.GenerateComponent(cmd.Flag("name").Value.String(), cmd.Flag("path").Value.String())
 		if err != nil {
 			log.Println(err)
 		}
