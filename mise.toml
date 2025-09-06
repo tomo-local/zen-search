@@ -6,3 +6,7 @@ go = "1.22.0"
 [tasks.service]
 description = "Create a new service"
 run = "go run ./scripts/tool/cmd gen:service"
+
+[tasks.component]
+description = "Create a new React component"
+run = "go run ./scripts/tool/cmd gen:component"
