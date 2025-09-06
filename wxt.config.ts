@@ -15,7 +15,7 @@ export default defineConfig({
   manifest: {
     name: "Zen Search",
     description: "Search your bookmarks and history",
-    version: "1.2.0",
+    version: "1.3.0",
     permissions: ["tabs", "history", "activeTab", "bookmarks", "storage"],
     commands: {
       OPEN_POPUP: {
