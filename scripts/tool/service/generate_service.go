@@ -55,7 +55,11 @@ func (t *toolService) GenerateService(serviceName string, outputPath string) err
 }
 
 func (t *toolService) generateServiceFile(filePath string, serviceName string, outputPath string) error {
-	outputFileName := strings.TrimSuffix(filePath, ".tmpl")
+	tmpFileName, err := t.fileOperator.ChooseFileName(filePath)
+	if err != nil {
+		return fmt.Errorf("❌ Error getting template file name: %v", err)
+	}
+	outputFileName := strings.TrimSuffix(tmpFileName, ".tmpl")
 
 	serviceNamePascal := t.stringOperator.ToPascalCase(serviceName)
 	serviceNameCamel := t.stringOperator.ToCamelCase(serviceName)
@@ -67,7 +71,7 @@ func (t *toolService) generateServiceFile(filePath string, serviceName string, o
 
 	content, err := t.replaceMappingValues(path, mapping)
 	if err != nil {
-		return fmt.Errorf("error replacing mapping values: %v", err)
+		return fmt.Errorf("❌ Error replacing mapping values: %v", err)
 	}
 
 	destPath := filepath.Join(outputPath, outputFileName)
