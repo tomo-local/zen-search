@@ -2,7 +2,6 @@ package service
 
 import (
 	"fmt"
-	"log"
 	"path/filepath"
 	"strings"
 )
@@ -69,7 +68,7 @@ func (t *toolService) generateServiceFile(filePath string, serviceName string, o
 		"{{.ServiceNameCamel}}":  serviceNameCamel,
 	}
 
-	content, err := t.replaceMappingValues(path, mapping)
+	content, err := t.replaceMappingValues(filePath, mapping)
 	if err != nil {
 		return fmt.Errorf("❌ Error replacing mapping values: %v", err)
 	}

@@ -110,8 +110,8 @@ func isValidComponentName(name string) bool {
 	return true
 }
 
-func (t *toolService) generateComponentFile(templateFilePath string, componentName string, outputPath string) error {
-	tmpFileName, err := t.fileOperator.ChooseFileName(templateFilePath)
+func (t *toolService) generateComponentFile(filePath string, componentName string, outputPath string) error {
+	tmpFileName, err := t.fileOperator.ChooseFileName(filePath)
 	if err != nil {
 		return fmt.Errorf("error getting template file name: %v", err)
 	}
@@ -123,7 +123,7 @@ func (t *toolService) generateComponentFile(templateFilePath string, componentNa
 		"{{.Component}}": componentName,
 	}
 
-	content, err := t.replaceMappingValues(templateFilePath, mapping)
+	content, err := t.replaceMappingValues(filePath, mapping)
 	if err != nil {
 		return err
 	}
