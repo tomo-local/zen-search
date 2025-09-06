@@ -2,14 +2,16 @@
  * Suggestion Helper - Google検索候補関連のヘルパー関数
  */
 
-import type { Suggestion } from "./types";
+import type { NewSuggestion, Suggestion } from "./types";
 
 /**
  * 結果数を制限する
  */
 export const limitResults =
   (count?: number) =>
-  (suggestions: Suggestion[]): Suggestion[] => {
+  (
+    suggestions: (Suggestion | NewSuggestion)[]
+  ): (Suggestion | NewSuggestion)[] => {
     return count ? suggestions.slice(0, count) : suggestions;
   };
 
