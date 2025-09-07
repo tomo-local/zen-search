@@ -18,10 +18,10 @@ export interface Result<T extends Kind> {
 }
 
 export type ResultDataMap = {
-  Tab: Tab;
-  Bookmark: Bookmark;
-  History: History;
-  Suggestion: Suggestion;
+  Tab: Tab["data"];
+  Bookmark: Bookmark["data"];
+  History: History["data"];
+  Suggestion: Suggestion["data"];
 };
 
 export type ResultData<T extends Kind> = ResultDataMap[T];
@@ -31,6 +31,7 @@ export interface QueryResultsRequest {
 }
 
 export interface ResultFilters {
-  categories: Kind[];
   query?: string;
+  count?: number;
+  categories: Kind[];
 }
