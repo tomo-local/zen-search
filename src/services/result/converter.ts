@@ -36,7 +36,7 @@ export const convertMultipleTabsToResult = (tabs: Tab[]): Result<"Tab">[] => {
 };
 
 export const convertBookmarkToResult = (
-  bookmark: Bookmark
+  bookmark: Bookmark,
 ): Result<"Bookmark"> => {
   return {
     id: bookmark.data.id,
@@ -48,7 +48,7 @@ export const convertBookmarkToResult = (
 };
 
 export const convertMultipleBookmarksToResult = (
-  bookmarks: Bookmark[]
+  bookmarks: Bookmark[],
 ): Result<"Bookmark">[] => {
   return bookmarks.map((bookmark) => convertBookmarkToResult(bookmark));
 };
@@ -64,13 +64,13 @@ export const convertHistoryToResult = (history: History): Result<"History"> => {
 };
 
 export const convertMultipleHistoriesToResult = (
-  histories: History[]
+  histories: History[],
 ): Result<"History">[] => {
   return histories.map((history) => convertHistoryToResult(history));
 };
 
 export const convertSuggestionToResult = (
-  suggestion: Suggestion
+  suggestion: Suggestion,
 ): Result<"Suggestion"> => {
   return {
     id: generateUniqueId(),
@@ -82,7 +82,7 @@ export const convertSuggestionToResult = (
 };
 
 export const convertMultipleSuggestionsToResult = (
-  suggestions: Suggestion[]
+  suggestions: Suggestion[],
 ): Result<"Suggestion">[] => {
   return suggestions.map((suggestion) => convertSuggestionToResult(suggestion));
 };
