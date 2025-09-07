@@ -3,7 +3,7 @@
  */
 
 import { ResultType } from "@/types/result";
-import type { Suggestion } from "./types";
+import type { NewSuggestion, Suggestion } from "./types";
 
 const SEARCH_URL = "https://www.google.com/search";
 
@@ -21,6 +21,21 @@ export function convertSuggestion(
     type: ResultType.Google,
     data: {
       originalQuery,
+    },
+  };
+}
+
+export function convertNewSuggestions(
+  suggestion: string,
+  originalQuery: string,
+): NewSuggestion {
+  return {
+    data: {
+      type: "Google",
+      suggestion: suggestion,
+      title: suggestion,
+      url: createSearchUrl(suggestion),
+      query: originalQuery,
     },
   };
 }

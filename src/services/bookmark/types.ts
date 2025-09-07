@@ -19,6 +19,10 @@ export type BookMarkData = {
   parentId?: string | undefined;
 };
 
+export interface NewBookmark {
+  data: chrome.bookmarks.BookmarkTreeNode;
+}
+
 export interface QueryBookmarksRequest {
   query: string;
   option?: QueryOption;

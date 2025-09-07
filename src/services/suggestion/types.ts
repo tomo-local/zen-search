@@ -16,6 +16,18 @@ export interface SuggestionData {
   originalQuery: string;
 }
 
+type SearchKind = "Google" | "Bing" | "DuckDuckGo" | "Brave" | "Ecosia";
+
+export interface NewSuggestion {
+  data: {
+    type: SearchKind;
+    suggestion: string;
+    title: string;
+    url: string;
+    query: string;
+  };
+}
+
 export interface QuerySuggestionsRequest {
   query: string;
   option?: QueryOption;

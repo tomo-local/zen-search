@@ -14,6 +14,10 @@ export type HistoryData = {
   visitCount?: number;
 };
 
+export interface NewHistory {
+  data: chrome.history.HistoryItem;
+}
+
 export interface SearchHistoryRequest {
   query: string;
   startTime?: number;
