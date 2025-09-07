@@ -10,7 +10,7 @@ import type { NewSuggestion, Suggestion } from "./types";
 export const limitResults =
   (count?: number) =>
   (
-    suggestions: (Suggestion | NewSuggestion)[]
+    suggestions: (Suggestion | NewSuggestion)[],
   ): (Suggestion | NewSuggestion)[] => {
     return count ? suggestions.slice(0, count) : suggestions;
   };

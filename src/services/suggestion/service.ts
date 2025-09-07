@@ -11,7 +11,7 @@ import type * as Type from "./types";
 export interface SuggestionService {
   query: (request: Type.QuerySuggestionsRequest) => Promise<Type.Suggestion[]>;
   queryNew: (
-    request: Type.QuerySuggestionsRequest
+    request: Type.QuerySuggestionsRequest,
   ) => Promise<Type.NewSuggestion[]>;
 }
 
