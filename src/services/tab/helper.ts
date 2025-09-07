@@ -10,7 +10,7 @@ export const limitResults =
 
 export const queryFiltered = (
   response: chrome.tabs.Tab[],
-  query: string,
+  query?: string,
 ): chrome.tabs.Tab[] => {
   if (!query) return response;
 

@@ -22,7 +22,7 @@ export interface NewTab {
 }
 
 export interface QueryTabsRequest {
-  query: string;
+  query?: string;
   option?: QueryOption;
 }
 
