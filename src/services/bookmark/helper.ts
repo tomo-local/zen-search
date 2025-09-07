@@ -16,7 +16,7 @@ export const limitResults =
  * URLが存在するブックマークのみフィルタ
  */
 export const filterValidBookmarks = (
-  bookmarks: chrome.bookmarks.BookmarkTreeNode[]
+  bookmarks: chrome.bookmarks.BookmarkTreeNode[],
 ): chrome.bookmarks.BookmarkTreeNode[] => {
   return bookmarks.filter((bookmark) => bookmark.url);
 };
