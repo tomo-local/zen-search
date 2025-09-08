@@ -2,7 +2,7 @@ import { action } from "@storybook/addon-actions";
 import type { Meta, StoryObj } from "@storybook/react";
 
 import { bookmarkItem, historyItem, suggestionItem, tabItem } from "./mocks";
-import ResultItem, { type ResultItemProps } from "./ResultIem";
+import ResultItem, { type ResultItemProps } from "./ResultItem";
 
 const meta: Meta = {
   component: ResultItem,

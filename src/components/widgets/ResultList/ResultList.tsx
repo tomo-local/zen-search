@@ -1,6 +1,6 @@
 import type { Kind, Result } from "@/services/result";
 
-import ItemComponent from "./part/ResultItem/ResultIem";
+import ItemComponent from "./part/ResultItem/ResultItem";
 
 export interface ResultListProps {
   items: Result<Kind>[];
