@@ -1,4 +1,3 @@
-import Layout, { type LayoutProps } from "./Layout/Layout";
 import ResultFooter, {
   type ResultFooterProps,
 } from "./ResultFooter/ResultFooter";
@@ -9,7 +8,6 @@ import ThemeSelectButton, {
 } from "./ThemeSelectButton/ThemeSelectButton";
 
 export default {
-  Layout,
   ResultFooter,
   SearchInput,
   ThemeSelectButton,
@@ -17,7 +15,6 @@ export default {
 };
 
 export type {
-  LayoutProps,
   ResultFooterProps,
   ResultLineProps,
   SearchInputProps,
