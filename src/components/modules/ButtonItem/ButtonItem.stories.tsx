@@ -1,6 +1,6 @@
 import { action } from "@storybook/addon-actions";
-import clsx from "clsx";
 import type { Meta, StoryObj } from "@storybook/react";
+import clsx from "clsx";
 
 import ButtonItem, {
   type ButtonItemProps,
@@ -22,7 +22,7 @@ export const Default: Story = {
       defaultClassName.bg,
       defaultClassName.text,
       defaultClassName.border,
-      defaultClassName.hover
+      defaultClassName.hover,
     ),
     onClick: () => action("clicked"),
     children: "Result Item",

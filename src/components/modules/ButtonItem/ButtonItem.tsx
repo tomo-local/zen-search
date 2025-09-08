@@ -33,7 +33,7 @@ const ButtonItem: React.FC<ButtonItemProps> = (props) => {
         className={clsx(
           "flex items-center justify-between w-full px-4 py-2 text-left rounded-lg",
           props.selected && defaultClassName.selected,
-          props.className
+          props.className,
         )}
         onClick={props.onClick}
       >
