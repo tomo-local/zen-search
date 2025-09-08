@@ -47,13 +47,13 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
           <PlusIcon
             className={clsx(
               defaultClassName.icon.size,
-              selected && defaultClassName.icon.selected
+              selected && defaultClassName.icon.selected,
             )}
           />
         </SquareIcon>
       </div>
     ),
-    [selected]
+    [selected],
   );
 
   return (
@@ -65,7 +65,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
       className={clsx(
         defaultClassName.bg,
         defaultClassName.border,
-        defaultClassName.hover
+        defaultClassName.hover,
       )}
     >
       <div
