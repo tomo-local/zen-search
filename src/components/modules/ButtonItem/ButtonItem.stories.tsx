@@ -17,14 +17,13 @@ type Story = StoryObj<ButtonItemProps>;
 
 export const Default: Story = {
   args: {
-    key: "result-item-1",
     className: clsx(
       defaultClassName.bg,
       defaultClassName.text,
       defaultClassName.border,
       defaultClassName.hover,
     ),
-    onClick: () => action("clicked"),
+    onClick: action("clicked"),
     children: "Result Item",
     selected: false,
   },

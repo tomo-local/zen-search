@@ -1,7 +1,6 @@
 import clsx from "clsx";
 
 export interface ButtonItemProps {
-  key: React.Key;
   className?: string | undefined;
   onClick?: (event: React.MouseEvent) => void;
   children: React.ReactNode;
@@ -27,7 +26,7 @@ export const defaultClassName = {
 
 const ButtonItem: React.FC<ButtonItemProps> = (props) => {
   return (
-    <li key={props.key} className="list-none">
+    <li className="list-none">
       <button
         type="button"
         className={clsx(
