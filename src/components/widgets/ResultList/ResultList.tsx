@@ -1,9 +1,6 @@
 import type { Kind, Result } from "@/services/result";
 
-import BookmarkItem from "../BookmarkItem/BookmarkItem";
-import HistoryItem from "../HistoryItem/HistoryItem";
-import SuggestionItem from "../SuggestionItem/SuggestionItem";
-import TabItem from "../TabItem/TabItem";
+import ItemComponent from "./part/ResultItem/ResultIem";
 
 export interface ResultListProps {
   items: Result<Kind>[];
@@ -11,52 +8,6 @@ export interface ResultListProps {
   selectedIndex?: number;
   onClick?: (item: Result<Kind>) => void;
 }
-
-type ItemProps<T extends Kind> = {
-  item: Result<T>;
-  index: number;
-  onClick: () => void;
-  selected: boolean;
-};
-
-const ItemMap: Record<
-  Kind,
-  React.FC<{
-    item: Result<Kind>;
-    index: number;
-    onClick: () => void;
-    selected: boolean;
-  }>
-> = {
-  Tab: (props) => <TabItem {...(props as ItemProps<"Tab">)} />,
-  Bookmark: (props) => <BookmarkItem {...(props as ItemProps<"Bookmark">)} />,
-  History: (props) => <HistoryItem {...(props as ItemProps<"History">)} />,
-  Suggestion: (props) => (
-    <SuggestionItem {...(props as ItemProps<"Suggestion">)} />
-  ),
-};
-
-const ItemComponent = ({
-  item,
-  index,
-  onClick,
-  selected,
-}: {
-  item: Result<Kind>;
-  index: number;
-  onClick: () => void;
-  selected: boolean;
-}) => {
-  const Component = ItemMap[item.type];
-  return (
-    <Component
-      item={item}
-      index={index}
-      onClick={onClick}
-      selected={selected}
-    />
-  );
-};
 
 const ResultList: React.FC<ResultListProps> = ({
   items,
