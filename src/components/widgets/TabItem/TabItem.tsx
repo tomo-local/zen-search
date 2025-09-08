@@ -42,7 +42,7 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
         </SquareIcon>
       </div>
     ),
-    [selected]
+    [selected],
   );
 
   return (
