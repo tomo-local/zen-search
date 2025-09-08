@@ -16,7 +16,8 @@ export const Default: Story = {
     item: {
       data: {
         id: 1,
-        title: "あ\nあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ",
+        title:
+          "あ\nあああああああああああああああああああああああああああああああああああああああああああああああああああああああああああああ",
         url: "https://example.com",
         favIconUrl: "https://example.com/favicon.ico",
       },

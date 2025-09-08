@@ -54,7 +54,7 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
     >
       <div
         id={item.data.id?.toString()}
-        className="relative flex-col items-center justify-center max-w-fit justify-items-center"
+        className="relative flex flex-col items-center justify-center max-w-fit justify-items-center"
       >
         <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
           {item.data.title}
