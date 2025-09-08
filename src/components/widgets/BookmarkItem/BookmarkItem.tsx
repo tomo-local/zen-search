@@ -1,9 +1,8 @@
-import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
-import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
+import { PlusIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import type React from "react";
 import { useMemo } from "react";
-import type { NewTab as Tab } from "@/services/tab/types";
+import type { NewBookmark as Bookmark } from "@/services/bookmark/types";
 
 import ButtonItem, {
   type ButtonItemProps,
@@ -11,19 +10,29 @@ import ButtonItem, {
 } from "../../modules/ButtonItem/ButtonItem";
 import SquareIcon from "../../modules/SquareIcon/SquareIcon";
 
-type TabData = Pick<Tab["data"], "id" | "title" | "url" | "favIconUrl">;
+type BookmarkData = Pick<Bookmark["data"], "id" | "title" | "url">;
 
-export type TabItemProps = Pick<ButtonItemProps, "onClick" | "selected"> & {
-  item: {
-    data: TabData;
-  };
+export type BookmarkItemProps = Pick<
+  ButtonItemProps,
+  "onClick" | "selected"
+> & {
+  item: BookmarkData;
 };
 
-const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
+const BookmarkItem: React.FC<BookmarkItemProps> = ({
+  onClick,
+  selected,
+  item,
+}) => {
   const LeftIcon = (
     <SquareIcon>
-      <WindowIcon
-        className={clsx(defaultClassName.icon.size, defaultClassName.icon.text)}
+      <img
+        // TODO: BookmarkのURLにfaviconUrlを追加する
+        src={`https://www.google.com/s2/favicons?domain=${
+          new URL(item.url || "").hostname
+        }`}
+        alt="favicon"
+        className={defaultClassName.icon.size}
       />
     </SquareIcon>
   );
@@ -31,9 +40,9 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
   const RightContent = useMemo(
     () => (
       <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>Go to Tab</span>
+        <span className={defaultClassName.text}>Go to Page</span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
-          <ArrowLongRightIcon
+          <PlusIcon
             className={clsx(
               defaultClassName.icon.size,
               selected && defaultClassName.icon.selected,
@@ -47,26 +56,26 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
 
   return (
     <ButtonItem
+      onClick={onClick}
+      selected={selected}
+      LeftContent={LeftIcon}
+      RightContent={RightContent}
       className={clsx(
         defaultClassName.bg,
         defaultClassName.border,
         defaultClassName.hover,
       )}
-      onClick={onClick}
-      selected={selected}
-      LeftContent={LeftIcon}
-      RightContent={RightContent}
     >
       <div
-        id={item.data.id?.toString()}
+        id={item.id}
         className="relative flex flex-col items-center justify-center max-w-fit"
       >
         <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
-          {item.data.title}
+          {item.title || item.url}
         </div>
       </div>
     </ButtonItem>
   );
 };
 
-export default TabItem;
+export default BookmarkItem;
