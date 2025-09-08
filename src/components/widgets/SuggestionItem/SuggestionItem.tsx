@@ -68,9 +68,7 @@ const SuggestionItem: React.FC<SuggestionItemProps> = ({
       LeftContent={LeftIcon}
       RightContent={RightContent}
     >
-      <div
-        className="relative flex flex-col items-center justify-center max-w-fit"
-      >
+      <div className="relative flex flex-col items-center justify-center max-w-fit">
         <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
           {item.data.title}
         </div>
