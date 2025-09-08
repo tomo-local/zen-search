@@ -4,10 +4,10 @@ import clsx from "clsx";
 import type React from "react";
 import { useState } from "react";
 import Badge from "@/components/modules/Badge/Badge";
-import SquareBadge from "@/components/modules/SquareBadge/SquareBadge";
 import Layout, {
   commonClassName as layoutClassName,
-} from "@/components/widgets/Layout/Layout";
+} from "@/components/modules/Layout/Layout";
+import SquareBadge from "@/components/modules/SquareBadge/SquareBadge";
 import ResultFooter from "@/components/widgets/ResultFooter/ResultFooter";
 import ResultLine from "@/components/widgets/ResultLine/ResultLine";
 import SearchInput, {
