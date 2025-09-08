@@ -23,16 +23,19 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
   selected,
   item,
 }) => {
-  const LeftIcon = (
-    <SquareIcon>
-      <img
-        src={`https://www.google.com/s2/favicons?domain=${
-          new URL(item.data.url || "https://example.com").hostname
-        }`}
-        alt="favicon"
-        className={defaultClassName.icon.size}
-      />
-    </SquareIcon>
+  const LeftIcon = useMemo(
+    () => (
+      <SquareIcon>
+        <img
+          src={`https://www.google.com/s2/favicons?domain=${
+            new URL(item.data.url || "https://example.com").hostname
+          }`}
+          alt="favicon"
+          className={defaultClassName.icon.size}
+        />
+      </SquareIcon>
+    ),
+    [item.data.url],
   );
 
   const RightContent = useMemo(
@@ -66,7 +69,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
     >
       <div
         id={item.data.id}
-        className="relative flex-col items-center justify-center max-w-fit"
+        className="relative flex flex-col items-center justify-center max-w-fit"
       >
         <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
           {item.data.title}

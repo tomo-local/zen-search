@@ -24,16 +24,19 @@ const SuggestionItem: React.FC<SuggestionItemProps> = ({
   onClick,
   selected,
 }) => {
-  const LeftIcon = (
-    <SquareIcon>
-      <img
-        src={`https://www.google.com/s2/favicons?domain=${
-          new URL(item.data.url || "https://example.com").hostname
-        }`}
-        alt="favicon"
-        className={defaultClassName.icon.size}
-      />
-    </SquareIcon>
+  const LeftIcon = useMemo(
+    () => (
+      <SquareIcon>
+        <img
+          src={`https://www.google.com/s2/favicons?domain=${
+            new URL(item.data.url || "https://example.com").hostname
+          }`}
+          alt="favicon"
+          className={defaultClassName.icon.size}
+        />
+      </SquareIcon>
+    ),
+    [item.data.url],
   );
 
   const RightContent = useMemo(
@@ -66,8 +69,7 @@ const SuggestionItem: React.FC<SuggestionItemProps> = ({
       RightContent={RightContent}
     >
       <div
-        id={item.data.type}
-        className="relative flex-col items-center justify-center max-w-fit"
+        className="relative flex flex-col items-center justify-center max-w-fit"
       >
         <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
           {item.data.title}
