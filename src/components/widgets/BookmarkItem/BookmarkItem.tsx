@@ -51,7 +51,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
         </SquareIcon>
       </div>
     ),
-    [selected]
+    [selected],
   );
 
   return (
