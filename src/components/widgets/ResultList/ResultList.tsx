@@ -26,7 +26,7 @@ const ResultList: React.FC<ResultListProps> = ({
       <ul className="result-list" ref={ref}>
         {items.map((item, index) => (
           <ItemComponent
-            key={`result-item-${index.toString()}`}
+            key={`result-item-${item.type}-${index.toString()}`}
             item={item}
             index={index}
             onClick={() => onClick?.(item)}
