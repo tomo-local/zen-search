@@ -1,6 +1,8 @@
 import ArrowLongRightIcon from "@heroicons/react/16/solid/ArrowLongRightIcon";
 import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
 import clsx from "clsx";
+import type React from "react";
+import { useMemo } from "react";
 import type { NewTab as Tab } from "@/services/tab/types";
 
 import ButtonItem, {
@@ -26,18 +28,21 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
     </SquareIcon>
   );
 
-  const RightContent = (
-    <div className="flex items-center space-x-2">
-      <span className={defaultClassName.text}>Go to Tab</span>
-      <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
-        <ArrowLongRightIcon
-          className={clsx(
-            defaultClassName.icon.size,
-            selected && defaultClassName.icon.selected,
-          )}
-        />
-      </SquareIcon>
-    </div>
+  const RightContent = useMemo(
+    () => (
+      <div className="flex items-center space-x-2">
+        <span className={defaultClassName.text}>Go to Tab</span>
+        <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
+          <ArrowLongRightIcon
+            className={clsx(
+              defaultClassName.icon.size,
+              selected && defaultClassName.icon.selected
+            )}
+          />
+        </SquareIcon>
+      </div>
+    ),
+    [selected]
   );
 
   return (
@@ -45,7 +50,7 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
       className={clsx(
         defaultClassName.bg,
         defaultClassName.border,
-        defaultClassName.hover,
+        defaultClassName.hover
       )}
       onClick={onClick}
       selected={selected}
