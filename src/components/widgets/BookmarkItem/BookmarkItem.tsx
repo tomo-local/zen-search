@@ -16,7 +16,9 @@ export type BookmarkItemProps = Pick<
   ButtonItemProps,
   "onClick" | "selected"
 > & {
-  item: BookmarkData;
+  item: {
+    data: BookmarkData;
+  };
 };
 
 const BookmarkItem: React.FC<BookmarkItemProps> = ({
@@ -29,7 +31,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
       <img
         // TODO: BookmarkのURLにfaviconUrlを追加する
         src={`https://www.google.com/s2/favicons?domain=${
-          new URL(item.url || "").hostname
+          new URL(item.data.url || "https://example.com").hostname
         }`}
         alt="favicon"
         className={defaultClassName.icon.size}
@@ -45,13 +47,13 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
           <PlusIcon
             className={clsx(
               defaultClassName.icon.size,
-              selected && defaultClassName.icon.selected,
+              selected && defaultClassName.icon.selected
             )}
           />
         </SquareIcon>
       </div>
     ),
-    [selected],
+    [selected]
   );
 
   return (
@@ -63,15 +65,15 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
       className={clsx(
         defaultClassName.bg,
         defaultClassName.border,
-        defaultClassName.hover,
+        defaultClassName.hover
       )}
     >
       <div
-        id={item.id}
+        id={item.data.id}
         className="relative flex flex-col items-center justify-center max-w-fit"
       >
         <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
-          {item.title || item.url}
+          {item.data.title || item.data.url}
         </div>
       </div>
     </ButtonItem>

@@ -13,7 +13,9 @@ type Story = StoryObj<BookmarkItemProps>;
 
 export const Default: Story = {
   args: {
-    item: { id: "1", title: "Example Bookmark", url: "https://example.com" },
+    item: {
+      data: { id: "1", title: "Example Bookmark", url: "https://example.com" },
+    },
     onClick: action("clicked"),
     selected: false,
   },
