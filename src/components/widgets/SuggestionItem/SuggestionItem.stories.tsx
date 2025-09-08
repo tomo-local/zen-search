@@ -1,7 +1,7 @@
 import { action } from "@storybook/addon-actions";
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 
-import SuggestionItem, { type SuggestionItemProps } from './SuggestionItem';
+import SuggestionItem, { type SuggestionItemProps } from "./SuggestionItem";
 
 const meta: Meta = {
   component: SuggestionItem,
@@ -20,7 +20,7 @@ export const Default: Story = {
         type: "Google",
       },
     },
-    onClick: action('SuggestionItem clicked'),
+    onClick: action("SuggestionItem clicked"),
     selected: false,
   },
 };

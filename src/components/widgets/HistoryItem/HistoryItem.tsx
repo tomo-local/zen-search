@@ -49,7 +49,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
         </SquareIcon>
       </div>
     ),
-    [selected]
+    [selected],
   );
 
   return (

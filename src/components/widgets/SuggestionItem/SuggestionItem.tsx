@@ -50,7 +50,7 @@ const SuggestionItem: React.FC<SuggestionItemProps> = ({
         </SquareIcon>
       </div>
     ),
-    [selected]
+    [selected],
   );
 
   return (
