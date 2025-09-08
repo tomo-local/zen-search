@@ -1,7 +1,7 @@
 import { action } from "@storybook/addon-actions";
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 
-import BookmarkItem, { type BookmarkItemProps } from './BookmarkItem';
+import BookmarkItem, { type BookmarkItemProps } from "./BookmarkItem";
 
 const meta: Meta = {
   component: BookmarkItem,
@@ -14,7 +14,7 @@ type Story = StoryObj<BookmarkItemProps>;
 export const Default: Story = {
   args: {
     item: { id: "1", title: "Example Bookmark", url: "https://example.com" },
-    onClick: action('clicked'),
+    onClick: action("clicked"),
     selected: false,
   },
 };
