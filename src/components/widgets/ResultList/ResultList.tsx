@@ -23,7 +23,7 @@ const ResultList: React.FC<ResultListProps> = ({
 
   return (
     <div className="pt-3 pb-2 dark:bg-gray-800">
-      <ul className="result-list" ref={ref}>
+      <ul className="space-y-1 overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-56" ref={ref}>
         {items.map((item, index) => (
           <ItemComponent
             key={`result-item-${item.type}-${index.toString()}`}
