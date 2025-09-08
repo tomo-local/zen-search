@@ -33,7 +33,7 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
         <ArrowLongRightIcon
           className={clsx(
             defaultClassName.icon.size,
-            selected && defaultClassName.icon.selected
+            selected && defaultClassName.icon.selected,
           )}
         />
       </SquareIcon>
