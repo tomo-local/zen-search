@@ -68,7 +68,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
     >
       <div
         id={item.id}
-        className="relative flex flex-col items-center justify-center max-w-fit justify-items-center"
+        className="relative flex flex-col items-center justify-center max-w-fit"
       >
         <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
           {item.title || item.url}
