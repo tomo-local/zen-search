@@ -45,7 +45,7 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
       className={clsx(
         defaultClassName.bg,
         defaultClassName.border,
-        defaultClassName.hover
+        defaultClassName.hover,
       )}
       onClick={onClick}
       selected={selected}
