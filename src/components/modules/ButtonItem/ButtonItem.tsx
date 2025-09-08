@@ -10,6 +10,7 @@ export interface ButtonItemProps {
 }
 
 export const defaultClassName = {
+  base: "flex items-center justify-between w-full px-4 py-2 text-left rounded-lg",
   bg: "dark:bg-gray-800 bg-gray-50",
   border: "border-sky-500",
   selected: "dark:bg-sky-500 bg-sky-400 dark:text-black text-white",
@@ -30,7 +31,7 @@ const ButtonItem: React.FC<ButtonItemProps> = (props) => {
       <button
         type="button"
         className={clsx(
-          "flex items-center justify-between w-full px-4 py-2 text-left rounded-lg",
+          defaultClassName.base,
           props.selected && defaultClassName.selected,
           props.className,
         )}
