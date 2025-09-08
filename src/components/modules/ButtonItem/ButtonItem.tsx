@@ -19,7 +19,7 @@ export const defaultClassName = {
   icon: {
     bg: "dark:bg-gray-300 bg-slate-200",
     text: "dark:text-gray-300",
-    selected: "dark:text-gray-500",
+    selected: "dark:text-gray-500 text-sky-500",
     size: "size-5",
   },
   text: "dark:text-gray-300 text-xs",
