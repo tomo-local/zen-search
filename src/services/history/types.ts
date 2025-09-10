@@ -15,7 +15,9 @@ export type HistoryData = {
 };
 
 export interface NewHistory {
-  data: chrome.history.HistoryItem;
+  data: chrome.history.HistoryItem & {
+    favIconUrl?: string;
+  };
 }
 
 export interface SearchHistoryRequest {

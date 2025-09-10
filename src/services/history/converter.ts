@@ -27,7 +27,13 @@ export const convertItemToNewHistory = (
   history: chrome.history.HistoryItem,
 ): Type.NewHistory => {
   return {
-    data: history,
+    data: {
+      ...history,
+      // MEMO: chrome://favicon APIでは何故か取得できない場合があるため、GoogleのFaviconサービスを利用する
+      favIconUrl: history.url
+        ? `https://www.google.com/s2/favicons?domain=${history.url}`
+        : undefined,
+    },
   };
 };
 
