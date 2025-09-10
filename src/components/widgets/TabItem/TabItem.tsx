@@ -31,9 +31,6 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
               defaultClassName.icon.size,
               defaultClassName.icon.text,
             )}
-            onError={(e) => {
-              (e.target as HTMLImageElement).style.display = "none";
-            }}
           />
         ) : (
           <WindowIcon
