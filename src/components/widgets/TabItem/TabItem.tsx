@@ -29,7 +29,7 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
             alt="Favicon"
             className={clsx(
               defaultClassName.icon.size,
-              defaultClassName.icon.text
+              defaultClassName.icon.text,
             )}
             onError={(e) => {
               (e.target as HTMLImageElement).style.display = "none";
@@ -39,7 +39,7 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
           <WindowIcon
             className={clsx(
               defaultClassName.icon.size,
-              defaultClassName.icon.text
+              defaultClassName.icon.text,
             )}
           />
         )}

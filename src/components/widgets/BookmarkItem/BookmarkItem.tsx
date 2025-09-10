@@ -38,14 +38,14 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
             alt="Favicon"
             className={clsx(
               defaultClassName.icon.size,
-              defaultClassName.icon.text
+              defaultClassName.icon.text,
             )}
           />
         ) : (
           <BookmarkIcon
             className={clsx(
               defaultClassName.icon.size,
-              defaultClassName.icon.text
+              defaultClassName.icon.text,
             )}
           />
         )}

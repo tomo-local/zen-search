@@ -32,14 +32,14 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
             alt="Favicon"
             className={clsx(
               defaultClassName.icon.size,
-              defaultClassName.icon.text
+              defaultClassName.icon.text,
             )}
           />
         ) : (
           <ClockIcon
             className={clsx(
               defaultClassName.icon.size,
-              defaultClassName.icon.text
+              defaultClassName.icon.text,
             )}
           />
         )}
