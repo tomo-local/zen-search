@@ -3,7 +3,7 @@ import { getFaviconUrl } from "./helper";
 import type * as Type from "./types";
 
 export const convertItemToHistory = (
-  history: chrome.history.HistoryItem
+  history: chrome.history.HistoryItem,
 ): Type.History => {
   return {
     type: ResultType.History,
@@ -15,7 +15,7 @@ export const convertItemToHistory = (
 };
 
 export const convertItemToHistoryData = (
-  history: chrome.history.HistoryItem
+  history: chrome.history.HistoryItem,
 ): Type.HistoryData => {
   return {
     lastVisitTime: history.lastVisitTime,
@@ -25,7 +25,7 @@ export const convertItemToHistoryData = (
 };
 
 export const convertItemToNewHistory = (
-  history: chrome.history.HistoryItem
+  history: chrome.history.HistoryItem,
 ): Type.NewHistory => {
   return {
     data: {
@@ -37,7 +37,7 @@ export const convertItemToNewHistory = (
 };
 
 export const convertMultipleItemsToHistory = (
-  histories: chrome.history.HistoryItem[]
+  histories: chrome.history.HistoryItem[],
 ): Type.History[] => {
   return histories.map((history) => convertItemToHistory(history));
 };
