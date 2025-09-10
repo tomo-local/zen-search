@@ -116,9 +116,14 @@ export function routeMessage(
 
     case QUERY_RESULT: {
       const { filters } = message as QueryResultsRequest;
-      resultService.query({ filters }).then((results) => {
-        sendResponse(QUERY_RESULT, results, response);
-      });
+      resultService
+        .query({ filters })
+        .then((results) => {
+          sendResponse(QUERY_RESULT, results, response);
+        })
+        .catch((error) => {
+          console.error("Error handling QUERY_RESULT:", error);
+        });
       return true;
     }
 
