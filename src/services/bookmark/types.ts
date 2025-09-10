@@ -20,7 +20,9 @@ export type BookMarkData = {
 };
 
 export interface NewBookmark {
-  data: chrome.bookmarks.BookmarkTreeNode;
+  data: chrome.bookmarks.BookmarkTreeNode & {
+    favIconUrl?: string;
+  };
 }
 
 export interface QueryBookmarksRequest {

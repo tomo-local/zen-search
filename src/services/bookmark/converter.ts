@@ -26,6 +26,9 @@ export function convertNewBookmark(
   bookmark: chrome.bookmarks.BookmarkTreeNode,
 ): NewBookmark {
   return {
-    data: bookmark,
+    data: {
+      ...bookmark,
+      favIconUrl: bookmark.url ? `chrome://favicon/${bookmark.url}` : undefined,
+    },
   };
 }
