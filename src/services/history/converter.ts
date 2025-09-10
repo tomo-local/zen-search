@@ -1,8 +1,9 @@
 import { ResultType } from "@/types/result";
+import { getFaviconUrl } from "./helper";
 import type * as Type from "./types";
 
 export const convertItemToHistory = (
-  history: chrome.history.HistoryItem,
+  history: chrome.history.HistoryItem
 ): Type.History => {
   return {
     type: ResultType.History,
@@ -14,7 +15,7 @@ export const convertItemToHistory = (
 };
 
 export const convertItemToHistoryData = (
-  history: chrome.history.HistoryItem,
+  history: chrome.history.HistoryItem
 ): Type.HistoryData => {
   return {
     lastVisitTime: history.lastVisitTime,
@@ -24,21 +25,19 @@ export const convertItemToHistoryData = (
 };
 
 export const convertItemToNewHistory = (
-  history: chrome.history.HistoryItem,
+  history: chrome.history.HistoryItem
 ): Type.NewHistory => {
   return {
     data: {
       ...history,
       // MEMO: chrome://favicon APIでは何故か取得できない場合があるため、GoogleのFaviconサービスを利用する
-      favIconUrl: history.url
-        ? `https://www.google.com/s2/favicons?domain=${history.url}`
-        : undefined,
+      favIconUrl: history.url ? getFaviconUrl(history.url) : undefined,
     },
   };
 };
 
 export const convertMultipleItemsToHistory = (
-  histories: chrome.history.HistoryItem[],
+  histories: chrome.history.HistoryItem[]
 ): Type.History[] => {
   return histories.map((history) => convertItemToHistory(history));
 };
