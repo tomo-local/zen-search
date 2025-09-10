@@ -3,6 +3,7 @@
  */
 
 import { ResultType } from "@/types/result";
+import { getFaviconUrl } from "./helper";
 import type { Bookmark, NewBookmark } from "./types";
 
 export function convertBookmarkToResult(
@@ -28,7 +29,7 @@ export function convertNewBookmark(
   return {
     data: {
       ...bookmark,
-      favIconUrl: bookmark.url ? `chrome://favicon/${bookmark.url}` : undefined,
+      favIconUrl: bookmark.url ? getFaviconUrl(bookmark.url) : undefined,
     },
   };
 }
