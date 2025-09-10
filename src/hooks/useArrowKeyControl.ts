@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import type { Result } from "@/types/result";
+import type { Kind, Result } from "@/services/result";
 
-export default function useArrowKeyControl(tabs: Result[]) {
+export default function useArrowKeyControl(tabs: Result<Kind>[]) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const listRef = useRef<HTMLUListElement>(null);
 
