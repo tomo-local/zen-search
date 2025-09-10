@@ -1,7 +1,7 @@
 import { action } from "@storybook/addon-actions";
-import type { Meta, StoryObj } from '@storybook/react';
+import type { Meta, StoryObj } from "@storybook/react";
 
-import NotFoundItem, { type NotFoundItemProps } from './NotFoundItem';
+import NotFoundItem, { type NotFoundItemProps } from "./NotFoundItem";
 
 const meta: Meta = {
   component: NotFoundItem,
@@ -14,6 +14,6 @@ type Story = StoryObj<NotFoundItemProps>;
 export const Default: Story = {
   args: {
     selected: false,
-    onClick: action('clicked'),
+    onClick: action("clicked"),
   },
 };
