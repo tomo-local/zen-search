@@ -9,6 +9,8 @@ import {
   historyService,
   type SearchHistoryRequest,
 } from "@/services/history";
+import { type QueryResultsRequest, resultService } from "@/services/result";
+import { MessageType } from "@/services/runtime/types";
 import {
   type CreateTabRequest,
   type QueryTabsRequest,
@@ -16,8 +18,6 @@ import {
   tabService,
   type UpdateTabRequest,
 } from "@/services/tab";
-
-import { MessageType } from "@/types/result";
 
 const {
   OPEN_POPUP,
@@ -27,6 +27,7 @@ const {
   REMOVE_TAB,
   QUERY_HISTORY,
   QUERY_BOOKMARK,
+  QUERY_RESULT,
 } = MessageType;
 
 function sendResponse(
@@ -44,7 +45,8 @@ type Message =
   | UpdateTabRequest
   | RemoveTabRequest
   | SearchHistoryRequest
-  | QueryBookmarksRequest;
+  | QueryBookmarksRequest
+  | QueryResultsRequest;
 
 export function routeMessage(
   message: { type: MessageType } & Message,
@@ -108,6 +110,14 @@ export function routeMessage(
       }
       bookmarkService.search({ query, option }).then((bookmarks) => {
         sendResponse(QUERY_BOOKMARK, bookmarks, response);
+      });
+      return true;
+    }
+
+    case QUERY_RESULT: {
+      const { filters } = message as QueryResultsRequest;
+      resultService.query({ filters }).then((results) => {
+        sendResponse(QUERY_RESULT, results, response);
       });
       return true;
     }
