@@ -21,14 +21,14 @@ const NotFoundItem: React.FC<NotFoundItemProps> = ({
       className={clsx(
         defaultClassName.bg,
         defaultClassName.border,
-        defaultClassName.hover
+        defaultClassName.hover,
       )}
       LeftContent={
         <SquareIcon>
           <NoSymbolIcon
             className={clsx(
               defaultClassName.icon.size,
-              defaultClassName.icon.text
+              defaultClassName.icon.text,
             )}
           />
         </SquareIcon>
