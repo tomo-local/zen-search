@@ -1,5 +1,5 @@
 import { contentService } from "@/services/content";
-import { MessageType } from "@/types/result";
+import { MessageType } from "@/services/runtime/types";
 
 export const routeCommand = (command: string, _tab: chrome.tabs.Tab) => {
   switch (command) {

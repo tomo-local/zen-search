@@ -43,7 +43,7 @@ const queryNewTabs = async ({
 }: Type.QueryTabsRequest): Promise<Type.NewTab[]> => {
   try {
     const response = await chrome.tabs.query({
-      currentWindow: option?.currentWindow,
+      currentWindow: option?.currentWindow ?? false,
     });
 
     const tabs = queryFiltered(response, query).map((tab) =>
