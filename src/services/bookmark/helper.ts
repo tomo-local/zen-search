@@ -20,3 +20,19 @@ export const filterValidBookmarks = (
 ): chrome.bookmarks.BookmarkTreeNode[] => {
   return bookmarks.filter((bookmark) => bookmark.url);
 };
+
+export const getFaviconUrl = (url: string): string | undefined => {
+  const hostUrl = (() => {
+    try {
+      const u = new URL(url);
+      return u.origin;
+    } catch {
+      return null;
+    }
+  })();
+  if (hostUrl) {
+    return `chrome://favicon/${hostUrl}`;
+  }
+
+  return undefined;
+};

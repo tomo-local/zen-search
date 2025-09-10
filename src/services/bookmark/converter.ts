@@ -3,6 +3,7 @@
  */
 
 import { ResultType } from "@/types/result";
+import { getFaviconUrl } from "./helper";
 import type { Bookmark, NewBookmark } from "./types";
 
 export function convertBookmarkToResult(
@@ -26,6 +27,9 @@ export function convertNewBookmark(
   bookmark: chrome.bookmarks.BookmarkTreeNode,
 ): NewBookmark {
   return {
-    data: bookmark,
+    data: {
+      ...bookmark,
+      favIconUrl: bookmark.url ? getFaviconUrl(bookmark.url) : undefined,
+    },
   };
 }

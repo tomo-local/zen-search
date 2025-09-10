@@ -1,16 +1,16 @@
+import { ClockIcon } from "@heroicons/react/16/solid";
 import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
 import clsx from "clsx";
 import type React from "react";
 import { useMemo } from "react";
 import type { NewHistory as History } from "@/services/history";
-
 import ButtonItem, {
   type ButtonItemProps,
   defaultClassName,
 } from "../../modules/ButtonItem/ButtonItem";
 import SquareIcon from "../../modules/SquareIcon/SquareIcon";
 
-type HistoryData = Pick<History["data"], "id" | "title" | "url">;
+type HistoryData = Pick<History["data"], "id" | "title" | "url" | "favIconUrl">;
 
 export type HistoryItemProps = Pick<ButtonItemProps, "onClick" | "selected"> & {
   item: {
@@ -26,16 +26,26 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
   const LeftIcon = useMemo(
     () => (
       <SquareIcon>
-        <img
-          src={`https://www.google.com/s2/favicons?domain=${
-            new URL(item.data.url || "https://example.com").hostname
-          }`}
-          alt="favicon"
-          className={defaultClassName.icon.size}
-        />
+        {item.data.favIconUrl ? (
+          <img
+            src={item.data.favIconUrl}
+            alt="Favicon"
+            className={clsx(
+              defaultClassName.icon.size,
+              defaultClassName.icon.text,
+            )}
+          />
+        ) : (
+          <ClockIcon
+            className={clsx(
+              defaultClassName.icon.size,
+              defaultClassName.icon.text,
+            )}
+          />
+        )}
       </SquareIcon>
     ),
-    [item.data.url],
+    [item.data.favIconUrl],
   );
 
   const RightContent = useMemo(
