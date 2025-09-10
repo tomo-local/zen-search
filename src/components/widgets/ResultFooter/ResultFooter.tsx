@@ -31,13 +31,9 @@ export default function ResultFooter({
     <Footer className={`pt-1 text-base ${className}`}>
       <div className="flex flex-row items-center justify-between space-x-2">
         <ThemeSelectButton className="dark:text-gray-400" />
-        {count ? (
-          <p className="text-base font-bold text-right dark:text-gray-400">
-            {count} RESULTS
-          </p>
-        ) : (
-          <p className="font-bold text-right dark:text-gray-400">NO FOUND</p>
-        )}
+        <p className="text-base font-bold text-right dark:text-gray-400">
+          {count ?? 0} RESULTS
+        </p>
       </div>
     </Footer>
   );
