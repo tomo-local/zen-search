@@ -20,12 +20,32 @@ export type TabItemProps = Pick<ButtonItemProps, "onClick" | "selected"> & {
 };
 
 const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
-  const LeftIcon = (
-    <SquareIcon>
-      <WindowIcon
-        className={clsx(defaultClassName.icon.size, defaultClassName.icon.text)}
-      />
-    </SquareIcon>
+  const LeftIcon = useMemo(
+    () => (
+      <SquareIcon>
+        {item.data.favIconUrl ? (
+          <img
+            src={item.data.favIconUrl}
+            alt="Favicon"
+            className={clsx(
+              defaultClassName.icon.size,
+              defaultClassName.icon.text
+            )}
+            onError={(e) => {
+              (e.target as HTMLImageElement).style.display = "none";
+            }}
+          />
+        ) : (
+          <WindowIcon
+            className={clsx(
+              defaultClassName.icon.size,
+              defaultClassName.icon.text
+            )}
+          />
+        )}
+      </SquareIcon>
+    ),
+    [item.data.favIconUrl],
   );
 
   const RightContent = useMemo(

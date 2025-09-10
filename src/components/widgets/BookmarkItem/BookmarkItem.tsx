@@ -1,16 +1,19 @@
+import { BookmarkIcon } from "@heroicons/react/16/solid";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import type React from "react";
 import { useMemo } from "react";
 import type { NewBookmark as Bookmark } from "@/services/bookmark/types";
-
 import ButtonItem, {
   type ButtonItemProps,
   defaultClassName,
 } from "../../modules/ButtonItem/ButtonItem";
 import SquareIcon from "../../modules/SquareIcon/SquareIcon";
 
-type BookmarkData = Pick<Bookmark["data"], "id" | "title" | "url">;
+type BookmarkData = Pick<
+  Bookmark["data"],
+  "id" | "title" | "url" | "favIconUrl"
+>;
 
 export type BookmarkItemProps = Pick<
   ButtonItemProps,
@@ -26,17 +29,29 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
   selected,
   item,
 }) => {
-  const LeftIcon = (
-    <SquareIcon>
-      <img
-        // TODO: BookmarkのURLにfaviconUrlを追加する
-        src={`https://www.google.com/s2/favicons?domain=${
-          new URL(item.data.url || "https://example.com").hostname
-        }`}
-        alt="favicon"
-        className={defaultClassName.icon.size}
-      />
-    </SquareIcon>
+  const LeftIcon = useMemo(
+    () => (
+      <SquareIcon>
+        {item.data.favIconUrl ? (
+          <img
+            src={item.data.favIconUrl}
+            alt="Favicon"
+            className={clsx(
+              defaultClassName.icon.size,
+              defaultClassName.icon.text
+            )}
+          />
+        ) : (
+          <BookmarkIcon
+            className={clsx(
+              defaultClassName.icon.size,
+              defaultClassName.icon.text
+            )}
+          />
+        )}
+      </SquareIcon>
+    ),
+    [item.data.favIconUrl],
   );
 
   const RightContent = useMemo(
