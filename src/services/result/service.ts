@@ -4,6 +4,7 @@
 
 import resultServiceDependencies from "./container";
 import * as converter from "./converter";
+import * as Helper from "./helper";
 import type * as Type from "./types";
 
 // 型定義
@@ -21,12 +22,14 @@ const queryResults = async (
 
   const queryPromises = [];
 
+  const count = Helper.calSingleCount(filters.count, filters.categories.length);
+
   if (filters.categories.includes("Tab")) {
     queryPromises.push(
       resultServiceDependencies.tabService
         .queryNew({
           query: filters?.query,
-          option: { currentWindow: true, count: filters.count },
+          option: { count, currentWindow: false },
         })
         .then((result) => ({ service: "Tab", data: result }) as const),
     );
@@ -34,12 +37,18 @@ const queryResults = async (
 
   if (filters.categories.includes("Bookmark")) {
     queryPromises.push(
-      resultServiceDependencies.bookmarkService
-        .query({
-          query: filters?.query ?? "",
-          option: { count: filters.count },
-        })
-        .then((result) => ({ service: "Bookmark", data: result }) as const),
+      filters.query
+        ? resultServiceDependencies.bookmarkService
+            .query({
+              query: filters?.query ?? "",
+              option: { count },
+            })
+            .then((result) => ({ service: "Bookmark", data: result }) as const)
+        : resultServiceDependencies.bookmarkService
+            .getRecentNew({
+              option: { count },
+            })
+            .then((result) => ({ service: "Bookmark", data: result }) as const),
     );
   }
 
@@ -48,7 +57,7 @@ const queryResults = async (
       resultServiceDependencies.historyService
         .query({
           query: filters?.query ?? "",
-          count: filters.count ?? 50,
+          count,
         })
         .then((result) => ({ service: "History", data: result }) as const),
     );
@@ -59,7 +68,7 @@ const queryResults = async (
       resultServiceDependencies.suggestionService
         .queryNew({
           query: filters?.query ?? "",
-          option: { count: filters.count },
+          option: { count },
         })
         .then((result) => ({ service: "Suggestion", data: result }) as const),
     );
