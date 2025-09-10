@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { MessageType } from "@/types/result";
+import { MessageType } from "@/services/runtime/types";
 
 const keyMap: Record<string, string> = {
   "⇧": "Shift",
