@@ -1,4 +1,4 @@
-import type { NewTab, Tab } from "./types";
+import type { Tab } from "./types";
 
 // TODO:削除予定
 export const sortByLastAccessed = (a: Tab, b: Tab): number =>
@@ -8,11 +8,6 @@ export const limitResults =
   (count?: number) =>
   <T>(items: T[]): T[] =>
     count ? items.slice(0, count) : items;
-
-export const newSortByLastAccessed = (tabs: NewTab[]): NewTab[] =>
-  [...tabs].sort((a, b) => {
-    return b.data.lastAccessed - a.data.lastAccessed;
-  });
 
 const parseQuery = (query: string): string[] => {
   return query.split(/\s+/).filter((k) => k.length > 0);
