@@ -9,14 +9,16 @@ import type * as Type from "./types";
 
 // 型定義
 export interface TabService {
+  // TODO:削除予定
   query: (request: Type.QueryTabsRequest) => Promise<Type.Tab[]>;
+  // TODO: queryと置き換え予定
   queryNew: (request: Type.QueryTabsRequest) => Promise<Type.NewTab[]>;
   create: (request: Type.CreateTabRequest) => Promise<void>;
   update: (request: Type.UpdateTabRequest) => Promise<void>;
   remove: (request: Type.RemoveTabRequest) => Promise<void>;
 }
 
-// サービス実装
+// TODO:削除予定
 const queryTabs = async ({
   query,
   option,
@@ -42,17 +44,15 @@ const queryNewTabs = async ({
   option,
 }: Type.QueryTabsRequest): Promise<Type.NewTab[]> => {
   try {
-    const response = await chrome.tabs.query({
-      currentWindow: option?.currentWindow ?? false,
-    });
+    const response = await chrome.tabs.query({});
 
-    const tabs = queryFiltered(response, query).map((tab) =>
-      convertNewTabToData(tab, option?.currentWindow ?? false),
-    );
+    const tabs = queryFiltered(response, query)
+      .map(convertNewTabToData)
+      .sort((a, b) => b.data.lastAccessed - a.data.lastAccessed);
 
     return limitResults(option?.count)(tabs);
   } catch (error) {
-    console.error("Failed to query tabs:", error);
+    console.error("Failed to newQuery tabs:", error);
     throw new Error("タブの検索に失敗しました");
   }
 };

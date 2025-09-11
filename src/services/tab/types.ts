@@ -17,8 +17,7 @@ export interface TabData {
 }
 
 export interface NewTab {
-  data: chrome.tabs.Tab;
-  currentWindow: boolean;
+  data: chrome.tabs.Tab & { lastAccessed: number };
 }
 
 export interface QueryTabsRequest {
@@ -34,11 +33,13 @@ export interface CreateTabRequest {
   url: string;
 }
 
+// TODO: RequestをNewTabに追加
 export interface UpdateTabRequest {
   tabId: number;
   windowId: number;
 }
 
+// TODO: RequestをNewTabに追加
 export interface RemoveTabRequest {
   tabId: number;
 }

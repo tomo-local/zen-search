@@ -6,7 +6,7 @@
 import { ResultType } from "@/types/result";
 import type { NewTab, Tab, TabData } from "./types";
 
-// Chrome Tab から アプリ用 Tab への変換
+// TODO:削除予定
 export const convertTabToResult = (
   tab: chrome.tabs.Tab,
   currentWindow: boolean,
@@ -18,6 +18,7 @@ export const convertTabToResult = (
   data: convertTabToData(tab, currentWindow),
 });
 
+// TODO:削除予定
 export const convertTabToData = (
   tab: chrome.tabs.Tab,
   currentWindow?: boolean,
@@ -29,7 +30,7 @@ export const convertTabToData = (
   currentWindow: currentWindow ?? false,
 });
 
-// 複数タブの変換（バッチ処理用）
+// TODO:削除予定
 export const convertMultipleTabsToResult = (
   tabs: chrome.tabs.Tab[],
   currentWindow: boolean,
@@ -37,23 +38,12 @@ export const convertMultipleTabsToResult = (
   return tabs.map((tab) => convertTabToResult(tab, currentWindow));
 };
 
-export const convertNewTabToData = (
-  newTab: chrome.tabs.Tab,
-  currentWindow: boolean,
-): NewTab => ({
+export const convertNewTabToData = (newTab: chrome.tabs.Tab): NewTab => ({
   data: {
     ...newTab,
     lastAccessed: newTab.lastAccessed ?? 0,
   },
-  currentWindow,
 });
-
-export const convertNewTabToResult = (
-  tabs: chrome.tabs.Tab[],
-  currentWindow: boolean,
-): NewTab[] => {
-  return tabs.map((tab) => convertNewTabToData(tab, currentWindow));
-};
 
 // デフォルトタブオブジェクトの作成（テスト用やフォールバック用）
 export const createDefaultTab = (overrides: Partial<Tab> = {}): Tab => ({
