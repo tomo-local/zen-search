@@ -1,9 +1,5 @@
 import type { Tab } from "./types";
 
-// TODO:削除予定
-export const sortByLastAccessed = (a: Tab, b: Tab): number =>
-  b.data.lastAccessed - a.data.lastAccessed;
-
 export const limitResults =
   (count?: number) =>
   <T>(items: T[]): T[] =>
@@ -21,7 +17,7 @@ const isTextMatch = (text: string, keyword: string): boolean => {
 
 export const queryFiltered = (
   response: chrome.tabs.Tab[],
-  query?: string,
+  query?: string
 ): chrome.tabs.Tab[] => {
   if (!query) {
     return response;
@@ -38,7 +34,7 @@ export const queryFiltered = (
     const url = tab.url ? new URL(tab.url).href : "";
 
     return keywords.every(
-      (keyword) => isTextMatch(title, keyword) || isTextMatch(url, keyword),
+      (keyword) => isTextMatch(title, keyword) || isTextMatch(url, keyword)
     );
   }) as chrome.tabs.Tab[];
 };

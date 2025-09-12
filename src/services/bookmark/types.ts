@@ -3,21 +3,6 @@
  */
 
 export interface Bookmark {
-  type: "Bookmark";
-  id: string;
-  title: string;
-  url: string;
-  data: BookMarkData;
-}
-
-export type BookMarkData = {
-  unmodifiable?: "managed" | undefined;
-  dateAdded?: number | undefined;
-  dateGroupModified?: number | undefined;
-  parentId?: string | undefined;
-};
-
-export interface NewBookmark {
   data: chrome.bookmarks.BookmarkTreeNode & {
     favIconUrl?: string;
   };

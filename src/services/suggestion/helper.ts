@@ -2,16 +2,14 @@
  * Suggestion Helper - Google検索候補関連のヘルパー関数
  */
 
-import type { NewSuggestion, Suggestion } from "./types";
+import type { Suggestion } from "./types";
 
 /**
  * 結果数を制限する
  */
 export const limitResults =
   (count?: number) =>
-  (
-    suggestions: (Suggestion | NewSuggestion)[],
-  ): (Suggestion | NewSuggestion)[] => {
+  (suggestions: Suggestion[]): Suggestion[] => {
     return count ? suggestions.slice(0, count) : suggestions;
   };
 
@@ -27,6 +25,15 @@ export const buildSuggestUrl = (query: string): string => {
  * APIレスポンスからサジェスチョンリストを抽出
  */
 export const extractSuggestions = (data: unknown): string[] => {
+  if (Array.isArray(data) && Array.isArray(data[0])) {
+    // 各サジェスト項目から文字列部分（インデックス0）を抽出
+    return data[0]
+      .filter(
+        (item: unknown) => Array.isArray(item) && typeof item[0] === "string",
+      )
+      .map((item: unknown[]) => item[0] as string);
+  }
+
   if (!Array.isArray(data) || !Array.isArray(data[1])) {
     return [];
   }

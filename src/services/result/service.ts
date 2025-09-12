@@ -26,7 +26,7 @@ const queryResults = async (
   if (filters.categories.includes("Tab")) {
     queryPromises.push(
       resultServiceDependencies.tabService
-        .queryNew({
+        .query({
           query: filters?.query,
           option: { count, currentWindow: false },
         })
@@ -44,7 +44,7 @@ const queryResults = async (
             })
             .then((result) => ({ service: "Bookmark", data: result }) as const)
         : resultServiceDependencies.bookmarkService
-            .getRecentNew({
+            .getRecent({
               option: { count },
             })
             .then((result) => ({ service: "Bookmark", data: result }) as const),
@@ -65,7 +65,7 @@ const queryResults = async (
   if (filters.categories.includes("Suggestion")) {
     queryPromises.push(
       resultServiceDependencies.suggestionService
-        .queryNew({
+        .query({
           query: filters?.query ?? "",
           option: { count },
         })
