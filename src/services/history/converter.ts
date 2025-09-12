@@ -1,4 +1,3 @@
-import { ResultType } from "@/types/result";
 import { getFaviconUrl } from "./helper";
 import type * as Type from "./types";
 
@@ -6,7 +5,7 @@ export const convertItemToHistory = (
   history: chrome.history.HistoryItem,
 ): Type.History => {
   return {
-    type: ResultType.History,
+    type: "History",
     id: history.id,
     title: history.title || "",
     url: history.url || "",

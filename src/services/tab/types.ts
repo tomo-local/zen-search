@@ -1,7 +1,5 @@
-import type { ResultType } from "@/types/result";
-
 export interface Tab {
-  type: ResultType.Tab;
+  type: "Tab";
   id: number;
   title: string;
   url: string;
@@ -17,7 +15,7 @@ export interface TabData {
 }
 
 export interface NewTab {
-  data: chrome.tabs.Tab & { lastAccessed: number };
+  data: chrome.tabs.Tab & { id: number; lastAccessed: number };
 }
 
 export interface QueryTabsRequest {

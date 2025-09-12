@@ -3,7 +3,6 @@
  * 責任: chrome.tabs.Tab → Tab への変換ロジック
  */
 
-import { ResultType } from "@/types/result";
 import type { NewTab, Tab, TabData } from "./types";
 
 // TODO:削除予定
@@ -11,7 +10,7 @@ export const convertTabToResult = (
   tab: chrome.tabs.Tab,
   currentWindow: boolean,
 ): Tab => ({
-  type: ResultType.Tab,
+  type: "Tab",
   id: tab.id ?? 0,
   title: tab.title ?? "",
   url: tab.url ?? "",
@@ -41,13 +40,14 @@ export const convertMultipleTabsToResult = (
 export const convertNewTabToData = (newTab: chrome.tabs.Tab): NewTab => ({
   data: {
     ...newTab,
+    id: newTab.id ?? 0,
     lastAccessed: newTab.lastAccessed ?? 0,
   },
 });
 
 // デフォルトタブオブジェクトの作成（テスト用やフォールバック用）
 export const createDefaultTab = (overrides: Partial<Tab> = {}): Tab => ({
-  type: ResultType.Tab,
+  type: "Tab",
   id: 0,
   title: "",
   url: "",
