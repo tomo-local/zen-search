@@ -2,7 +2,7 @@ import type { Tab } from "./types";
 
 export const limitResults =
   (count?: number) =>
-  <T>(items: T[]): T[] =>
+  (items: Tab[]): Tab[] =>
     count ? items.slice(0, count) : items;
 
 const parseQuery = (query: string): string[] => {
