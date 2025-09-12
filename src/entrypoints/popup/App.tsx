@@ -103,7 +103,7 @@ export default function App() {
               <MagnifyingGlassIcon
                 className={clsx(
                   searchInputClassName.icon.text,
-                  searchInputClassName.icon.size
+                  searchInputClassName.icon.size,
                 )}
               />
             ) : (
