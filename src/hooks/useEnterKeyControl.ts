@@ -1,27 +1,27 @@
 import useControlTab from "@/hooks/useControlTab";
-import { ActionType } from "@/services/action/types";
-import type { Tab } from "@/services/tab";
-import { type Result, ResultType } from "@/types/result";
+import type { Kind, Result } from "@/services/result/types";
 
 export default function useEnterKeyControl() {
   const { updateTab, createTab } = useControlTab();
 
-  const onAction = (result: Result) => {
+  const onAction = (result: Result<Kind>) => {
     if (
       [
-        ResultType.Bookmark,
-        ResultType.History,
-        ResultType.Google,
-        ActionType.Calculation,
+        "Tab",
+        "Bookmark",
+        "History",
+        "Suggestion",
+        "ActionCalculation",
       ].includes(result.type)
     ) {
       createTab(result.url);
       return;
     }
 
-    if (result.type === ResultType.Tab) {
-      const { id, data } = result as Tab;
-      updateTab(id, data.windowId);
+    if (result.type === "Tab") {
+      const tab = result as Result<"Tab">;
+      const { id: tabId, windowId } = tab.data;
+      updateTab(tabId, windowId);
       return;
     }
   };

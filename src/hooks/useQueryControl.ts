@@ -1,11 +1,15 @@
 import { useReducer } from "react";
-import { ResultType } from "@/types/result";
+import type { Kind } from "@/services/result";
 import { ngramSimilarity } from "@/utils/algorithm";
+
+type ResultType = "All" | "Tab" | "History" | "Bookmark" | "Google";
 
 interface QueryState {
   type: ResultType;
   query: string;
+  categories: Kind[];
   suggestion: ResultType | null;
+  init: boolean;
 }
 
 type QueryAction =
@@ -14,10 +18,14 @@ type QueryAction =
   | { type: "suggestion"; value: ResultType | null }
   | { type: "resetType" };
 
+const defaultCategories: Kind[] = ["Tab", "History", "Bookmark", "Suggestion"];
+
 const initialState: QueryState = {
-  type: ResultType.All,
+  type: "All",
+  categories: [...defaultCategories],
   suggestion: null,
   query: "",
+  init: false,
 };
 
 const matchType = (query: string) => {
@@ -29,9 +37,7 @@ const matchType = (query: string) => {
 
   const lowerQuery = query.toLowerCase();
 
-  const types = Object.values(ResultType);
-
-  const match = types.find((type) => {
+  const match = ["All", "Tab", "History", "Bookmark", "Google"].find((type) => {
     const lowerType = type.toLowerCase();
 
     if (lowerType.length < lowerQuery.length) {
@@ -50,28 +56,56 @@ const matchType = (query: string) => {
   return match ? (match as ResultType) : null;
 };
 
+const categoriesMap: { [key in ResultType]: Kind[] } = {
+  All: defaultCategories,
+  Tab: ["Tab"],
+  History: ["History"],
+  Bookmark: ["Bookmark"],
+  Google: ["Suggestion"],
+};
+
 const queryReducer = (state: QueryState, action: QueryAction): QueryState => {
   switch (action.type) {
     case "type":
-      return { ...state, type: action.value, query: "", suggestion: null };
+      return {
+        ...state,
+        type: action.value,
+        query: "",
+        suggestion: null,
+        categories: categoriesMap[action.value],
+      };
 
     case "query": {
-      const suggestion =
-        state.type === ResultType.All ? matchType(action.value) : null;
+      const suggestion = state.type === "All" ? matchType(action.value) : null;
 
-      return { ...state, query: action.value, suggestion };
+      if (state.init) {
+        return {
+          ...state,
+          query: action.value,
+          suggestion,
+          init: false,
+          categories: [...defaultCategories],
+        };
+      }
+
+      return {
+        ...state,
+        query: action.value,
+        suggestion,
+      };
     }
 
     case "resetType": {
-      if (state.type === ResultType.All) {
+      if (state.type === "All") {
         return state;
       }
 
       return {
         ...state,
-        type: ResultType.All,
+        type: "All",
         query: state.type,
         suggestion: state.type,
+        categories: defaultCategories,
       };
     }
     default:
@@ -98,6 +132,7 @@ export default function useQueryControl() {
     query: state.query,
     type: state.type,
     suggestion: state.suggestion,
+    categories: state.categories,
     setQuery: updateQuery,
     setType: updateType,
     reset,

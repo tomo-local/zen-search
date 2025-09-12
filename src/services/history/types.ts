@@ -1,7 +1,5 @@
-import type { ResultType } from "@/types/result";
-
 export interface History {
-  type: ResultType.History;
+  type: "History";
   id: string;
   title: string;
   url: string;

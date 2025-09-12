@@ -2,7 +2,6 @@
  * Suggestion Converter - Google APIレスポンスをSuggestion型に変換
  */
 
-import { ResultType } from "@/types/result";
 import type { NewSuggestion, Suggestion } from "./types";
 
 const SEARCH_URL = "https://www.google.com/search";
@@ -18,7 +17,7 @@ export function convertSuggestion(
     id: generateRandomId(),
     title: suggestion,
     url: createSearchUrl(suggestion),
-    type: ResultType.Google,
+    type: "Google",
     data: {
       originalQuery,
     },

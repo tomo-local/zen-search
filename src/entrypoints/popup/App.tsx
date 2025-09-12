@@ -9,25 +9,23 @@ import Layout, {
 } from "@/components/modules/Layout/Layout";
 import SquareBadge from "@/components/modules/SquareBadge/SquareBadge";
 import ResultFooter from "@/components/widgets/ResultFooter/ResultFooter";
-import ResultLine from "@/components/widgets/ResultLine/ResultLine";
+import ResultList from "@/components/widgets/ResultList/ResultList";
 import SearchInput, {
   commonClassName as searchInputClassName,
 } from "@/components/widgets/SearchInput/SearchInput";
-import useQueryControl from "@/hooks/query/useQueryControl";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
 import useEnterKeyControl from "@/hooks/useEnterKeyControl";
 import usePopupShortcut from "@/hooks/usePopupShortcut";
-import useQueryResult from "@/hooks/useResults";
-
-import { ResultType } from "@/types/result";
+import useQueryControl from "@/hooks/useQueryControl";
+import useResult from "@/hooks/useResult";
 
 export default function App() {
-  const { query, type, suggestion, setQuery, setType, reset } =
+  const { query, type, suggestion, setQuery, setType, reset, categories } =
     useQueryControl();
   const [isComposing, setIsComposing] = useState(false);
-  const { result, loading } = useQueryResult(query, type);
+  const { results, loading: resultsLoading } = useResult(query, categories);
   const { selectedIndex, listRef, handleArrowUpDownKey } =
-    useArrowKeyControl(result);
+    useArrowKeyControl(results);
   const { onAction } = useEnterKeyControl();
   const { shortcut } = usePopupShortcut();
 
@@ -40,7 +38,7 @@ export default function App() {
 
     e.preventDefault();
     handleClose();
-    onAction(result[selectedIndex]);
+    onAction(results[selectedIndex]);
   };
 
   const handleTabKeyDown = (e: React.KeyboardEvent) => {
@@ -52,7 +50,7 @@ export default function App() {
   };
 
   const handleBackspaceKeyDown = (e: React.KeyboardEvent) => {
-    if (query || (type !== ResultType.All && query)) {
+    if (query || (type !== "All" && query)) {
       return;
     }
     e.preventDefault();
@@ -101,7 +99,7 @@ export default function App() {
           className={clsx(searchInputClassName.text, searchInputClassName.bg)}
           value={query}
           leftContent={
-            type === ResultType.All ? (
+            type === "All" ? (
               <MagnifyingGlassIcon
                 className={clsx(
                   searchInputClassName.icon.text,
@@ -137,28 +135,14 @@ export default function App() {
           onEscapeKeyDown={handleClose}
           onBackspaceKeyDown={handleBackspaceKeyDown}
         />
-        {result?.length ? (
-          <>
-            <div className="border-t border-gray-700 border-solid" />
-            <div className="pt-3 pb-2 dark:bg-gray-800">
-              <ul
-                className="space-y-1 overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-56"
-                ref={listRef}
-              >
-                {result.map((item, index) => (
-                  <ResultLine
-                    key={item.id}
-                    onClick={() => onAction(item)}
-                    item={item}
-                    isSelected={index === selectedIndex}
-                  />
-                ))}
-              </ul>
-            </div>
-          </>
-        ) : null}
         <div className="border-t border-gray-700 border-solid" />
-        <ResultFooter count={result.length} loading={loading} />
+        <ResultList
+          ref={listRef}
+          items={results}
+          selectedIndex={selectedIndex}
+        />
+        <div className="border-t border-gray-700 border-solid" />
+        <ResultFooter count={results.length} loading={resultsLoading} />
       </div>
     </Layout>
   );
