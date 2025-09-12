@@ -2,32 +2,14 @@
  * Suggestion Converter - Google APIレスポンスをSuggestion型に変換
  */
 
-import type { NewSuggestion, Suggestion } from "./types";
+import type { Suggestion } from "./types";
 
 const SEARCH_URL = "https://www.google.com/search";
-
-/**
- * クエリからSuggestionオブジェクトを作成
- */
-export function convertSuggestion(
-  suggestion: string,
-  originalQuery: string,
-): Suggestion {
-  return {
-    id: generateRandomId(),
-    title: suggestion,
-    url: createSearchUrl(suggestion),
-    type: "Google",
-    data: {
-      originalQuery,
-    },
-  };
-}
 
 export function convertNewSuggestions(
   suggestion: string,
   originalQuery: string,
-): NewSuggestion {
+): Suggestion {
   return {
     data: {
       type: "Google",
@@ -49,7 +31,3 @@ function createSearchUrl(query: string): string {
 
   return `${SEARCH_URL}?q=${encodeURIComponent(query)}`;
 }
-
-const generateRandomId = (): string => {
-  return crypto.randomUUID();
-};

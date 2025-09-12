@@ -1,20 +1,4 @@
 export interface Tab {
-  type: "Tab";
-  id: number;
-  title: string;
-  url: string;
-  data: TabData;
-}
-
-export interface TabData {
-  icon?: string;
-  active: boolean;
-  lastAccessed: number;
-  windowId: number;
-  currentWindow: boolean;
-}
-
-export interface NewTab {
   data: chrome.tabs.Tab & { id: number; lastAccessed: number };
 }
 

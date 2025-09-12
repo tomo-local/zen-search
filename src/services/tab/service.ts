@@ -3,46 +3,22 @@
  * 責任: タブの検索、作成、更新、削除を担当
  */
 
-import { convertNewTabToData, convertTabToResult } from "./converter";
-import { limitResults, queryFiltered, sortByLastAccessed } from "./helper";
+import { convertNewTabToData } from "./converter";
+import { limitResults, queryFiltered } from "./helper";
 import type * as Type from "./types";
 
 // 型定義
 export interface TabService {
-  // TODO:削除予定
   query: (request: Type.QueryTabsRequest) => Promise<Type.Tab[]>;
-  // TODO: queryと置き換え予定
-  queryNew: (request: Type.QueryTabsRequest) => Promise<Type.NewTab[]>;
   create: (request: Type.CreateTabRequest) => Promise<void>;
   update: (request: Type.UpdateTabRequest) => Promise<void>;
   remove: (request: Type.RemoveTabRequest) => Promise<void>;
 }
 
-// TODO:削除予定
 const queryTabs = async ({
   query,
   option,
 }: Type.QueryTabsRequest): Promise<Type.Tab[]> => {
-  try {
-    const response = await chrome.tabs.query({
-      currentWindow: option?.currentWindow,
-    });
-
-    const tabs = queryFiltered(response, query)
-      .map((tab) => convertTabToResult(tab, option?.currentWindow ?? false))
-      .sort(sortByLastAccessed);
-
-    return limitResults(option?.count)(tabs);
-  } catch (error) {
-    console.error("Failed to query tabs:", error);
-    throw new Error("タブの検索に失敗しました");
-  }
-};
-
-const queryNewTabs = async ({
-  query,
-  option,
-}: Type.QueryTabsRequest): Promise<Type.NewTab[]> => {
   try {
     const response = await chrome.tabs.query({});
 
@@ -95,7 +71,6 @@ const removeTab = async ({ tabId }: Type.RemoveTabRequest): Promise<void> => {
 // サービスファクトリー（依存性注入対応）
 export const createTabService = (): TabService => ({
   query: queryTabs,
-  queryNew: queryNewTabs,
   create: createTab,
   update: updateTab,
   remove: removeTab,
@@ -105,4 +80,4 @@ export const createTabService = (): TabService => ({
 export const tabService = createTabService();
 
 // 個別エクスポート（後方互換性のため）
-export { queryTabs, createTab, updateTab, removeTab };
+export { type queryTabs, createTab, updateTab, removeTab };

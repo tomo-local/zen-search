@@ -1,12 +1,8 @@
 import type { Tab } from "./types";
 
-// TODO:削除予定
-export const sortByLastAccessed = (a: Tab, b: Tab): number =>
-  b.data.lastAccessed - a.data.lastAccessed;
-
 export const limitResults =
   (count?: number) =>
-  <T>(items: T[]): T[] =>
+  (items: Tab[]): Tab[] =>
     count ? items.slice(0, count) : items;
 
 const parseQuery = (query: string): string[] => {
