@@ -17,7 +17,7 @@ const isTextMatch = (text: string, keyword: string): boolean => {
 
 export const queryFiltered = (
   response: chrome.tabs.Tab[],
-  query?: string
+  query?: string,
 ): chrome.tabs.Tab[] => {
   if (!query) {
     return response;
@@ -34,7 +34,7 @@ export const queryFiltered = (
     const url = tab.url ? new URL(tab.url).href : "";
 
     return keywords.every(
-      (keyword) => isTextMatch(title, keyword) || isTextMatch(url, keyword)
+      (keyword) => isTextMatch(title, keyword) || isTextMatch(url, keyword),
     );
   }) as chrome.tabs.Tab[];
 };
