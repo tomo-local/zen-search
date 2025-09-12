@@ -92,7 +92,7 @@ export default function App() {
           layoutClassName.border,
           layoutClassName.shadow,
           layoutClassName.p,
-          layoutClassName.space
+          layoutClassName.space,
         )}
       >
         <SearchInput
