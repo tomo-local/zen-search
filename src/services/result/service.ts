@@ -14,7 +14,6 @@ export interface ResultService {
   ) => Promise<Type.Result<Type.Kind>[]>;
 }
 
-// サンプル実装
 const queryResults = async (
   request: Type.QueryResultsRequest,
 ): Promise<Type.Result<Type.Kind>[]> => {
@@ -74,21 +73,32 @@ const queryResults = async (
     );
   }
 
-  const resultArrays = await Promise.all(queryPromises);
+  const resultArrays = await Promise.allSettled(queryPromises);
 
   const results = resultArrays.reduce((acc, curr) => {
-    switch (curr.service) {
+    if (curr.status === "rejected") {
+      console.error("Error querying results:", curr.reason);
+      return acc;
+    }
+
+    switch (curr.value.service) {
       case "Tab":
-        acc.push(...converter.convertMultipleTabsToResult(curr.data));
+        acc.push(...converter.convertMultipleTabsToResult(curr.value.data));
         break;
       case "Bookmark":
-        acc.push(...converter.convertMultipleBookmarksToResult(curr.data));
+        acc.push(
+          ...converter.convertMultipleBookmarksToResult(curr.value.data),
+        );
         break;
       case "History":
-        acc.push(...converter.convertMultipleHistoriesToResult(curr.data));
+        acc.push(
+          ...converter.convertMultipleHistoriesToResult(curr.value.data),
+        );
         break;
       case "Suggestion":
-        acc.push(...converter.convertMultipleSuggestionsToResult(curr.data));
+        acc.push(
+          ...converter.convertMultipleSuggestionsToResult(curr.value.data),
+        );
         break;
     }
     return acc;
