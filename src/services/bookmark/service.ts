@@ -4,7 +4,7 @@
  */
 
 import { convertBookmark } from "./converter";
-import { filterValidBookmarks, limitResults } from "./helper";
+import { filterValidBookmarks } from "./helper";
 import type * as Type from "./types";
 
 // 型定義
@@ -16,17 +16,14 @@ export interface BookmarkService {
 }
 
 const queryBookmarks = async ({
-  query,
-  option,
+  query: _,
 }: Type.QueryBookmarksRequest): Promise<Type.Bookmark[]> => {
   try {
-    const response = await chrome.bookmarks.search(query);
+    const response = await chrome.bookmarks.getTree();
 
-    const bookmarks = filterValidBookmarks(response).map((bookmark) => ({
-      data: bookmark,
-    }));
+    const bookmarks = filterValidBookmarks(response).map(convertBookmark);
 
-    return limitResults(option?.count)(bookmarks) as Type.Bookmark[];
+    return bookmarks;
   } catch (error) {
     console.error("Failed to query bookmarks:", error);
     throw new Error("ブックマークの取得に失敗しました");
@@ -40,9 +37,7 @@ const getRecentBookmarks = async ({
     const count = option?.count || 10;
 
     const response = await chrome.bookmarks.getRecent(count);
-    const bookmarks = filterValidBookmarks(response).map((bookmark) =>
-      convertBookmark(bookmark),
-    );
+    const bookmarks = filterValidBookmarks(response).map(convertBookmark);
 
     return bookmarks;
   } catch (error) {

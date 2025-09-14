@@ -4,7 +4,7 @@
  */
 
 import { convertNewTabToData } from "./converter";
-import { limitResults, queryFiltered } from "./helper";
+import { limitResults } from "./helper";
 import type * as Type from "./types";
 
 // 型定義
@@ -16,13 +16,12 @@ export interface TabService {
 }
 
 const queryTabs = async ({
-  query,
   option,
 }: Type.QueryTabsRequest): Promise<Type.Tab[]> => {
   try {
     const response = await chrome.tabs.query({});
 
-    const tabs = queryFiltered(response, query)
+    const tabs = response
       .map(convertNewTabToData)
       .sort((a, b) => b.data.lastAccessed - a.data.lastAccessed);
 

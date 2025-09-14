@@ -5,9 +5,12 @@ export const convertItemToHistory = (
   history: chrome.history.HistoryItem,
 ): Type.History => {
   return {
+    id: crypto.randomUUID(),
+    type: "History",
+    title: history.title || "",
+    url: history.url || "",
     data: {
       ...history,
-      // MEMO: chrome://favicon APIでは何故か取得できない場合があるため、GoogleのFaviconサービスを利用する
       favIconUrl: history.url ? getFaviconUrl(history.url) : undefined,
     },
   };

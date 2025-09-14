@@ -1,4 +1,8 @@
 export interface History {
+  id: string;
+  type: "History";
+  title: string;
+  url: string;
   data: chrome.history.HistoryItem & {
     favIconUrl?: string;
   };

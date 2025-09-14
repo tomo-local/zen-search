@@ -3,7 +3,6 @@
  */
 
 import resultServiceDependencies from "./container";
-import * as converter from "./converter";
 import * as Helper from "./helper";
 import type * as Type from "./types";
 
@@ -81,33 +80,15 @@ const queryResults = async (
       return acc;
     }
 
-    switch (curr.value.service) {
-      case "Tab":
-        acc.push(...converter.convertMultipleTabsToResult(curr.value.data));
-        break;
-      case "Bookmark":
-        acc.push(
-          ...converter.convertMultipleBookmarksToResult(curr.value.data),
-        );
-        break;
-      case "History":
-        acc.push(
-          ...converter.convertMultipleHistoriesToResult(curr.value.data),
-        );
-        break;
-      case "Suggestion":
-        acc.push(
-          ...converter.convertMultipleSuggestionsToResult(curr.value.data),
-        );
-        break;
-    }
+    acc.push(...curr.value.data);
+
     return acc;
   }, [] as Type.Result<Type.Kind>[]);
 
-  return results;
+  return filters?.query ? Helper.fuseSearch(filters.query, results) : results;
 };
 
-// サービスのエクスポート
+/** サービスのエクスポート */
 export const resultService: ResultService = {
   query: queryResults,
 };

@@ -5,6 +5,10 @@
 type SearchKind = "Google" | "Bing" | "DuckDuckGo" | "Brave" | "Ecosia";
 
 export interface Suggestion {
+  id: string;
+  type: "Suggestion";
+  title: string;
+  url: string;
   data: {
     type: SearchKind;
     suggestion: string;

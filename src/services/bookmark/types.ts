@@ -3,13 +3,17 @@
  */
 
 export interface Bookmark {
+  id: string;
+  type: "Bookmark";
+  title: string;
+  url: string;
   data: chrome.bookmarks.BookmarkTreeNode & {
     favIconUrl?: string;
   };
 }
 
 export interface QueryBookmarksRequest {
-  query: string;
+  query?: string;
   option?: QueryOption;
 }
 

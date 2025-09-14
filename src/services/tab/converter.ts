@@ -6,6 +6,10 @@
 import type { Tab } from "./types";
 
 export const convertNewTabToData = (newTab: chrome.tabs.Tab): Tab => ({
+  id: crypto.randomUUID(),
+  type: "Tab",
+  title: newTab.title || "",
+  url: newTab.url || "",
   data: {
     ...newTab,
     id: newTab.id ?? 0,
