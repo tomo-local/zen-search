@@ -20,7 +20,6 @@ export const getFaviconUrl = (url: string): string | undefined => {
     }
   })();
   if (hostUrl) {
-    // chrome://favicon APIでは何故か取得できない場合があるため、GoogleのFaviconサービスを利用する
     return `https://www.google.com/s2/favicons?domain=${hostUrl}`;
   }
 
