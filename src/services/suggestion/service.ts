@@ -3,7 +3,7 @@
  * 責任: Google検索候補の取得を担当
  */
 
-import { convertNewSuggestions } from "./converter";
+import { convertSuggestions } from "./converter";
 import { buildSuggestUrl, extractSuggestions, limitResults } from "./helper";
 import type * as Type from "./types";
 
@@ -28,7 +28,7 @@ const querySuggestions = async ({
     if (!response.ok) {
       console.error("Failed to fetch Google suggestions:", response.statusText);
       // エラー時は元のクエリのみ返す
-      return [convertNewSuggestions(query, query)];
+      return [convertSuggestions(query, query)];
     }
 
     const text = await response.text();
@@ -42,15 +42,15 @@ const querySuggestions = async ({
     const suggestions = extractSuggestions(data);
 
     const result = [
-      convertNewSuggestions(query, query),
-      ...suggestions.map((title) => convertNewSuggestions(title, query)),
+      convertSuggestions(query, query),
+      ...suggestions.map((title) => convertSuggestions(title, query)),
     ];
 
     return limitResults(option?.count)(result) as Type.Suggestion[];
   } catch (error) {
     console.error("Error fetching Google suggestions:", error);
     // エラー時は元のクエリのみ返す
-    return [convertNewSuggestions(query, query)];
+    return [convertSuggestions(query, query)];
   }
 };
 

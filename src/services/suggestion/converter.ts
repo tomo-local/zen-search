@@ -6,11 +6,15 @@ import type { Suggestion } from "./types";
 
 const SEARCH_URL = "https://www.google.com/search";
 
-export function convertNewSuggestions(
+export function convertSuggestions(
   suggestion: string,
   originalQuery: string,
 ): Suggestion {
   return {
+    id: crypto.randomUUID(),
+    type: "Suggestion",
+    title: suggestion,
+    url: createSearchUrl(suggestion),
     data: {
       type: "Google",
       suggestion: suggestion,
