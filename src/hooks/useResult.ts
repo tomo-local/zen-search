@@ -12,7 +12,7 @@ export default function useResults(
   const fetchResults = useCallback(async () => {
     setLoading(true);
     const results = await runtimeService.queryResults({
-      filters: { categories, query, count: 100 },
+      filters: { categories, query, count: 1000 },
     });
     setResults(results);
     setLoading(false);
