@@ -1,4 +1,8 @@
 export interface Tab {
+  id: string;
+  type: "Tab";
+  title: string;
+  url: string;
   data: chrome.tabs.Tab & { id: number; lastAccessed: number };
 }
 
