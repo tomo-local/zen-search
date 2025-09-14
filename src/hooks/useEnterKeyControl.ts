@@ -14,7 +14,7 @@ export default function useEnterKeyControl() {
 
     if (
       ["Bookmark", "History", "Suggestion", "ActionCalculation"].includes(
-        result.type
+        result.type,
       )
     ) {
       createTab(result.url);
