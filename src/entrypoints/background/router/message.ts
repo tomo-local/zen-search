@@ -1,34 +1,15 @@
-import {
-  bookmarkService,
-  type QueryBookmarksRequest,
-} from "@/services/bookmark";
 import { contentService } from "@/services/content";
-import {
-  get30DaysAgo,
-  getNow,
-  historyService,
-  type SearchHistoryRequest,
-} from "@/services/history";
 import { type QueryResultsRequest, resultService } from "@/services/result";
 import { MessageType } from "@/services/runtime/types";
 import {
   type CreateTabRequest,
-  type QueryTabsRequest,
   type RemoveTabRequest,
   tabService,
   type UpdateTabRequest,
 } from "@/services/tab";
 
-const {
-  OPEN_POPUP,
-  QUERY_TAB,
-  CREATE_TAB,
-  UPDATE_TAB,
-  REMOVE_TAB,
-  QUERY_HISTORY,
-  QUERY_BOOKMARK,
-  QUERY_RESULT,
-} = MessageType;
+const { OPEN_POPUP, CREATE_TAB, UPDATE_TAB, REMOVE_TAB, QUERY_RESULT } =
+  MessageType;
 
 function sendResponse(
   type: string,
@@ -40,12 +21,9 @@ function sendResponse(
 
 type Message =
   | { type: "OPEN_POPUP" }
-  | QueryTabsRequest
   | CreateTabRequest
   | UpdateTabRequest
   | RemoveTabRequest
-  | SearchHistoryRequest
-  | QueryBookmarksRequest
   | QueryResultsRequest;
 
 export function routeMessage(
