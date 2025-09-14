@@ -4,7 +4,7 @@
  */
 
 import { convertNewTabToData } from "./converter";
-import { limitResults, queryFiltered } from "./helper";
+import { limitResults } from "./helper";
 import type * as Type from "./types";
 
 // 型定義

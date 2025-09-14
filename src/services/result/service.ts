@@ -9,12 +9,12 @@ import type * as Type from "./types";
 // 型定義
 export interface ResultService {
   query: (
-    request: Type.QueryResultsRequest
+    request: Type.QueryResultsRequest,
   ) => Promise<Type.Result<Type.Kind>[]>;
 }
 
 const queryResults = async (
-  request: Type.QueryResultsRequest
+  request: Type.QueryResultsRequest,
 ): Promise<Type.Result<Type.Kind>[]> => {
   const { filters } = request;
 
@@ -29,7 +29,7 @@ const queryResults = async (
           query: filters?.query,
           option: { count, currentWindow: false },
         })
-        .then((result) => ({ service: "Tab", data: result } as const))
+        .then((result) => ({ service: "Tab", data: result }) as const),
     );
   }
 
@@ -41,12 +41,12 @@ const queryResults = async (
               query: filters?.query ?? "",
               option: { count },
             })
-            .then((result) => ({ service: "Bookmark", data: result } as const))
+            .then((result) => ({ service: "Bookmark", data: result }) as const)
         : resultServiceDependencies.bookmarkService
             .getRecent({
               option: { count },
             })
-            .then((result) => ({ service: "Bookmark", data: result } as const))
+            .then((result) => ({ service: "Bookmark", data: result }) as const),
     );
   }
 
@@ -57,7 +57,7 @@ const queryResults = async (
           query: filters?.query ?? "",
           count,
         })
-        .then((result) => ({ service: "History", data: result } as const))
+        .then((result) => ({ service: "History", data: result }) as const),
     );
   }
 
@@ -68,7 +68,7 @@ const queryResults = async (
           query: filters?.query ?? "",
           option: { count },
         })
-        .then((result) => ({ service: "Suggestion", data: result } as const))
+        .then((result) => ({ service: "Suggestion", data: result }) as const),
     );
   }
 
