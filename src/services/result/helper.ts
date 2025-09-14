@@ -17,7 +17,10 @@ export const calSingleCount = (
   return Math.floor(count / serviceCount);
 };
 
-export const fuseSearch = (query: string, result: Result<Kind>[]) => {
+export const fuseSearch = (
+  query: string,
+  result: Result<Kind>[],
+): Result<Kind>[] => {
   const fuse = new Fuse(result, {
     keys: ["title", "url"],
     threshold: 0.4,
