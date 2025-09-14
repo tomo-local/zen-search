@@ -58,13 +58,6 @@ export function routeMessage(
       contentService.openTabs(contentService.open({}));
       return true;
 
-    case QUERY_TAB: {
-      const { query, option } = message as QueryTabsRequest;
-      tabService.query({ query, option }).then((tabs) => {
-        sendResponse(QUERY_TAB, tabs, response);
-      });
-      return true;
-    }
     case CREATE_TAB: {
       const { url } = message as CreateTabRequest;
       tabService.create({ url }).then(() => {
@@ -83,33 +76,6 @@ export function routeMessage(
       const { tabId } = message as RemoveTabRequest;
       tabService.remove({ tabId }).then(() => {
         sendResponse(REMOVE_TAB, true, response);
-      });
-      return true;
-    }
-    case QUERY_HISTORY: {
-      const { query } = message as SearchHistoryRequest;
-      const end = getNow();
-      const start = get30DaysAgo(end);
-
-      historyService
-        .search({ query, startTime: start.getTime(), endTime: end.getTime() })
-        .then((history) => {
-          sendResponse(QUERY_HISTORY, history, response);
-        });
-      return true;
-    }
-    case QUERY_BOOKMARK: {
-      const { query, option } = message as QueryBookmarksRequest;
-
-      // queryが空の場合、最近のブックマークを取得
-      if (!query) {
-        bookmarkService.getRecent({ option }).then((bookmarks) => {
-          sendResponse(QUERY_BOOKMARK, bookmarks, response);
-        });
-        return true;
-      }
-      bookmarkService.search({ query, option }).then((bookmarks) => {
-        sendResponse(QUERY_BOOKMARK, bookmarks, response);
       });
       return true;
     }
