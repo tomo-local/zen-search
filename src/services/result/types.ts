@@ -2,16 +2,16 @@
  * Result Service Types - Result関連の型定義
  */
 
-import type { NewBookmark as Bookmark } from "@/services/bookmark/types";
-import type { NewHistory as History } from "@/services/history/types";
-import type { NewSuggestion as Suggestion } from "@/services/suggestion/types";
-import type { NewTab as Tab } from "@/services/tab/types";
+import type { Bookmark } from "@/services/bookmark/types";
+import type { History } from "@/services/history/types";
+import type { Suggestion } from "@/services/suggestion/types";
+import type { Tab } from "@/services/tab/types";
 
 export type Kind = "Tab" | "Bookmark" | "History" | "Suggestion";
 
 export interface Result<T extends Kind> {
-  type: T;
   id: string;
+  type: T;
   title: string;
   url: string;
   data: ResultData<T>;
