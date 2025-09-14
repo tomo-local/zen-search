@@ -3,19 +3,18 @@
  */
 
 import resultServiceDependencies from "./container";
-import * as converter from "./converter";
 import * as Helper from "./helper";
 import type * as Type from "./types";
 
 // 型定義
 export interface ResultService {
   query: (
-    request: Type.QueryResultsRequest,
+    request: Type.QueryResultsRequest
   ) => Promise<Type.Result<Type.Kind>[]>;
 }
 
 const queryResults = async (
-  request: Type.QueryResultsRequest,
+  request: Type.QueryResultsRequest
 ): Promise<Type.Result<Type.Kind>[]> => {
   const { filters } = request;
 
@@ -30,7 +29,7 @@ const queryResults = async (
           query: filters?.query,
           option: { count, currentWindow: false },
         })
-        .then((result) => ({ service: "Tab", data: result }) as const),
+        .then((result) => ({ service: "Tab", data: result } as const))
     );
   }
 
@@ -42,12 +41,12 @@ const queryResults = async (
               query: filters?.query ?? "",
               option: { count },
             })
-            .then((result) => ({ service: "Bookmark", data: result }) as const)
+            .then((result) => ({ service: "Bookmark", data: result } as const))
         : resultServiceDependencies.bookmarkService
             .getRecent({
               option: { count },
             })
-            .then((result) => ({ service: "Bookmark", data: result }) as const),
+            .then((result) => ({ service: "Bookmark", data: result } as const))
     );
   }
 
@@ -58,7 +57,7 @@ const queryResults = async (
           query: filters?.query ?? "",
           count,
         })
-        .then((result) => ({ service: "History", data: result }) as const),
+        .then((result) => ({ service: "History", data: result } as const))
     );
   }
 
@@ -69,7 +68,7 @@ const queryResults = async (
           query: filters?.query ?? "",
           option: { count },
         })
-        .then((result) => ({ service: "Suggestion", data: result }) as const),
+        .then((result) => ({ service: "Suggestion", data: result } as const))
     );
   }
 
@@ -81,33 +80,15 @@ const queryResults = async (
       return acc;
     }
 
-    switch (curr.value.service) {
-      case "Tab":
-        acc.push(...converter.convertMultipleTabsToResult(curr.value.data));
-        break;
-      case "Bookmark":
-        acc.push(
-          ...converter.convertMultipleBookmarksToResult(curr.value.data),
-        );
-        break;
-      case "History":
-        acc.push(
-          ...converter.convertMultipleHistoriesToResult(curr.value.data),
-        );
-        break;
-      case "Suggestion":
-        acc.push(
-          ...converter.convertMultipleSuggestionsToResult(curr.value.data),
-        );
-        break;
-    }
+    acc.push(...curr.value.data);
+
     return acc;
   }, [] as Type.Result<Type.Kind>[]);
 
-  return results;
+  return filters?.query ? Helper.fuseSearch(filters.query, results) : results;
 };
 
-// サービスのエクスポート
+/** サービスのエクスポート */
 export const resultService: ResultService = {
   query: queryResults,
 };
