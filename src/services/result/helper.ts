@@ -2,7 +2,7 @@
  * Result Service Helper - Resultサービスのヘルパー関数
  */
 import Fuse from "fuse.js";
-import type { Result, Kind } from "./types";
+import type { Kind, Result } from "./types";
 
 /**
  * 指定された表示件数とサービス数から、各サービスが返すべき件数を計算する
@@ -12,7 +12,7 @@ import type { Result, Kind } from "./types";
  */
 export const calSingleCount = (
   count: number = 50,
-  serviceCount: number
+  serviceCount: number,
 ): number => {
   return Math.floor(count / serviceCount);
 };
