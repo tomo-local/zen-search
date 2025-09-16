@@ -16,7 +16,7 @@ export const Default: Story = {
     item: {
       data: {
         expression: "12 / 3 + 5 * (2 - 8)",
-        result: 11,
+        result: -26,
         url: "https://www.google.com/search?q=12+%2F+3+%2B+5+*+%282+-+8%29",
       },
     },

@@ -30,13 +30,14 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
   selected,
   onClick,
 }) => {
-  const LeftIcon = (
-    <SquareIcon>
-      <CalculatorIcon
-        className={clsx(defaultClassName.icon.size, defaultClassName.icon.text)}
-      />
-    </SquareIcon>
-  );
+  const LeftIcon = useMemo(
+    () => (
+      <SquareIcon>
+        <CalculatorIcon
+          className={clsx(defaultClassName.icon.size, defaultClassName.icon.text)}
+        />
+      </SquareIcon>
+  ), []);
 
   const RightIcon = useMemo(
     () => (
@@ -68,9 +69,9 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
       )}
     >
       <div className="flex flex-row items-center space-x-2">
-        <div className="text-lg">{item.data.result}</div>
-        <div className="text-md">=</div>
         <div className="text-md">{item.data.expression}</div>
+        <div className="text-md">=</div>
+        <div className="text-lg">{item.data.result}</div>
       </div>
     </ButtonItem>
   );
