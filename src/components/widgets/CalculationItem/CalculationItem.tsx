@@ -34,7 +34,10 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
     () => (
       <SquareIcon>
         <CalculatorIcon
-          className={clsx(defaultClassName.icon.size, defaultClassName.icon.text)}
+          className={clsx(
+            defaultClassName.icon.size,
+            defaultClassName.icon.text,
+          )}
         />
       </SquareIcon>
   ), []);
@@ -53,7 +56,7 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
         </SquareIcon>
       </div>
     ),
-    [selected]
+    [selected],
   );
 
   return (
