@@ -1,6 +1,6 @@
-import ButtonItem from "@/components/modules/ButtonItem/ButtonItem";
 import type { Kind, Result } from "@/services/result";
 import BookmarkItem from "../../../BookmarkItem/BookmarkItem";
+import CalculationItem from "../../../CalculationItem/CalculationItem";
 import HistoryItem from "../../../HistoryItem/HistoryItem";
 import SuggestionItem from "../../../SuggestionItem/SuggestionItem";
 import TabItem from "../../../TabItem/TabItem";
@@ -32,13 +32,7 @@ const ItemMap: Record<
     <SuggestionItem {...(props as ResultItemProps<"Suggestion">)} />
   ),
   "Action.Calculation": (props) => (
-    <ButtonItem
-      className="justify-between"
-      onClick={props.onClick}
-      selected={props.selected}
-    >
-      <span className="font-mono">{props.item.title}</span>
-    </ButtonItem>
+    <CalculationItem {...(props as ResultItemProps<"Action.Calculation">)} />
   ),
 };
 

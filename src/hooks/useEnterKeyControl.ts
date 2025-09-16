@@ -13,7 +13,7 @@ export default function useEnterKeyControl() {
     }
 
     if (
-      ["Bookmark", "History", "Suggestion", "ActionCalculation"].includes(
+      ["Bookmark", "History", "Suggestion", "Action.Calculation"].includes(
         result.type,
       )
     ) {

@@ -1,9 +1,10 @@
-import { ClockIcon } from "@heroicons/react/16/solid";
+import ClockIcon from "@heroicons/react/16/solid/ClockIcon";
 import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
 import clsx from "clsx";
 import type React from "react";
 import { useMemo } from "react";
 import type { History } from "@/services/history";
+
 import ButtonItem, {
   type ButtonItemProps,
   defaultClassName,
