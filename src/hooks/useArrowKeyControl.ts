@@ -9,8 +9,8 @@ export default function useArrowKeyControl(tabs: Result<Kind>[]) {
     if (listRef.current && selectedIndex >= 0) {
       const selectedItem = listRef.current.children[selectedIndex];
       selectedItem.scrollIntoView({
+        block: "start",
         behavior: "smooth",
-        block: "nearest",
       });
     }
   }, [selectedIndex]);
