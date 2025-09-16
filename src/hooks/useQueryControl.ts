@@ -14,11 +14,18 @@ interface QueryState {
 
 type QueryAction =
   | { type: "type"; value: ResultType }
+  | { type: "category"; value: Kind[] }
   | { type: "query"; value: string }
   | { type: "suggestion"; value: ResultType | null }
   | { type: "resetType" };
 
-const defaultCategories: Kind[] = ["Tab", "History", "Bookmark", "Suggestion"];
+const defaultCategories: Kind[] = [
+  "Tab",
+  "History",
+  "Bookmark",
+  "Suggestion",
+  "Action.Calculation",
+];
 
 const initialState: QueryState = {
   type: "All",
@@ -72,8 +79,14 @@ const queryReducer = (state: QueryState, action: QueryAction): QueryState => {
         type: action.value,
         query: "",
         suggestion: null,
-        categories: categoriesMap[action.value],
       };
+
+    case "category": {
+      return {
+        ...state,
+        categories: action.value,
+      };
+    }
 
     case "query": {
       const suggestion = state.type === "All" ? matchType(action.value) : null;
@@ -124,6 +137,11 @@ export default function useQueryControl() {
     dispatch({ type: "type", value: type });
   };
 
+  const updateCategory = (type: ResultType) => {
+    const categories = categoriesMap[type];
+    dispatch({ type: "category", value: categories });
+  };
+
   const reset = () => {
     dispatch({ type: "resetType" });
   };
@@ -134,7 +152,8 @@ export default function useQueryControl() {
     suggestion: state.suggestion,
     categories: state.categories,
     setQuery: updateQuery,
-    setType: updateType,
+    updateType: updateType,
+    updateCategory: updateCategory,
     reset,
   };
 }

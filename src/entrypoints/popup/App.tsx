@@ -20,10 +20,21 @@ import useQueryControl from "@/hooks/useQueryControl";
 import useResult from "@/hooks/useResult";
 
 export default function App() {
-  const { query, type, suggestion, setQuery, setType, reset, categories } =
-    useQueryControl();
+  const {
+    query,
+    type,
+    suggestion,
+    setQuery,
+    updateType,
+    updateCategory,
+    reset,
+    categories,
+  } = useQueryControl();
   const [isComposing, setIsComposing] = useState(false);
-  const { results, loading: resultsLoading } = useResult(query, categories);
+  const { results, loading: resultsLoading } = useResult({
+    query,
+    categories,
+  });
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(results);
   const { onAction } = useEnterKeyControl();
@@ -46,7 +57,8 @@ export default function App() {
     if (!suggestion || isComposing) {
       return;
     }
-    setType(suggestion);
+    updateType(suggestion);
+    updateCategory(suggestion);
   };
 
   const handleBackspaceKeyDown = (e: React.KeyboardEvent) => {
@@ -133,6 +145,7 @@ export default function App() {
           onEnterKeyDown={handleEnterKey}
           onTabKeyDown={handleTabKeyDown}
           onEscapeKeyDown={handleClose}
+          // onBlur={handleClose}
           onBackspaceKeyDown={handleBackspaceKeyDown}
         />
         <div className="border-t border-gray-700 border-solid" />
