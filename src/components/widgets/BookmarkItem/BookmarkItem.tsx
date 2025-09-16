@@ -3,7 +3,7 @@ import { PlusIcon } from "@heroicons/react/24/outline";
 import clsx from "clsx";
 import type React from "react";
 import { useMemo } from "react";
-import type { NewBookmark as Bookmark } from "@/services/bookmark/types";
+import type { Bookmark } from "@/services/bookmark/types";
 import ButtonItem, {
   type ButtonItemProps,
   defaultClassName,
@@ -87,7 +87,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
         id={item.data.id}
         className="relative flex flex-col items-center justify-center max-w-fit"
       >
-        <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
+        <div className="text-sm truncate max-w-[450px] md:max-w-md whitespace-nowrap">
           {item.data.title || item.data.url}
         </div>
       </div>

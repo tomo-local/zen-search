@@ -3,7 +3,7 @@ import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
 import clsx from "clsx";
 import type React from "react";
 import { useMemo } from "react";
-import type { NewHistory as History } from "@/services/history";
+import type { History } from "@/services/history";
 import ButtonItem, {
   type ButtonItemProps,
   defaultClassName,
@@ -81,7 +81,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
         id={item.data.id}
         className="relative flex flex-col items-center justify-center max-w-fit"
       >
-        <div className="text-sm truncate max-w-[224px] md:max-w-md whitespace-nowrap">
+        <div className="text-sm truncate md:max-w-md whitespace-nowrap max-w-[450px]">
           {item.data.title}
         </div>
       </div>
