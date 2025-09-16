@@ -1,9 +1,4 @@
-import type {
-  Bookmark,
-  QueryBookmarksRequest,
-} from "@/services/bookmark/types";
 import { contentService } from "@/services/content";
-import type { History, SearchHistoryRequest } from "@/services/history/types";
 import type {
   Kind,
   QueryResultsRequest,
@@ -11,51 +6,20 @@ import type {
 } from "@/services/result/types";
 import type {
   CreateTabRequest,
-  QueryTabsRequest,
   RemoveTabRequest,
-  Tab,
   UpdateTabRequest,
 } from "@/services/tab/types";
 import { RuntimeServiceError } from "./error";
 import { MessageType, type RuntimeResponse } from "./types";
 
 export interface RuntimeService {
-  queryTabs: (request: QueryTabsRequest) => Promise<Tab[]>;
   createTab: (request: CreateTabRequest) => Promise<void>;
   updateTab: (request: UpdateTabRequest) => Promise<void>;
   removeTab: (request: RemoveTabRequest) => Promise<void>;
-  searchHistory: (request: SearchHistoryRequest) => Promise<History[]>;
-  searchBookmarks: (request: QueryBookmarksRequest) => Promise<Bookmark[]>;
   queryResults: (request: QueryResultsRequest) => Promise<Result<Kind>[]>;
   openContent: () => Promise<void>;
   closeContent: () => Promise<void>;
 }
-
-// サービス実装
-const queryTabs = async ({
-  query,
-  option,
-}: QueryTabsRequest): Promise<Tab[]> => {
-  try {
-    const response = (await chrome.runtime.sendMessage({
-      type: MessageType.QUERY_TAB,
-      query,
-      option,
-    })) as RuntimeResponse<Tab[]>;
-
-    return response.result;
-  } catch (error) {
-    if (error instanceof RuntimeServiceError) {
-      throw error;
-    }
-
-    console.error("Failed to query tabs via runtime:", error);
-    throw new RuntimeServiceError(
-      "タブの検索に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
-  }
-};
 
 const createTab = async ({ url }: CreateTabRequest): Promise<void> => {
   try {
@@ -118,52 +82,6 @@ const removeTab = async ({ tabId }: RemoveTabRequest): Promise<void> => {
   }
 };
 
-const searchHistory = async ({
-  query,
-}: SearchHistoryRequest): Promise<History[]> => {
-  try {
-    const response = (await chrome.runtime.sendMessage({
-      type: MessageType.QUERY_HISTORY,
-      query,
-    })) as RuntimeResponse<History[]>;
-
-    return response.result;
-  } catch (error) {
-    if (error instanceof RuntimeServiceError) {
-      throw error;
-    }
-
-    console.error("Failed to search history via runtime:", error);
-    throw new RuntimeServiceError(
-      "履歴の検索に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
-  }
-};
-
-const searchBookmarks = async ({
-  query,
-}: QueryBookmarksRequest): Promise<Bookmark[]> => {
-  try {
-    const response = (await chrome.runtime.sendMessage({
-      type: MessageType.QUERY_BOOKMARK,
-      query,
-    })) as RuntimeResponse<Bookmark[]>;
-
-    return response.result;
-  } catch (error) {
-    if (error instanceof RuntimeServiceError) {
-      throw error;
-    }
-
-    console.error("Failed to search bookmarks via runtime:", error);
-    throw new RuntimeServiceError(
-      "ブックマークの検索に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
-  }
-};
-
 const queryResults = async ({
   filters,
 }: QueryResultsRequest): Promise<Result<Kind>[]> => {
@@ -210,17 +128,12 @@ const closeContent = async (): Promise<void> => {
 };
 
 export const createRuntimeService = (): RuntimeService => ({
-  queryTabs,
   createTab,
   updateTab,
   removeTab,
-  searchHistory,
-  searchBookmarks,
   queryResults,
   openContent,
   closeContent,
 });
 
 export const runtimeService = createRuntimeService();
-
-export { queryTabs };
