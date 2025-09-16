@@ -2,7 +2,6 @@
  * Result Service - Result管理サービス
  */
 
-import type { Kind } from "../action";
 import resultServiceDependencies from "./container";
 import * as Helper from "./helper";
 import type * as Type from "./types";
