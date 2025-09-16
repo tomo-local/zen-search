@@ -2,12 +2,13 @@
  * Result Service Types - Result関連の型定義
  */
 
+import type { Action, Kind as ActionKind } from "@/services/action/types";
 import type { Bookmark } from "@/services/bookmark/types";
 import type { History } from "@/services/history/types";
 import type { Suggestion } from "@/services/suggestion/types";
 import type { Tab } from "@/services/tab/types";
 
-export type Kind = "Tab" | "Bookmark" | "History" | "Suggestion";
+export type Kind = "Tab" | "Bookmark" | "History" | "Suggestion" | ActionKind;
 
 export interface Result<T extends Kind> {
   id: string;
@@ -22,6 +23,8 @@ export type ResultDataMap = {
   Bookmark: Bookmark["data"];
   History: History["data"];
   Suggestion: Suggestion["data"];
+  // 特殊なAction機能
+  "Action.Calculation": Action<"Action.Calculation">["data"];
 };
 
 export type ResultData<T extends Kind> = ResultDataMap[T];

@@ -1,25 +1,21 @@
-import { type ActionCalculation, ActionType } from "./types";
+import { generateUrl } from "./helper";
+import type * as Type from "./types";
 
-const SEARCH_URL = "https://www.google.com/search";
-
-export const convertCalculationAction = (
+export function convertCalculation(
   expression: string,
   result: number,
-): ActionCalculation => ({
-  type: ActionType.Calculation,
-  id: generateRandomId(),
-  title: `${expression}=${result}`,
-  url: createSearchUrl(expression),
-  data: {
-    expression,
-    result,
-  },
-});
+): Type.Action<"Action.Calculation"> {
+  const url = generateUrl(expression);
 
-const createSearchUrl = (expression: string): string => {
-  return `${SEARCH_URL}?q=${encodeURIComponent(expression)}`;
-};
-
-const generateRandomId = (): string => {
-  return crypto.randomUUID();
-};
+  return {
+    id: crypto.randomUUID(),
+    type: "Action.Calculation",
+    title: `${expression} = ${result}`,
+    url,
+    data: {
+      expression,
+      result,
+      url,
+    },
+  };
+}
