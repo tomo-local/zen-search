@@ -2,6 +2,7 @@
  * Result Service - Result管理サービス
  */
 
+import type { Kind } from "../action";
 import resultServiceDependencies from "./container";
 import * as Helper from "./helper";
 import type * as Type from "./types";
@@ -18,6 +19,7 @@ const queryResults = async (
 ): Promise<Type.Result<Type.Kind>[]> => {
   const { filters } = request;
 
+  const headResults: Type.Result<Type.Kind>[] = [];
   const queryPromises = [];
 
   const count = Helper.calSingleCount(filters.count, filters.categories.length);
@@ -72,6 +74,19 @@ const queryResults = async (
     );
   }
 
+  if (filters.categories.includes("Action.Calculation") && filters?.query) {
+    const isCalculation = resultServiceDependencies.actionService.isCalculation(
+      filters.query,
+    );
+
+    if (isCalculation) {
+      const action = resultServiceDependencies.actionService.calculate({
+        expression: filters.query,
+      });
+      headResults.push(action);
+    }
+  }
+
   const resultArrays = await Promise.allSettled(queryPromises);
 
   const results = resultArrays.reduce((acc, curr) => {
@@ -85,7 +100,12 @@ const queryResults = async (
     return acc;
   }, [] as Type.Result<Type.Kind>[]);
 
-  return filters?.query ? Helper.fuseSearch(filters.query, results) : results;
+  const fusedResults = filters?.query
+    ? Helper.fuseSearch(filters.query, results)
+    : results;
+
+  // headResultsを先頭に配置
+  return [...headResults, ...fusedResults];
 };
 
 /** サービスのエクスポート */
