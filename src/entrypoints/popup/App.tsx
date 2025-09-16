@@ -31,10 +31,7 @@ export default function App() {
     categories,
   } = useQueryControl();
   const [isComposing, setIsComposing] = useState(false);
-  const {
-    results,
-    loading: resultsLoading,
-  } = useResult({
+  const { results, loading: resultsLoading } = useResult({
     query,
     categories,
   });
@@ -118,7 +115,7 @@ export default function App() {
               <MagnifyingGlassIcon
                 className={clsx(
                   searchInputClassName.icon.text,
-                  searchInputClassName.icon.size
+                  searchInputClassName.icon.size,
                 )}
               />
             ) : (
