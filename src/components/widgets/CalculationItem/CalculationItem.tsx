@@ -46,7 +46,7 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
           <PlusIcon
             className={clsx(
               defaultClassName.icon.size,
-              selected && defaultClassName.icon.selected
+              selected && defaultClassName.icon.selected,
             )}
           />
         </SquareIcon>
@@ -64,7 +64,7 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
       className={clsx(
         defaultClassName.bg,
         defaultClassName.border,
-        defaultClassName.hover
+        defaultClassName.hover,
       )}
     >
       <div className="flex flex-row items-center space-x-2">
