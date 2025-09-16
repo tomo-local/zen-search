@@ -40,7 +40,9 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
           )}
         />
       </SquareIcon>
-  ), []);
+    ),
+    [],
+  );
 
   const RightIcon = useMemo(
     () => (
