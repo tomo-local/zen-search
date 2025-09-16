@@ -7,7 +7,7 @@ export const isCalculation = (input: string): boolean => {
 };
 
 export const calculate = (
-  input: string,
+  input: string
 ): {
   success: boolean;
   result: number;
@@ -26,4 +26,8 @@ export const calculate = (
       result: 0,
     };
   }
+};
+
+export const generateUrl = (expression: string): string => {
+  return `https://www.google.com/search?q=${encodeURIComponent(expression)}`;
 };
