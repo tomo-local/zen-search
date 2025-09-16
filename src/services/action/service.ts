@@ -13,7 +13,7 @@ export interface ActionService {
 }
 
 const calculateAction = (
-  request: CalculationRequest
+  request: CalculationRequest,
 ): Action<"Action.Calculation"> => {
   const response = calculate(request.expression);
 
@@ -24,10 +24,7 @@ const calculateAction = (
   return convertCalculation(request.expression, response.result);
 };
 
-const isAvailableCalculation = (query: string): boolean => {
-  // 簡易的な数式判定（例: 数字と演算子のみで構成されているか）
-  return isCalculation(query);
-};
+const isAvailableCalculation = (query: string): boolean => isCalculation(query);
 
 const createActionService = () => ({
   calculate: calculateAction,

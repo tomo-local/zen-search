@@ -7,7 +7,7 @@ export const isCalculation = (input: string): boolean => {
 };
 
 export const calculate = (
-  input: string
+  input: string,
 ): {
   success: boolean;
   result: number;
