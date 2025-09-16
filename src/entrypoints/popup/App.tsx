@@ -34,7 +34,6 @@ export default function App() {
   const {
     results,
     loading: resultsLoading,
-    refresh,
   } = useResult({
     query,
     categories,
@@ -108,7 +107,7 @@ export default function App() {
           layoutClassName.border,
           layoutClassName.shadow,
           layoutClassName.p,
-          layoutClassName.space
+          layoutClassName.space,
         )}
       >
         <SearchInput
