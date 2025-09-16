@@ -20,10 +20,25 @@ import useQueryControl from "@/hooks/useQueryControl";
 import useResult from "@/hooks/useResult";
 
 export default function App() {
-  const { query, type, suggestion, setQuery, setType, reset, categories } =
-    useQueryControl();
+  const {
+    query,
+    type,
+    suggestion,
+    setQuery,
+    updateType,
+    updateCategory,
+    reset,
+    categories,
+  } = useQueryControl();
   const [isComposing, setIsComposing] = useState(false);
-  const { results, loading: resultsLoading } = useResult(query, categories);
+  const {
+    results,
+    loading: resultsLoading,
+    refresh,
+  } = useResult({
+    query,
+    categories,
+  });
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(results);
   const { onAction } = useEnterKeyControl();
@@ -46,7 +61,8 @@ export default function App() {
     if (!suggestion || isComposing) {
       return;
     }
-    setType(suggestion);
+    updateType(suggestion);
+    updateCategory(suggestion);
   };
 
   const handleBackspaceKeyDown = (e: React.KeyboardEvent) => {
@@ -92,7 +108,7 @@ export default function App() {
           layoutClassName.border,
           layoutClassName.shadow,
           layoutClassName.p,
-          layoutClassName.space,
+          layoutClassName.space
         )}
       >
         <SearchInput
@@ -103,7 +119,7 @@ export default function App() {
               <MagnifyingGlassIcon
                 className={clsx(
                   searchInputClassName.icon.text,
-                  searchInputClassName.icon.size,
+                  searchInputClassName.icon.size
                 )}
               />
             ) : (
@@ -133,6 +149,7 @@ export default function App() {
           onEnterKeyDown={handleEnterKey}
           onTabKeyDown={handleTabKeyDown}
           onEscapeKeyDown={handleClose}
+          // onBlur={handleClose}
           onBackspaceKeyDown={handleBackspaceKeyDown}
         />
         <div className="border-t border-gray-700 border-solid" />
