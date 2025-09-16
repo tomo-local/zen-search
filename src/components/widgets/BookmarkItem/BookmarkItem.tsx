@@ -1,9 +1,10 @@
-import { BookmarkIcon } from "@heroicons/react/16/solid";
-import { PlusIcon } from "@heroicons/react/24/outline";
+import BookmarkIcon from "@heroicons/react/16/solid/BookmarkIcon";
+import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 import clsx from "clsx";
 import type React from "react";
 import { useMemo } from "react";
 import type { Bookmark } from "@/services/bookmark/types";
+
 import ButtonItem, {
   type ButtonItemProps,
   defaultClassName,
