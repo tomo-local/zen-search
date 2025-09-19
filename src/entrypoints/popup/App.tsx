@@ -35,7 +35,7 @@ export default function App() {
 
   const [isComposing, setIsComposing] = useState(false);
 
-  const { selectedIndex, resetSelectedIndex,listRef, handleArrowUpDownKey } =
+  const { selectedIndex, resetSelectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(results);
   const { onAction } = useEnterKeyControl();
   const { shortcut } = usePopupShortcut();
