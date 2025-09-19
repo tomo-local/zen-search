@@ -35,7 +35,7 @@ export default function App() {
 
   const [isComposing, setIsComposing] = useState(false);
 
-  const { selectedIndex, listRef, handleArrowUpDownKey } =
+  const { selectedIndex, resetSelectedIndex,listRef, handleArrowUpDownKey } =
     useArrowKeyControl(results);
   const { onAction } = useEnterKeyControl();
   const { shortcut } = usePopupShortcut();
@@ -61,8 +61,9 @@ export default function App() {
       }
       updateType(suggestion);
       updateCategory(suggestion);
+      resetSelectedIndex();
     },
-    [suggestion, isComposing, updateType, updateCategory],
+    [suggestion, isComposing, updateType, updateCategory, resetSelectedIndex],
   );
 
   const handleBackspaceKeyDown = useCallback(
