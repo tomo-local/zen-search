@@ -2,7 +2,7 @@ import "@/assets/global.css";
 import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 import clsx from "clsx";
 import type React from "react";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import Badge from "@/components/modules/Badge/Badge";
 import Layout, {
   commonClassName as layoutClassName,
@@ -21,79 +21,89 @@ import useResult from "@/hooks/useResult";
 
 export default function App() {
   const {
-    query,
-    type,
-    suggestion,
+    state: { query, type, suggestion, categories },
     setQuery,
     updateType,
     updateCategory,
     reset,
-    categories,
   } = useQueryControl();
-  const [isComposing, setIsComposing] = useState(false);
+
   const { results, loading: resultsLoading } = useResult({
     query,
     categories,
   });
+
+  const [isComposing, setIsComposing] = useState(false);
+
   const { selectedIndex, listRef, handleArrowUpDownKey } =
     useArrowKeyControl(results);
   const { onAction } = useEnterKeyControl();
   const { shortcut } = usePopupShortcut();
 
-  const handleClose = () => window.close();
+  const handleEnterKey = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (isComposing) {
+        return;
+      }
 
-  const handleEnterKey = (e: React.KeyboardEvent) => {
-    if (isComposing) {
-      return;
-    }
-
-    e.preventDefault();
-    handleClose();
-    onAction(results[selectedIndex]);
-  };
-
-  const handleTabKeyDown = (e: React.KeyboardEvent) => {
-    e.preventDefault();
-    if (!suggestion || isComposing) {
-      return;
-    }
-    updateType(suggestion);
-    updateCategory(suggestion);
-  };
-
-  const handleBackspaceKeyDown = (e: React.KeyboardEvent) => {
-    if (query || (type !== "All" && query)) {
-      return;
-    }
-    e.preventDefault();
-    reset();
-  };
-
-  const handleCommandKeyDown = async (e: React.KeyboardEvent) => {
-    if (!shortcut.length) {
-      return;
-    }
-
-    const { key, altKey, ctrlKey, metaKey, shiftKey } = e;
-
-    const pressedKeys = [
-      key.toLowerCase(),
-      altKey ? "alt" : "",
-      ctrlKey ? "control" : "",
-      metaKey ? "meta" : "",
-      shiftKey ? "shift" : "",
-    ]
-      .filter(Boolean)
-      .sort();
-
-    if (
-      shortcut.length === pressedKeys.length &&
-      shortcut.every((key, index) => key === pressedKeys[index])
-    ) {
       e.preventDefault();
-      handleClose();
-    }
-  };
+      window.close();
+      onAction(results[selectedIndex]);
+    },
+    [isComposing, onAction, results, selectedIndex],
+  );
+
+  const handleTabKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      e.preventDefault();
+      if (!suggestion || isComposing) {
+        return;
+      }
+      updateType(suggestion);
+      updateCategory(suggestion);
+    },
+    [suggestion, isComposing, updateType, updateCategory],
+  );
+
+  const handleBackspaceKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (query || (type !== "All" && query)) {
+        return;
+      }
+      e.preventDefault();
+      reset();
+    },
+    [query, type, reset],
+  );
+
+  const handleCommandKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (!shortcut.length) {
+        return;
+      }
+
+      const { key, altKey, ctrlKey, metaKey, shiftKey } = e;
+
+      const pressedKeys = [
+        key.toLowerCase(),
+        altKey ? "alt" : "",
+        ctrlKey ? "control" : "",
+        metaKey ? "meta" : "",
+        shiftKey ? "shift" : "",
+      ]
+        .filter(Boolean)
+        .sort();
+
+      if (
+        shortcut.length === pressedKeys.length &&
+        shortcut.every((key, index) => key === pressedKeys[index])
+      ) {
+        e.preventDefault();
+        window.close();
+      }
+    },
+    [shortcut],
+  );
 
   return (
     <Layout className="min-w-[700px] max-w-min">
@@ -144,7 +154,7 @@ export default function App() {
           onArrowUpDownKeyDown={handleArrowUpDownKey}
           onEnterKeyDown={handleEnterKey}
           onTabKeyDown={handleTabKeyDown}
-          onEscapeKeyDown={handleClose}
+          onEscapeKeyDown={() => window.close()}
           // onBlur={handleClose}
           onBackspaceKeyDown={handleBackspaceKeyDown}
         />

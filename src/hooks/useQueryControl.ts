@@ -147,10 +147,7 @@ export default function useQueryControl() {
   };
 
   return {
-    query: state.query,
-    type: state.type,
-    suggestion: state.suggestion,
-    categories: state.categories,
+    state: state,
     setQuery: updateQuery,
     updateType: updateType,
     updateCategory: updateCategory,
