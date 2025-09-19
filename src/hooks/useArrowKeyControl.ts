@@ -15,6 +15,10 @@ export default function useArrowKeyControl(tabs: Result<Kind>[]) {
     }
   }, [selectedIndex]);
 
+  const resetSelectedIndex = useCallback(() => {
+    setSelectedIndex(0);
+  }, []);
+
   const handleArrowUpDownKey = useCallback(
     (e: React.KeyboardEvent) => {
       if (e.key === "ArrowUp") {
@@ -26,5 +30,5 @@ export default function useArrowKeyControl(tabs: Result<Kind>[]) {
     [tabs.length],
   );
 
-  return { selectedIndex, listRef, handleArrowUpDownKey };
+  return { selectedIndex, resetSelectedIndex, listRef, handleArrowUpDownKey };
 }
