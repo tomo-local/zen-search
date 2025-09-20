@@ -3,7 +3,7 @@ import useTheme, {
   initialState,
   type ThemeState,
 } from "@/hooks/storage/useTheme";
-import type { ThemeValue } from "@/types/storage";
+import type { ThemeValue } from "@/services/storage";
 
 type Props = {
   children: React.ReactNode;
