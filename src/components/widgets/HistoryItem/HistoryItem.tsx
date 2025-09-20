@@ -52,7 +52,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
   const RightContent = useMemo(
     () => (
       <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>Go to Tab</span>
+        <span className={defaultClassName.text}>Open Tab</span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
           <PlusIcon
             className={clsx(
