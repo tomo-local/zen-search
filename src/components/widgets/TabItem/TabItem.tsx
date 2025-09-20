@@ -48,7 +48,7 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
   const RightContent = useMemo(
     () => (
       <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>Go to Tab</span>
+        <span className={defaultClassName.text}>Switch to Tab</span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
           <ArrowLongRightIcon
             className={clsx(

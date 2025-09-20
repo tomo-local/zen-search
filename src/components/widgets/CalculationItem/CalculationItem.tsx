@@ -47,7 +47,7 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
   const RightIcon = useMemo(
     () => (
       <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>Go to Result</span>
+        <span className={defaultClassName.text}>Open Result</span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
           <PlusIcon
             className={clsx(
