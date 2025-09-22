@@ -14,6 +14,7 @@ import SearchInput, {
   commonClassName as searchInputClassName,
 } from "@/components/widgets/SearchInput/SearchInput";
 import useArrowKeyControl from "@/hooks/useArrowKeyControl";
+import useDebounce from "@/hooks/useDebounce";
 import useEnterKeyControl from "@/hooks/useEnterKeyControl";
 import usePopupShortcut from "@/hooks/usePopupShortcut";
 import useQueryControl from "@/hooks/useQueryControl";
@@ -28,8 +29,10 @@ export default function App() {
     reset,
   } = useQueryControl();
 
+  const debouncedQuery = useDebounce(query, 200);
+
   const { results, loading: resultsLoading } = useResult({
-    query,
+    query: debouncedQuery,
     categories,
   });
 
