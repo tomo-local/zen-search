@@ -15,15 +15,16 @@ Here's an overview of the project's structure:
 
 ```
 src/
-  assets/         # Global CSS and assets like images
-  components/     # Reusable UI components
+  assets/         # Global styles and shared assets
+  components/     # UI building blocks for the popup and content scripts
+    content/      # Components rendered inside content scripts
+    modules/      # Layout modules and common UI patterns
+    widgets/      # Popup widgets such as search results and history items
   context/        # React context providers (e.g., ThemeProvider)
-  entrypoints/    # Main entry points (popup, background, content)
-  hooks/          # Custom React hooks for state management and actions
-  public/         # Static assets (icons, images)
-  services/       # Business logic and API services
-  types/          # TypeScript type definitions
-  utils/          # Utility functions and helpers
+  entrypoints/    # Extension entry points (popup, background, content)
+  hooks/          # Custom hooks for keyboard shortcuts and state handling
+  services/       # Business logic and Chrome extension APIs
+  utils/          # Shared helper and algorithm functions
 ```
 
 ## Installation
@@ -46,13 +47,23 @@ src/
 
 4. Load the extension in your browser and enjoy Zen Search!
 
-## TODO for Next Release
+## Roadmap
 
+Here's how we're organizing upcoming work based on impact and theme:
+
+### ✅ Shipped
 - [x] Add support for dark mode.
-- [ ] Implement multi-language support for the UI.
+
+### 🏁 Next Up
+- [ ] Add unit tests for critical components.
 - [ ] Enhance search result filtering options.
 - [ ] Optimize performance for large datasets.
-- [ ] Add unit tests for critical components.
+
+### 🌐 Search Experience
+- [ ] Add support for multiple search engines (Google, Bing, DuckDuckGo, etc.).
+- [ ] Implement multi-language support for the UI.
+
+### ⚙️ Workflow & Automation
 - [ ] Add new Action types:
   - [ ] Close a window.
   - [ ] Open a window.
@@ -65,12 +76,12 @@ src/
   - [ ] Remove tabs from a group.
   - [ ] Rename a tab group.
   - [ ] Close a tab group.
-- [ ] Enable deleting a tab with Command + Backspace when selected.
-- [ ] Add support for multiple search engines (Google, Bing, DuckDuckGo, etc.).
+- [ ] Allow users to define and add custom actions.
+
+### 🛠 Settings & Personalization
 - [ ] Implement a settings page to configure:
   - [ ] Default search engine.
   - [ ] Custom actions.
-- [ ] Allow users to define and add custom actions.
 
 ## License
 
