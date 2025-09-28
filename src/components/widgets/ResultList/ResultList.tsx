@@ -20,7 +20,7 @@ const ResultList: React.FC<ResultListProps> = ({
   return (
     <div className="pt-3 pb-2 dark:bg-gray-800">
       <ul
-        className="space-y-1 overflow-x-hidden overflow-y-auto hidden-scrollbar max-h-56"
+        className="pr-3 space-y-1 overflow-x-hidden overflow-y-auto max-h-56 snap-y snap-mandatory"
         ref={ref}
       >
         {hasItems ? (
