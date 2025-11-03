@@ -28,7 +28,7 @@ export const defaultClassName = {
 
 const ButtonItem: React.FC<ButtonItemProps> = (props) => {
   return (
-    <li className="list-none">
+    <li className="list-none snap-start">
       <button
         type="button"
         disabled={props.disabled}
