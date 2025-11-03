@@ -60,7 +60,6 @@ export default function useSearchResults(
 ): UseSearchResultsReturn {
   const maxCount = params.maxCount || DEFAULT_MAX_COUNT;
 
-  // オプションをuseMemoで安定化
   const opts = useRef({ ...DEFAULT_OPTIONS, ...options }).current;
 
   const [results, setResults] = useState<Result<Kind>[]>([]);
