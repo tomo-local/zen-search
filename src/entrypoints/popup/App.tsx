@@ -179,6 +179,7 @@ export default function App() {
         <ResultList
           ref={listRef}
           items={results}
+          onClick={handleSelect}
           selectedIndex={selectedIndex}
         />
         <div className="border-t border-gray-700 border-solid" />
