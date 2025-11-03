@@ -19,6 +19,9 @@
       "recommended": true,
       "a11y": {
         "noAutofocus": "off"
+      },
+      "correctness": {
+        "useUniqueElementIds": "off"
       }
     }
   },
