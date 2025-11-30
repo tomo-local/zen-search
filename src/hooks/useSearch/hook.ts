@@ -6,11 +6,6 @@ import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
 import { categoriesMap, initialState } from "./constants";
 import { matchType } from "./helper";
 import { queryReducer } from "./reducer";
-import {
-  clearQueryHistory as clearStorageHistory,
-  loadQueryHistory,
-  saveQueryHistory,
-} from "./storage";
 import type { ResultType, UseSearchOptions, ValidationResult } from "./types";
 
 /**
@@ -43,20 +38,13 @@ export default function useSearch(options: UseSearchOptions = {}) {
   const {
     debounceMs = 200,
     maxQueryLength = 500,
-    maxHistorySize = 10,
     autoTrim = true,
     similarityThreshold = 0.6,
   } = options;
 
   const [state, dispatch] = useReducer(queryReducer, initialState);
-  const [debouncedQuery, setDebouncedQuery] = useState("");
-  const [queryHistory, setQueryHistory] = useState<string[]>([]);
+  const [debouncedQuery, setDebouncedQuery] = useState(state.query);
   const [isComposing, setIsComposing] = useState(false);
-
-  // クエリ履歴の読み込み
-  useEffect(() => {
-    loadQueryHistory().then(setQueryHistory);
-  }, []);
 
   // デバウンス処理
   useEffect(() => {
@@ -125,44 +113,6 @@ export default function useSearch(options: UseSearchOptions = {}) {
   }, []);
 
   /**
-   * クエリ履歴に追加して保存
-   * @param query - 保存するクエリ
-   */
-  const addToHistory = useCallback(
-    async (query: string) => {
-      if (!query || query.length === 0) {
-        return;
-      }
-
-      const trimmedQuery = query.trim();
-      if (trimmedQuery.length === 0) {
-        return;
-      }
-
-      setQueryHistory((prev) => {
-        // 重複を削除
-        const filtered = prev.filter((q) => q !== trimmedQuery);
-        // 先頭に追加
-        const newHistory = [trimmedQuery, ...filtered].slice(0, maxHistorySize);
-
-        // ストレージに保存（非同期）
-        saveQueryHistory(newHistory);
-
-        return newHistory;
-      });
-    },
-    [maxHistorySize],
-  );
-
-  /**
-   * クエリ履歴をクリア
-   */
-  const clearHistory = useCallback(async () => {
-    setQueryHistory([]);
-    await clearStorageHistory();
-  }, []);
-
-  /**
    * クエリのバリデーション結果
    */
   const validation = useMemo<ValidationResult>(() => {
@@ -183,8 +133,6 @@ export default function useSearch(options: UseSearchOptions = {}) {
     state,
     /** デバウンス後のクエリ */
     debouncedQuery,
-    /** クエリ履歴 */
-    queryHistory,
     /** IME入力中かどうか */
     isComposing,
     /** バリデーション結果 */
@@ -197,10 +145,6 @@ export default function useSearch(options: UseSearchOptions = {}) {
     updateCategory,
     /** タイプをリセット */
     reset,
-    /** 履歴に追加 */
-    addToHistory,
-    /** 履歴をクリア */
-    clearHistory,
     /** IME状態を設定 */
     setIsComposing,
   };
