@@ -3,49 +3,61 @@
  * 責任: Chrome storage sync APIの抽象化を担当
  */
 
-import { chromeStorageGet, chromeStorageSet, getDefaultTheme } from "./helper";
+import { convertAppQueryToString, convertStringToAppQuery } from "./converter";
+import {
+  getDefaultAppValue,
+  getDefaultTheme,
+  localStorageGet,
+  localStorageSet,
+  syncStorageGet,
+  syncStorageSet,
+} from "./helper";
 import type * as Type from "./types";
-import { SyncStorageKey } from "./types";
+import { LocalStorageKey, SyncStorageKey } from "./types";
 
 // 型定義
 export interface StorageService {
-  get: <K extends Type.SyncStorageKey>(
-    request: Type.GetStorageRequest<K>,
-  ) => Promise<Type.SyncStorage[K] | undefined>;
-  set: <K extends Type.SyncStorageKey>(
-    request: Type.SetStorageRequest<K>,
-  ) => Promise<boolean>;
   getTheme: () => Promise<Type.ThemeValue>;
   setTheme: (request: Type.SetThemeRequest) => Promise<boolean>;
+  getAppQuery: () => Promise<Type.AppQueryValue>;
+  setAppQuery: (value: Type.AppQueryValue) => Promise<boolean>;
 }
 
-// サービス実装
-const getStorage = async <K extends Type.SyncStorageKey>({
-  key,
-}: Type.GetStorageRequest<K>): Promise<Type.SyncStorage[K] | undefined> => {
+const getAppQuery = async (): Promise<Type.AppQueryValue> => {
+  const appValue = await localStorageGet(LocalStorageKey.AppQuery);
+
+  if (appValue === null) {
+    const defaultAppValue = getDefaultAppValue();
+    await localStorageSet(
+      LocalStorageKey.AppQuery,
+      JSON.stringify(defaultAppValue),
+    );
+    return defaultAppValue;
+  }
+
   try {
-    return await chromeStorageGet(key);
+    return convertStringToAppQuery(appValue);
   } catch (error) {
-    console.error(`Failed to get storage for key ${key}:`, error);
-    throw new Error(`ストレージの取得に失敗しました: ${key}`);
+    console.error("Failed to get app query:", error);
+    // エラー時はデフォルト値を返す
+    return getDefaultAppValue();
   }
 };
 
-const setStorage = async <K extends Type.SyncStorageKey>({
-  key,
-  value,
-}: Type.SetStorageRequest<K>): Promise<boolean> => {
+const setAppQuery = async (value: Type.AppQueryValue): Promise<boolean> => {
   try {
-    return await chromeStorageSet(key, value);
+    const str = convertAppQueryToString(value);
+
+    return await localStorageSet(LocalStorageKey.AppQuery, str);
   } catch (error) {
-    console.error(`Failed to set storage for key ${key}:`, error);
-    throw new Error(`ストレージの保存に失敗しました: ${key}`);
+    console.error("Failed to set app query:", error);
+    throw new Error("アプリクエリの保存に失敗しました");
   }
 };
 
 const getTheme = async (): Promise<Type.ThemeValue> => {
   try {
-    const theme = await chromeStorageGet(SyncStorageKey.Theme);
+    const theme = await syncStorageGet(SyncStorageKey.Theme);
     return theme || getDefaultTheme();
   } catch (error) {
     console.error("Failed to get theme:", error);
@@ -56,7 +68,7 @@ const getTheme = async (): Promise<Type.ThemeValue> => {
 
 const setTheme = async ({ theme }: Type.SetThemeRequest): Promise<boolean> => {
   try {
-    return await chromeStorageSet(SyncStorageKey.Theme, theme);
+    return await syncStorageSet(SyncStorageKey.Theme, theme);
   } catch (error) {
     console.error("Failed to set theme:", error);
     throw new Error("テーマの保存に失敗しました");
@@ -65,8 +77,8 @@ const setTheme = async ({ theme }: Type.SetThemeRequest): Promise<boolean> => {
 
 // サービスオブジェクトのエクスポート
 export const storageService: StorageService = {
-  get: getStorage,
-  set: setStorage,
+  getAppQuery,
+  setAppQuery,
   getTheme,
   setTheme,
 };

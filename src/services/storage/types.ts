@@ -15,6 +15,21 @@ export interface SyncStorage {
   [SyncStorageKey.Language]: LanguageValue;
 }
 
+export enum LocalStorageKey {
+  AppQuery = "app_query",
+}
+
+export interface AppQueryValue {
+  query: {
+    string: string;
+    lastTimestamp: number;
+  };
+}
+
+export interface LocalStorage {
+  [LocalStorageKey.AppQuery]: AppQueryValue;
+}
+
 // リクエスト型定義
 export interface GetStorageRequest<K extends SyncStorageKey> {
   key: K;
@@ -31,4 +46,13 @@ export interface SetThemeRequest {
 
 export interface SetLanguageRequest {
   language: LanguageValue;
+}
+
+export interface GetLocalStorageRequest<K extends LocalStorageKey> {
+  key: K;
+}
+
+export interface SetLocalStorageRequest<K extends LocalStorageKey> {
+  key: K;
+  value: LocalStorage[K];
 }
