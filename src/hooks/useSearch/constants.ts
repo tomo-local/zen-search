@@ -31,6 +31,3 @@ export const categoriesMap: { [key in ResultType]: Kind[] } = {
   Bookmark: ["Bookmark"],
   Google: ["Suggestion"],
 };
-
-/** クエリ履歴のストレージキー */
-export const QUERY_HISTORY_KEY = "zen-search:query-history";
