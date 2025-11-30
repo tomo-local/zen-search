@@ -35,8 +35,6 @@ export interface UseSearchOptions {
   debounceMs?: number;
   /** クエリの最大文字数。デフォルト: 500 */
   maxQueryLength?: number;
-  /** 検索履歴の最大保存件数。デフォルト: 10 */
-  maxHistorySize?: number;
   /** クエリを自動的にトリムするか。デフォルト: true */
   autoTrim?: boolean;
   /** suggestion判定の類似度閾値（0-1）。デフォルト: 0.6 */
