@@ -29,7 +29,7 @@ func (t *toolService) GenerateComponent(name string, outputPath string) error {
 		fmt.Printf("📁 Output base path: %s\n", fullOutputPath)
 	} else {
 		// プロンプトモードで入力を取得
-		selectedType, err := t.promptOperator.Select("Select component type", []string{"modals", "widgets"}, "widgets")
+		selectedType, err := t.promptOperator.Select("Select component type", []string{"modules", "widgets"}, "widgets")
 		if err != nil {
 			return fmt.Errorf("❌ Error selecting component type: %v", err)
 		}
