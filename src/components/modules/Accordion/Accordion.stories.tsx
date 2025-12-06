@@ -23,7 +23,7 @@ export const Default: Story = {
           setIsOpen(!isOpen);
           action("Toggled")(isOpen ? "closed" : "opened");
         }}
-        className="border border-b border-gray-300 rounded-lg "
+        className="border border-b border-gray-300 rounded-lg"
       >
         <AccordionTitle className="w-full px-4 py-3 font-semibold text-left">
           Default Title
@@ -53,7 +53,7 @@ export const Opened: Story = {
         <AccordionTitle className="w-full px-4 py-3 font-semibold text-left transition-colors duration-200 border-b border-gray-200 bg-gray-50 hover:bg-gray-100 active:bg-gray-200">
           Opened by Default
         </AccordionTitle>
-        <AccordionContent className="duration-[300ms] ease-in-out   rounded-b-lg">
+        <AccordionContent className="duration-[300ms] ease-in-out rounded-b-lg">
           <div className="px-4 py-4">
             <p>This is the default accordion content.</p>
           </div>

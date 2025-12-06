@@ -27,7 +27,8 @@ export const AccordionContent: React.FC<AccordionContentProps> = ({
       ref={contentRef}
       style={{
         height,
-        // only chrome browsers support
+        //TODO: Chrome 120, Firefox 126, Safari 18 で `interpolate-size: allow-keywords` がサポートされたら、下記CSSを有効化して useState の高さ制御を削除すること！
+        // https://developer.mozilla.org/ja/docs/Web/CSS/Reference/Properties/interpolate-size
         // @supports (height: auto) and (interpolate-size: allow-keywords) {
         //   height: isOpen ? "auto" : "0px";
         //   interpolateSize: "allow-keywords";
