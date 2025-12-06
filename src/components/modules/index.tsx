@@ -5,6 +5,8 @@ import Layout, { type LayoutProps } from "./Layout/Layout";
 import Spinner, { type SpinnerProps } from "./Spinner/Spinner";
 import SquareBadge, { type SquareBadgeProps } from "./SquareBadge/SquareBadge";
 import SquareIcon, { type SquareIconProps } from "./SquareIcon/SquareIcon";
+import Tab, { type TabProps } from "./Tab/Tab";
+import TabPanel, { type TabPanelProps } from "./TabPanel/TabPanel";
 
 export default {
   Badge,
@@ -14,6 +16,8 @@ export default {
   SquareBadge,
   SquareIcon,
   Layout,
+  Tab,
+  TabPanel,
 };
 
 export type {
@@ -24,4 +28,6 @@ export type {
   SquareBadgeProps,
   SquareIconProps,
   LayoutProps,
+  TabProps,
+  TabPanelProps,
 };
