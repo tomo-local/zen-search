@@ -15,8 +15,8 @@ export const AccordionContent: React.FC<AccordionContentProps> = ({
   const [height, setHeight] = useState("0px");
 
   useEffect(() => {
-    if (isOpen) {
-      setHeight(`${contentRef.current?.scrollHeight ?? 0}px`);
+    if (isOpen && contentRef.current) {
+      setHeight(`${contentRef.current.scrollHeight}px`);
     } else {
       setHeight("0px");
     }
