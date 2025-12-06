@@ -1,3 +1,4 @@
+import clsx from "clsx";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { useAccordion } from "../../hooks";
 
@@ -34,7 +35,7 @@ export const AccordionContent: React.FC<AccordionContentProps> = ({
         //   interpolateSize: "allow-keywords";
         // }
       }}
-      className={`overflow-y-hidden transition-[height] ${className ?? ""}`}
+      className={clsx("overflow-y-hidden transition-[height]", className)}
     >
       {children}
     </div>

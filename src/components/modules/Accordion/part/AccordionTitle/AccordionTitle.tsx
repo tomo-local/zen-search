@@ -10,9 +10,14 @@ export const AccordionTitle: React.FC<AccordionTitleProps> = ({
   className,
   children,
 }) => {
-  const { onToggle } = useAccordion();
+  const { onToggle, isOpen } = useAccordion();
   return (
-    <button type="button" onClick={onToggle} className={className}>
+    <button
+      type="button"
+      onClick={onToggle}
+      className={className}
+      aria-expanded={isOpen}
+    >
       {children}
     </button>
   );
