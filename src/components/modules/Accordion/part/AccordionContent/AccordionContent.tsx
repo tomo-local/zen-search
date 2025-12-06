@@ -16,7 +16,7 @@ export const AccordionContent: React.FC<AccordionContentProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      setHeight(`${contentRef.current.scrollHeight}px`);
+      setHeight(`${contentRef.current?.scrollHeight ?? 0}px`);
     } else {
       setHeight("0px");
     }
@@ -26,14 +26,14 @@ export const AccordionContent: React.FC<AccordionContentProps> = ({
     <div
       ref={contentRef}
       style={{
-        height: height,
-        // Chrome のフォールバック
+        height,
+        // only chrome browsers support
         // @supports (height: auto) and (interpolate-size: allow-keywords) {
         //   height: isOpen ? "auto" : "0px";
         //   interpolateSize: "allow-keywords";
         // }
       }}
-      className={`overflow-y-hidden transition-[height] ${className}`}
+      className={`overflow-y-hidden transition-[height] ${className ?? ""}`}
     >
       {children}
     </div>
