@@ -1,3 +1,11 @@
+import {
+  Accordion,
+  AccordionContent,
+  type AccordionContentProps,
+  type AccordionProps,
+  AccordionTitle,
+  type AccordionTitleProps,
+} from "./Accordion";
 import Badge, { type BadgeProps } from "./Badge/Badge";
 import ButtonItem, { type ButtonItemProps } from "./ButtonItem/ButtonItem";
 import Footer, { type FooterProps } from "./Footer/Footer";
@@ -7,6 +15,9 @@ import SquareBadge, { type SquareBadgeProps } from "./SquareBadge/SquareBadge";
 import SquareIcon, { type SquareIconProps } from "./SquareIcon/SquareIcon";
 
 export default {
+  Accordion,
+  AccordionTitle,
+  AccordionContent,
   Badge,
   ButtonItem,
   Footer,
@@ -17,6 +28,9 @@ export default {
 };
 
 export type {
+  AccordionProps,
+  AccordionTitleProps,
+  AccordionContentProps,
   BadgeProps,
   ButtonItemProps,
   FooterProps,
