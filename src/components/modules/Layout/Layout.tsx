@@ -7,7 +7,7 @@ export const commonClassName = {
   text: "text-gray-700 dark:text-gray-200",
   border: "border-2 border-solid border-sky-500",
   shadow: "shadow-xl",
-  p: "px-6 py-2",
+  p: "px-6 pt-2 pb-1",
   space: "space-y-2",
 };
 

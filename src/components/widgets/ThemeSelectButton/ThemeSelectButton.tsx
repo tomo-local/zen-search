@@ -1,7 +1,15 @@
 import ComputerDesktopIcon from "@heroicons/react/16/solid/ComputerDesktopIcon";
 import MoonIcon from "@heroicons/react/16/solid/MoonIcon";
 import SunIcon from "@heroicons/react/16/solid/SunIcon";
-import { useContext } from "react";
+import { CheckCircleIcon } from "@heroicons/react/20/solid";
+import clsx from "clsx";
+import { useContext, useState } from "react";
+import { defaultClassName } from "@/components/modules/ButtonItem/ButtonItem";
+import DropdownMenu, {
+  DropdownMenuButton,
+  DropdownMenuItem,
+  DropdownMenuItems,
+} from "@/components/modules/DropdownMenu";
 import { ThemeContext } from "@/context/ThemeProvider";
 import type { ThemeValue } from "@/services/storage/types";
 
@@ -22,23 +30,54 @@ const ThemeIcon = (props: { theme: ThemeValue }) => {
   }
 };
 
-export default function ThemeSelectButton(props: ThemeSelectorProps) {
-  const { theme, changeNextTheme } = useContext(ThemeContext);
+const themes: { value: ThemeValue; label: string }[] = [
+  { value: "light", label: "Light" },
+  { value: "dark", label: "Dark" },
+  { value: "system", label: "System" },
+];
 
-  const handleThemeChange = () => {
-    changeNextTheme();
-  };
+export default function ThemeSelectButton(props: ThemeSelectorProps) {
+  const [isOpen, setIsOpen] = useState(false);
+  const { theme, setTheme } = useContext(ThemeContext);
 
   return (
-    <button
-      type="button"
-      className={`flex items-center hover:cursor-pointer group relative space-x-2 ${props.className}`}
-      onClick={handleThemeChange}
+    <DropdownMenu
+      isOpen={isOpen}
+      onToggle={() => setIsOpen(!isOpen)}
+      selectedValue={theme}
+      onSelect={(value) => {
+        setTheme(value as ThemeValue);
+        setIsOpen(false);
+      }}
     >
-      <ThemeIcon theme={theme} />
-      <span className="invisible font-bold opacity-0 opacity-100 group-hover:visible">
-        {theme.toUpperCase()}
-      </span>
-    </button>
+      <DropdownMenuButton
+        className={clsx(
+          "flex items-center hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 group relative space-x-2 p-1 rounded-md",
+          defaultClassName.bg,
+          props.className,
+        )}
+      >
+        <ThemeIcon theme={theme} />
+      </DropdownMenuButton>
+      <DropdownMenuItems
+        className="w-40 bg-white border border-gray-700 rounded-lg shadow-lg dark:bg-gray-800"
+        position="top"
+        align="start"
+      >
+        {themes.map((t) => (
+          <DropdownMenuItem
+            key={t.value}
+            value={t.value}
+            className="flex items-center px-4 py-2 space-x-2 text-gray-800 hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"
+          >
+            <ThemeIcon theme={t.value} />
+            <span>{t.label}</span>
+            {theme === t.value && (
+              <CheckCircleIcon className="ml-auto text-sky-500 size-6" />
+            )}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuItems>
+    </DropdownMenu>
   );
 }
