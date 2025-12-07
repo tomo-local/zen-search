@@ -1,7 +1,7 @@
 import { action } from "@storybook/addon-actions";
 import type { Meta, StoryObj } from "@storybook/react";
+import clsx from "clsx";
 import { useState } from "react";
-
 import DropdownMenu, {
   DropdownMenuButton,
   DropdownMenuItem,
@@ -63,10 +63,10 @@ const StatefulDropdownMenu = ({
           {selectedLabel}
         </span>
         <span
-          className={
-            "text-gray-500 transition-transform duration-200" +
-            (isOpen ? " rotate-180" : "")
-          }
+          className={clsx(
+            "text-gray-500 transition-transform duration-200",
+            isOpen && "rotate-180",
+          )}
         >
           v
         </span>

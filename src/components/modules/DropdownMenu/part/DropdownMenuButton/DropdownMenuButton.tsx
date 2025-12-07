@@ -18,6 +18,7 @@ export const DropdownMenuButton: React.FC<DropdownMenuButtonProps> = ({
       onClick={onToggle}
       className={className}
       aria-expanded={isOpen}
+      aria-haspopup="true"
     >
       {children}
     </button>
