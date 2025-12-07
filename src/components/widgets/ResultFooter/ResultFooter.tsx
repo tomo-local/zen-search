@@ -15,7 +15,7 @@ export default function ResultFooter({
 }: ResultFooterProps) {
   if (loading) {
     return (
-      <Footer className={`pt-1 text-base ${className}`}>
+      <Footer className={`text-base ${className}`}>
         <div className="flex flex-row items-center justify-between space-x-2">
           <ThemeSelectButton className="dark:text-gray-400" />
           <div className="flex flex-row items-center justify-center space-x-2">
@@ -28,7 +28,7 @@ export default function ResultFooter({
   }
 
   return (
-    <Footer className={`pt-1 text-base ${className}`}>
+    <Footer className={`text-base ${className}`}>
       <div className="flex flex-row items-center justify-between space-x-2">
         <ThemeSelectButton className="dark:text-gray-400" />
         <p className="text-base font-bold text-right dark:text-gray-400">
