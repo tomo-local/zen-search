@@ -65,7 +65,8 @@ export const isWindowDarkMode = (): boolean => {
 
 export const getDefaultLanguage = (): LanguageValue => "system";
 
-/** * 言語値のバリデーション
+/**
+ * 言語値のバリデーション
  */
 export const isValidLanguage = (value: unknown): value is LanguageValue => {
   return ["en", "ja", "system"].includes(value as string);
