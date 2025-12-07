@@ -25,6 +25,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@wxt-dev/auto-icons": "^1.1.0",
+    "@wxt-dev/i18n": "^0.2.4",
     "clsx": "^2.1.1",
     "mathjs": "^14.7.0",
     "react": "^19.1.1",

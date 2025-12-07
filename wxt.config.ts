@@ -6,7 +6,7 @@ export default defineConfig({
   webExt: {
     disabled: true,
   },
-  modules: ["@wxt-dev/module-react", "@wxt-dev/auto-icons"],
+  modules: ["@wxt-dev/module-react", "@wxt-dev/auto-icons", "@wxt-dev/i18n/module"],
   vite: () => ({
     plugins: [tailwindcss()],
   }),
@@ -14,6 +14,8 @@ export default defineConfig({
   outDir: "dist",
   manifest: {
     name: "Zen Search",
+    default_locale: "en",
+    current_locale: "en",
     description: "Search your bookmarks and history",
     version: "1.5.1",
     permissions: ["tabs", "history", "activeTab", "bookmarks", "storage"],
