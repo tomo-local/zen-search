@@ -3,7 +3,12 @@
  * 責任: Chrome storage sync APIの抽象化を担当
  */
 
-import { chromeStorageGet, chromeStorageSet, getDefaultTheme } from "./helper";
+import {
+  chromeStorageGet,
+  chromeStorageSet,
+  getDefaultLanguage,
+  getDefaultTheme,
+} from "./helper";
 import type * as Type from "./types";
 import { SyncStorageKey } from "./types";
 
@@ -17,6 +22,8 @@ export interface StorageService {
   ) => Promise<boolean>;
   getTheme: () => Promise<Type.ThemeValue>;
   setTheme: (request: Type.SetThemeRequest) => Promise<boolean>;
+  getLanguage: () => Promise<Type.LanguageValue>;
+  setLanguage: (request: Type.SetLanguageRequest) => Promise<boolean>;
 }
 
 // サービス実装
@@ -63,12 +70,36 @@ const setTheme = async ({ theme }: Type.SetThemeRequest): Promise<boolean> => {
   }
 };
 
+const getLanguage = async (): Promise<Type.LanguageValue> => {
+  try {
+    const language = await chromeStorageGet(SyncStorageKey.Language);
+    return language || getDefaultLanguage();
+  } catch (error) {
+    console.error("Failed to get language:", error);
+    // エラー時はデフォルト言語を返す
+    return getDefaultLanguage();
+  }
+};
+
+const setLanguage = async ({
+  language,
+}: Type.SetLanguageRequest): Promise<boolean> => {
+  try {
+    return await chromeStorageSet(SyncStorageKey.Language, language);
+  } catch (error) {
+    console.error("Failed to set language:", error);
+    throw new Error("言語の保存に失敗しました");
+  }
+};
+
 // サービスオブジェクトのエクスポート
 export const storageService: StorageService = {
   get: getStorage,
   set: setStorage,
   getTheme,
   setTheme,
+  getLanguage,
+  setLanguage,
 };
 
 // デフォルトエクスポート
