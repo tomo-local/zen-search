@@ -54,7 +54,6 @@ export default function ThemeSelectButton(props: ThemeSelectorProps) {
         className={clsx(
           "flex items-center hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 group relative space-x-2 p-1 rounded-md",
           defaultClassName.bg,
-          defaultClassName.base,
           props.className,
         )}
       >
