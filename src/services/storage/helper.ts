@@ -2,7 +2,12 @@
  * Storage Helper - Chrome storage関連のヘルパー関数
  */
 
-import type { SyncStorage, SyncStorageKey, ThemeValue } from "./types";
+import type {
+  LanguageValue,
+  SyncStorage,
+  SyncStorageKey,
+  ThemeValue,
+} from "./types";
 
 /**
  * Promise化されたchrome.storage.sync.get
@@ -56,4 +61,13 @@ export const isValidTheme = (value: unknown): value is ThemeValue => {
 export const isWindowDarkMode = (): boolean => {
   const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
   return mediaQuery.matches;
+};
+
+
+export const getDefaultLanguage = (): LanguageValue => "system";
+
+/** * 言語値のバリデーション
+ */
+export const isValidLanguage = (value: unknown): value is LanguageValue => {
+  return ["en", "ja", "system"].includes(value as string);
 };

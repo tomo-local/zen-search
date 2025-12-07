@@ -4,11 +4,11 @@
 
 export enum SyncStorageKey {
   Theme = "theme",
-  Language = "language",
+  Language = "i18n_language",
 }
 
 export type ThemeValue = "light" | "dark" | "system";
-export type LanguageValue = "en" | "js";
+export type LanguageValue = "en" | "ja" | "system";
 
 export interface SyncStorage {
   [SyncStorageKey.Theme]: ThemeValue;
