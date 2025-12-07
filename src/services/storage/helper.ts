@@ -62,7 +62,6 @@ export const isWindowDarkMode = (): boolean => {
   const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
   return mediaQuery.matches;
 };
-
 /**
  * デフォルト言語値を取得
  */
