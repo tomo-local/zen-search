@@ -1,0 +1,42 @@
+{
+  "ui": {
+    "loading": "Loading...",
+    "notFound": "Not found...",
+    "results": "RESULTS",
+    "searchPlaceholder": "Search or Enter URL ..."
+  },
+  "actions": {
+    "openTab": "Open Tab",
+    "switchToTab": "Switch to Tab",
+    "openResult": "Open Result",
+    "changeTo": "Change to"
+  },
+  "searchTypes": {
+    "all": "All",
+    "tab": "Tab",
+    "history": "History",
+    "bookmark": "Bookmark",
+    "google": "Google",
+    "suggestion": "Suggestion",
+    "calculation": "Calculation"
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System"
+  },
+  "searchEngines": {
+    "google": "Google",
+    "bing": "Bing",
+    "duckduckgo": "DuckDuckGo",
+    "brave": "Brave",
+    "ecosia": "Ecosia"
+  },
+  "accessibility": {
+    "favicon": "Favicon"
+  },
+  "errors": {
+    "calculationFailed": "Calculation failed",
+    "runtimeServiceError": "RuntimeServiceError"
+  }
+}
