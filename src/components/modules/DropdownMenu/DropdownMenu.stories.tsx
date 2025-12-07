@@ -188,7 +188,7 @@ export const OpenTopEnd: Story = {
       onSelect={action("select")}
     >
       <DropdownMenuButton className="flex items-center justify-between w-full px-4 py-3 bg-white border border-gray-300 rounded-lg">
-        <span className="text-sm font-medium text-gray-800">Open Up End</span>
+        <span className="text-sm font-medium text-gray-800">Open Top End</span>
         <span className="text-gray-500">v</span>
       </DropdownMenuButton>
       <DropdownMenuItems position="top" align="end">

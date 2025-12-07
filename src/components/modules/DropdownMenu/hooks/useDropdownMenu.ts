@@ -15,7 +15,7 @@ export const useDropdownMenu = () => {
   const context = useContext(DropdownMenuContext);
   if (!context) {
     throw new Error(
-      "useDropdownMenu must be used within DropdownMenu component",
+      "useDropdownMenu hook must be used within a DropdownMenu component. Please wrap your component with <DropdownMenu>!",
     );
   }
   return context;
