@@ -15,10 +15,10 @@ import { SyncStorageKey } from "./types";
 // 型定義
 export interface StorageService {
   get: <K extends Type.SyncStorageKey>(
-    request: Type.GetStorageRequest<K>
+    request: Type.GetStorageRequest<K>,
   ) => Promise<Type.SyncStorage[K] | undefined>;
   set: <K extends Type.SyncStorageKey>(
-    request: Type.SetStorageRequest<K>
+    request: Type.SetStorageRequest<K>,
   ) => Promise<boolean>;
   getTheme: () => Promise<Type.ThemeValue>;
   setTheme: (request: Type.SetThemeRequest) => Promise<boolean>;

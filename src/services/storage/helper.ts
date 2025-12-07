@@ -63,7 +63,6 @@ export const isWindowDarkMode = (): boolean => {
   return mediaQuery.matches;
 };
 
-
 export const getDefaultLanguage = (): LanguageValue => "system";
 
 /** * 言語値のバリデーション
