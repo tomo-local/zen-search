@@ -11,6 +11,7 @@ import DropdownMenu, {
   DropdownMenuItems,
 } from "@/components/modules/DropdownMenu";
 import { ThemeContext } from "@/context/ThemeProvider";
+import { useTranslation } from "@/hooks/storage/useTranslation";
 import type { ThemeValue } from "@/services/storage/types";
 
 export type ThemeSelectorProps = {
@@ -30,15 +31,16 @@ const ThemeIcon = (props: { theme: ThemeValue }) => {
   }
 };
 
-const themes: { value: ThemeValue; label: string }[] = [
-  { value: "light", label: "Light" },
-  { value: "dark", label: "Dark" },
-  { value: "system", label: "System" },
-];
-
 export default function ThemeSelectButton(props: ThemeSelectorProps) {
+  const { t } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useContext(ThemeContext);
+
+  const themes: { value: ThemeValue; label: string }[] = [
+    { value: "light", label: t("theme.light") },
+    { value: "dark", label: t("theme.dark") },
+    { value: "system", label: t("theme.system") },
+  ];
 
   return (
     <DropdownMenu

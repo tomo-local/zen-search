@@ -1,6 +1,7 @@
 import React from "react";
 
 import ThemeProvider from "@/context/ThemeProvider";
+import TranslationProvider from "@/context/TranslationProvider";
 
 export const commonClassName = {
   bg: "bg-gray-50 dark:bg-gray-800",
@@ -19,9 +20,11 @@ export type LayoutProps = {
 export default function Layout(props: LayoutProps) {
   return (
     <React.StrictMode>
-      <ThemeProvider>
-        <div className={props.className}>{props.children}</div>
-      </ThemeProvider>
+      <TranslationProvider>
+        <ThemeProvider>
+          <div className={props.className}>{props.children}</div>
+        </ThemeProvider>
+      </TranslationProvider>
     </React.StrictMode>
   );
 }

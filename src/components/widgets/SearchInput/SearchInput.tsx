@@ -1,3 +1,6 @@
+import type React from "react";
+import { useTranslation } from "@/hooks/storage/useTranslation";
+
 export interface SearchInputProps {
   className?: string;
   value: string;
@@ -53,6 +56,7 @@ export default function SearchInput({
   onEnterKeyDown,
   onBackspaceKeyDown,
 }: SearchInputProps) {
+  const { t } = useTranslation();
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "/") {
       e.preventDefault();
@@ -101,7 +105,7 @@ export default function SearchInput({
       <input
         type="text"
         value={value}
-        placeholder="Search or Enter URL ..."
+        placeholder={t("ui.searchPlaceholder")}
         className={`grow px-3 py-2 text-lg rounded-md focus:outline-none ${className}`}
         autoFocus
         onFocus={onFocus}

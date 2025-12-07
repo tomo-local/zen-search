@@ -3,6 +3,7 @@ import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 import clsx from "clsx";
 import type React from "react";
 import { useMemo } from "react";
+import { useTranslation } from "@/hooks/storage/useTranslation";
 import type { Bookmark } from "@/services/bookmark/types";
 
 import ButtonItem, {
@@ -30,6 +31,8 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
   selected,
   item,
 }) => {
+  const { t } = useTranslation();
+
   const LeftIcon = useMemo(
     () => (
       <SquareIcon>
@@ -58,7 +61,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
   const RightContent = useMemo(
     () => (
       <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>Open Tab</span>
+        <span className={defaultClassName.text}>{t("actions_openTab")}</span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
           <PlusIcon
             className={clsx(
@@ -69,7 +72,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
         </SquareIcon>
       </div>
     ),
-    [selected],
+    [selected, t],
   );
 
   return (
