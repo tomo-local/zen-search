@@ -9,6 +9,8 @@ import {
 import Badge, { type BadgeProps } from "./Badge/Badge";
 import ButtonItem, { type ButtonItemProps } from "./ButtonItem/ButtonItem";
 import DropdownMenu, {
+  DropdownMenuButton,
+  type DropdownMenuButtonProps,
   DropdownMenuItem,
   type DropdownMenuItemProps,
   DropdownMenuItems,
@@ -28,6 +30,7 @@ export default {
   Badge,
   ButtonItem,
   DropdownMenu,
+  DropdownMenuButton,
   DropdownMenuItem,
   DropdownMenuItems,
   Footer,
@@ -44,6 +47,7 @@ export type {
   BadgeProps,
   ButtonItemProps,
   DropdownMenuProps,
+  DropdownMenuButtonProps,
   DropdownMenuItemProps,
   DropdownMenuItemsProps,
   FooterProps,
