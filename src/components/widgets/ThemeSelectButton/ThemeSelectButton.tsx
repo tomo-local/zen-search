@@ -49,7 +49,7 @@ export default function ThemeSelectButton(props: ThemeSelectorProps) {
       <MenuItems
         transition
         anchor="top start"
-        className="transition duration-200 bg-white border-2 border-gray-600 rounded-lg shadow-lg focus:outline-none dark:bg-gray-800 [--anchor-gap:--spacing(1)] ease-in-out"
+        className="transition duration-200 ease-in-out bg-white border-2 border-gray-600 rounded-lg shadow-lg focus:outline-none dark:bg-gray-800 [--anchor-gap:--spacing(1)] data-[closed]:opacity-0 data-[closed]:scale-95"
       >
         {themes.map((t) => (
           <MenuItem
