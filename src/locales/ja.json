@@ -25,6 +25,10 @@
     "dark": "ダーク",
     "system": "システム"
   },
+  "language": {
+    "en": "English",
+    "ja": "日本語"
+  },
   "searchEngines": {
     "google": "Google",
     "bing": "Bing",
