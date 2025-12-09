@@ -1,5 +1,6 @@
 import NoSymbolIcon from "@heroicons/react/16/solid/NoSymbolIcon";
 import clsx from "clsx";
+import { useTranslation } from "@/hooks/storage/useTranslation";
 import ButtonItem, {
   type ButtonItemProps,
   defaultClassName,
@@ -16,6 +17,7 @@ const NotFoundItem: React.FC<NotFoundItemProps> = ({
   onClick,
   disabled = true,
 }) => {
+  const { t } = useTranslation();
   return (
     <ButtonItem
       className={clsx(
@@ -37,7 +39,7 @@ const NotFoundItem: React.FC<NotFoundItemProps> = ({
       selected={selected}
       disabled={disabled}
     >
-      <div className="w-full text-base text-center">Not found...</div>
+      <div className="w-full text-base text-center">{t("ui.notFound")}</div>
     </ButtonItem>
   );
 };

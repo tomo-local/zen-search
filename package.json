@@ -23,6 +23,7 @@
     "release": " pnpm run build && pnpm run zip"
   },
   "dependencies": {
+    "@headlessui/react": "^2.2.9",
     "@heroicons/react": "^2.2.0",
     "@wxt-dev/auto-icons": "^1.1.0",
     "@wxt-dev/i18n": "^0.2.4",

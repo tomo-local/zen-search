@@ -8,43 +8,38 @@ import {
 export interface ThemeState {
   theme: ThemeValue;
   isDarkMode: boolean;
+  setTheme: (value: ThemeValue) => void;
 }
 
 type Action =
-  | { type: "SET_THEME"; payload: ThemeValue }
-  | { type: "NEXT_THEME" };
+  | { type: "INIT_THEME"; payload: ThemeValue }
+  | { type: "SET_THEME"; payload: ThemeValue };
 
 export const initialState: ThemeState = {
   theme: "system",
   isDarkMode: false,
+  setTheme: () => {},
 };
 
 function themeReducer(state: ThemeState, action: Action): ThemeState {
   switch (action.type) {
-    case "SET_THEME": {
+    case "INIT_THEME": {
       const theme = action.payload;
-
-      storageService.setTheme({ theme });
-
       return {
         ...state,
         theme: theme,
         isDarkMode: theme === "system" ? isWindowDarkMode() : theme === "dark",
       };
     }
-    case "NEXT_THEME": {
-      const themeMap = ["light", "dark", "system"] as ThemeValue[];
-      const nextIndex = (themeMap.indexOf(state.theme) + 1) % themeMap.length;
 
-      const nextTheme = themeMap[nextIndex];
-
-      storageService.setTheme({ theme: nextTheme });
-
+    case "SET_THEME": {
+      console.log("+++++++++", action.payload);
+      const theme = action.payload;
+      storageService.setTheme({ theme });
       return {
         ...state,
-        theme: themeMap[nextIndex],
-        isDarkMode:
-          nextTheme === "system" ? isWindowDarkMode() : nextTheme === "dark",
+        theme: theme,
+        isDarkMode: theme === "system" ? isWindowDarkMode() : theme === "dark",
       };
     }
     default:
@@ -55,25 +50,35 @@ function themeReducer(state: ThemeState, action: Action): ThemeState {
 export default function useTheme() {
   const [{ theme, isDarkMode }, dispatch] = useReducer(
     themeReducer,
-    initialState,
+    initialState
   );
 
   useEffect(() => {
-    const fetchTheme = async () => {
-      const theme = await storageService.getTheme();
-      dispatch({ type: "SET_THEME", payload: theme });
-    };
-    fetchTheme();
+    (async () => {
+      const storedTheme = await storageService.getTheme();
+      dispatch({
+        type: "INIT_THEME",
+        payload: storedTheme ?? "system",
+      });
+    })();
+  }, []);
+
+  useEffect(() => {
+    const root = document.documentElement;
+    if (isDarkMode) {
+      root.classList.add("dark");
+    } else {
+      root.classList.remove("dark");
+    }
+  }, [isDarkMode]);
+
+  const setTheme = useCallback((value: ThemeValue) => {
+    dispatch({ type: "SET_THEME", payload: value });
   }, []);
 
   return {
-    theme: theme,
-    isDarkMode: isDarkMode,
-    setTheme: (value: ThemeValue) => {
-      dispatch({ type: "SET_THEME", payload: value });
-    },
-    changeNextTheme: () => {
-      dispatch({ type: "NEXT_THEME" });
-    },
+    theme,
+    isDarkMode,
+    setTheme,
   };
 }

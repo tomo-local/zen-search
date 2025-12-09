@@ -3,6 +3,7 @@ import PlusIcon from "@heroicons/react/24/outline/PlusIcon";
 import clsx from "clsx";
 import type React from "react";
 import { useMemo } from "react";
+import { useTranslation } from "@/hooks/storage/useTranslation";
 import type { Action } from "@/services/action/types";
 
 import ButtonItem, {
@@ -30,6 +31,8 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
   selected,
   onClick,
 }) => {
+  const { t } = useTranslation();
+
   const LeftIcon = useMemo(
     () => (
       <SquareIcon>
@@ -47,7 +50,7 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
   const RightIcon = useMemo(
     () => (
       <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>Open Result</span>
+        <span className={defaultClassName.text}>{t("actions_openResult")}</span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
           <PlusIcon
             className={clsx(
@@ -58,7 +61,7 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
         </SquareIcon>
       </div>
     ),
-    [selected],
+    [selected, t],
   );
 
   return (

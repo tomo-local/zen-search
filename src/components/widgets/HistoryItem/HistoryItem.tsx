@@ -3,6 +3,8 @@ import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
 import clsx from "clsx";
 import type React from "react";
 import { useMemo } from "react";
+
+import { useTranslation } from "@/hooks/storage/useTranslation";
 import type { History } from "@/services/history";
 
 import ButtonItem, {
@@ -24,6 +26,8 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
   selected,
   item,
 }) => {
+  const { t } = useTranslation();
+
   const LeftIcon = useMemo(
     () => (
       <SquareIcon>
@@ -52,7 +56,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
   const RightContent = useMemo(
     () => (
       <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>Open Tab</span>
+        <span className={defaultClassName.text}>{t("actions_openTab")}</span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
           <PlusIcon
             className={clsx(
@@ -63,7 +67,7 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
         </SquareIcon>
       </div>
     ),
-    [selected],
+    [selected, t],
   );
 
   return (

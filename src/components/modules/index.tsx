@@ -8,13 +8,6 @@ import {
 } from "./Accordion";
 import Badge, { type BadgeProps } from "./Badge/Badge";
 import ButtonItem, { type ButtonItemProps } from "./ButtonItem/ButtonItem";
-import DropdownMenu, {
-  DropdownMenuItem,
-  type DropdownMenuItemProps,
-  DropdownMenuItems,
-  type DropdownMenuItemsProps,
-  type DropdownMenuProps,
-} from "./DropdownMenu";
 import Footer, { type FooterProps } from "./Footer/Footer";
 import Layout, { type LayoutProps } from "./Layout/Layout";
 import Spinner, { type SpinnerProps } from "./Spinner/Spinner";
@@ -27,9 +20,6 @@ export default {
   AccordionContent,
   Badge,
   ButtonItem,
-  DropdownMenu,
-  DropdownMenuItem,
-  DropdownMenuItems,
   Footer,
   Spinner,
   SquareBadge,
@@ -43,9 +33,6 @@ export type {
   AccordionContentProps,
   BadgeProps,
   ButtonItemProps,
-  DropdownMenuProps,
-  DropdownMenuItemProps,
-  DropdownMenuItemsProps,
   FooterProps,
   SpinnerProps,
   SquareBadgeProps,
