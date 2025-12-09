@@ -1,15 +1,11 @@
+import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import ComputerDesktopIcon from "@heroicons/react/16/solid/ComputerDesktopIcon";
 import MoonIcon from "@heroicons/react/16/solid/MoonIcon";
 import SunIcon from "@heroicons/react/16/solid/SunIcon";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
-import { useContext, useState } from "react";
+import { useContext } from "react";
 import { defaultClassName } from "@/components/modules/ButtonItem/ButtonItem";
-import DropdownMenu, {
-  DropdownMenuButton,
-  DropdownMenuItem,
-  DropdownMenuItems,
-} from "@/components/modules/DropdownMenu";
 import { ThemeContext } from "@/context/ThemeProvider";
 import { useTranslation } from "@/hooks/storage/useTranslation";
 import type { ThemeValue } from "@/services/storage/types";
@@ -18,22 +14,19 @@ export type ThemeSelectorProps = {
   className?: string;
 };
 
-const ThemeIcon = (props: { theme: ThemeValue }) => {
-  const common = "size-5";
-
+const ThemeIcon = (props: { theme: ThemeValue; className?: string }) => {
   switch (props.theme) {
     case "light":
-      return <SunIcon className={`${common}`} />;
+      return <SunIcon className={`${props.className}`} />;
     case "dark":
-      return <MoonIcon className={`${common}`} />;
+      return <MoonIcon className={`${props.className}`} />;
     default:
-      return <ComputerDesktopIcon className={`${common}`} />;
+      return <ComputerDesktopIcon className={`${props.className}`} />;
   }
 };
 
 export default function ThemeSelectButton(props: ThemeSelectorProps) {
   const { t } = useTranslation();
-  const [isOpen, setIsOpen] = useState(false);
   const { theme, setTheme } = useContext(ThemeContext);
 
   const themes: { value: ThemeValue; label: string }[] = [
@@ -43,43 +36,37 @@ export default function ThemeSelectButton(props: ThemeSelectorProps) {
   ];
 
   return (
-    <DropdownMenu
-      isOpen={isOpen}
-      onToggle={() => setIsOpen(!isOpen)}
-      selectedValue={theme}
-      onSelect={(value) => {
-        setTheme(value as ThemeValue);
-        setIsOpen(false);
-      }}
-    >
-      <DropdownMenuButton
+    <Menu>
+      <MenuButton
         className={clsx(
-          "flex items-center hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 group relative space-x-2 p-1 rounded-md",
+          "flex items-center hover:cursor-pointer hover:bg-gray-400 dark:hover:bg-gray-700 group relative space-x-2 p-1 rounded-md focus:outline-none",
           defaultClassName.bg,
           props.className,
         )}
       >
-        <ThemeIcon theme={theme} />
-      </DropdownMenuButton>
-      <DropdownMenuItems
-        className="w-40 bg-white border border-gray-700 rounded-lg shadow-lg dark:bg-gray-800"
-        position="top"
-        align="start"
+        <ThemeIcon theme={theme} className="size-5" />
+      </MenuButton>
+      <MenuItems
+        transition
+        anchor="top start"
+        className="transition duration-200 bg-white border-2 border-gray-600 rounded-lg shadow-lg focus:outline-none dark:bg-gray-800 [--anchor-gap:--spacing(1)] ease-in-out"
       >
         {themes.map((t) => (
-          <DropdownMenuItem
+          <MenuItem
+            as="button"
+            disabled={theme === t.value}
             key={t.value}
-            value={t.value}
-            className="flex items-center px-4 py-2 space-x-2 text-gray-800 hover:cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-700 dark:text-gray-300"
+            className="flex items-center w-full px-3 py-2 space-x-2 text-gray-800 hover:cursor-pointer hover:bg-gray-400 hover:opacity-80 dark:hover:bg-gray-700 dark:text-gray-300"
+            onClick={() => setTheme(t.value)}
           >
-            <ThemeIcon theme={t.value} />
-            <span>{t.label}</span>
+            <ThemeIcon theme={t.value} className="size-5" />
+            <div className="min-w-12">{t.label}</div>
             {theme === t.value && (
-              <CheckCircleIcon className="ml-auto text-sky-500 size-6" />
+              <CheckCircleIcon className="flex-none ml-auto size-5" />
             )}
-          </DropdownMenuItem>
+          </MenuItem>
         ))}
-      </DropdownMenuItems>
-    </DropdownMenu>
+      </MenuItems>
+    </Menu>
   );
 }
