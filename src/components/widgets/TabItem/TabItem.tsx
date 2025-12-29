@@ -3,6 +3,7 @@ import WindowIcon from "@heroicons/react/16/solid/WindowIcon";
 import clsx from "clsx";
 import type React from "react";
 import { useMemo } from "react";
+import { useTranslation } from "@/hooks/storage/useTranslation";
 import type { Tab } from "@/services/tab/types";
 
 import ButtonItem, {
@@ -20,6 +21,7 @@ export type TabItemProps = Pick<ButtonItemProps, "onClick" | "selected"> & {
 };
 
 const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
+  const { t } = useTranslation();
   const LeftIcon = useMemo(
     () => (
       <SquareIcon>
@@ -48,7 +50,9 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
   const RightContent = useMemo(
     () => (
       <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>Switch to Tab</span>
+        <span className={defaultClassName.text}>
+          {t("actions.switchToTab")}
+        </span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
           <ArrowLongRightIcon
             className={clsx(
@@ -59,7 +63,7 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
         </SquareIcon>
       </div>
     ),
-    [selected],
+    [selected, t],
   );
 
   return (

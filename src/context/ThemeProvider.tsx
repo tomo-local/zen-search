@@ -11,25 +11,16 @@ type Props = {
 
 type ThemeContextType = ThemeState & {
   setTheme: (value: ThemeValue) => void;
-  changeNextTheme: () => void;
 };
 
-export const ThemeContext = createContext<ThemeContextType>({
-  ...initialState,
-  setTheme: () => {},
-  changeNextTheme: () => {},
-});
+export const ThemeContext = createContext<ThemeContextType>(initialState);
 
 const ThemeProvider = (props: Props) => {
-  const { theme, isDarkMode, setTheme, changeNextTheme } = useTheme();
+  const { theme, isDarkMode, setTheme } = useTheme();
 
   return (
-    <ThemeContext.Provider
-      value={{ theme, isDarkMode, changeNextTheme, setTheme }}
-    >
-      <div className={`theme-${theme} ${isDarkMode ? "dark" : ""}`}>
-        {props.children}
-      </div>
+    <ThemeContext.Provider value={{ theme, isDarkMode, setTheme }}>
+      {props.children}
     </ThemeContext.Provider>
   );
 };

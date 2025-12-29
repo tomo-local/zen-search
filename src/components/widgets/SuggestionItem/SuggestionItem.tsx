@@ -1,6 +1,8 @@
 import PlusIcon from "@heroicons/react/16/solid/PlusIcon";
 import clsx from "clsx";
+import { useMemo } from "react";
 import SquareIcon from "@/components/modules/SquareIcon/SquareIcon";
+import { useTranslation } from "@/hooks/storage/useTranslation";
 import type { Suggestion } from "@/services/suggestion/types";
 
 import ButtonItem, {
@@ -24,6 +26,7 @@ const SuggestionItem: React.FC<SuggestionItemProps> = ({
   onClick,
   selected,
 }) => {
+  const { t } = useTranslation();
   const LeftIcon = useMemo(
     () => (
       <SquareIcon>
@@ -42,7 +45,7 @@ const SuggestionItem: React.FC<SuggestionItemProps> = ({
   const RightContent = useMemo(
     () => (
       <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>Open Tab</span>
+        <span className={defaultClassName.text}>{t("actions.openTab")}</span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
           <PlusIcon
             className={clsx(
@@ -53,7 +56,7 @@ const SuggestionItem: React.FC<SuggestionItemProps> = ({
         </SquareIcon>
       </div>
     ),
-    [selected],
+    [selected, t],
   );
 
   return (

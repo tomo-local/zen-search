@@ -13,6 +13,7 @@ import ResultList from "@/components/widgets/ResultList/ResultList";
 import SearchInput, {
   commonClassName as searchInputClassName,
 } from "@/components/widgets/SearchInput/SearchInput";
+import { useTranslation } from "@/hooks/storage/useTranslation";
 import useControlTab from "@/hooks/useControlTab";
 import useSearch from "@/hooks/useSearch";
 import useSearchKeyboard from "@/hooks/useSearchKeyboard";
@@ -21,6 +22,7 @@ import useSearchShortcut from "@/hooks/useSearchShortcut";
 import type { Kind, Result } from "@/services/result";
 
 export default function App() {
+  const { t } = useTranslation();
   // 検索状態管理
   const {
     state: { query, type, suggestion, categories },
@@ -150,14 +152,14 @@ export default function App() {
           rightContent={
             suggestion ? (
               <div className="flex items-center space-x-1">
-                <div>Change to</div>
+                <div>{t("actions.changeTo")}</div>
                 <div className={searchInputClassName.right.text}>
                   {suggestion}
                 </div>
                 <SquareBadge
                   className={clsx("ml-1", searchInputClassName.badge.bg)}
                 >
-                  Tab
+                  {t("searchTypes.tab")}
                 </SquareBadge>
               </div>
             ) : null
