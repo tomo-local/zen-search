@@ -15,6 +15,10 @@ export interface StorageService {
   set: <K extends Type.SyncStorageKey>(
     request: Type.SetStorageRequest<K>,
   ) => Promise<boolean>;
+  subscribe: <K extends Type.SyncStorageKey>(
+    key: K,
+    callback: (value: Type.SyncStorage[K] | undefined) => void,
+  ) => () => void;
   getTheme: () => Promise<Type.ThemeValue>;
   setTheme: (request: Type.SetThemeRequest) => Promise<boolean>;
 }
@@ -29,6 +33,23 @@ const getStorage = async <K extends Type.SyncStorageKey>({
     console.error(`Failed to get storage for key ${key}:`, error);
     throw new Error(`ストレージの取得に失敗しました: ${key}`);
   }
+};
+
+const subscribeStorage = <K extends Type.SyncStorageKey>(
+  key: K,
+  callback: (value: Type.SyncStorage[K] | undefined) => void,
+): (() => void) => {
+  const handler = (
+    changes: Record<string, chrome.storage.StorageChange>,
+    areaName: string,
+  ) => {
+    if (areaName !== "sync") return;
+    const change = changes[key];
+    if (!change) return;
+    callback(change.newValue as Type.SyncStorage[K] | undefined);
+  };
+  chrome.storage.onChanged.addListener(handler);
+  return () => chrome.storage.onChanged.removeListener(handler);
 };
 
 const setStorage = async <K extends Type.SyncStorageKey>({
@@ -67,6 +88,7 @@ const setTheme = async ({ theme }: Type.SetThemeRequest): Promise<boolean> => {
 export const storageService: StorageService = {
   get: getStorage,
   set: setStorage,
+  subscribe: subscribeStorage,
   getTheme,
   setTheme,
 };
