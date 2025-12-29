@@ -17,7 +17,7 @@ export default defineConfig({
     default_locale: "en",
     current_locale: "en",
     description: "Search your bookmarks and history",
-    version: "1.5.1",
+    version: "1.5.2",
     permissions: ["tabs", "history", "activeTab", "bookmarks", "storage"],
     commands: {
       OPEN_POPUP: {
