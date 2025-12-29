@@ -1,67 +1,85 @@
-import { useEffect, useReducer } from "react";
+import { useCallback, useEffect, useSyncExternalStore } from "react";
 import {
+  getDefaultTheme,
   isWindowDarkMode,
+  SyncStorageKey,
   storageService,
   type ThemeValue,
 } from "@/services/storage";
 
-export interface ThemeState {
+type ThemeSnapshot = {
   theme: ThemeValue;
   isDarkMode: boolean;
-  setTheme: (value: ThemeValue) => void;
-}
+};
 
-type Action =
-  | { type: "INIT_THEME"; payload: ThemeValue }
-  | { type: "SET_THEME"; payload: ThemeValue };
+export type ThemeState = ThemeSnapshot & {
+  setTheme: (value: ThemeValue) => void;
+};
+
+const listeners = new Set<() => void>();
+
+const buildSnapshot = (theme: ThemeValue): ThemeSnapshot => ({
+  theme,
+  isDarkMode: theme === "system" ? isWindowDarkMode() : theme === "dark",
+});
+
+let snapshot: ThemeSnapshot = buildSnapshot(getDefaultTheme());
 
 export const initialState: ThemeState = {
-  theme: "system",
-  isDarkMode: false,
+  ...snapshot,
   setTheme: () => {},
 };
 
-function themeReducer(state: ThemeState, action: Action): ThemeState {
-  switch (action.type) {
-    case "INIT_THEME": {
-      const theme = action.payload;
-      return {
-        ...state,
-        theme: theme,
-        isDarkMode: theme === "system" ? isWindowDarkMode() : theme === "dark",
-      };
-    }
+const notify = () => {
+  listeners.forEach((listener) => {
+    listener();
+  });
+};
 
-    case "SET_THEME": {
-      console.log("+++++++++", action.payload);
-      const theme = action.payload;
-      storageService.setTheme({ theme });
-      return {
-        ...state,
-        theme: theme,
-        isDarkMode: theme === "system" ? isWindowDarkMode() : theme === "dark",
-      };
+const updateSnapshot = (theme: ThemeValue) => {
+  snapshot = buildSnapshot(theme);
+  notify();
+};
+
+const subscribeExternalChanges = () =>
+  storageService.subscribe(SyncStorageKey.Theme, (newTheme) => {
+    if (newTheme) {
+      updateSnapshot(newTheme);
     }
-    default:
-      return state;
+  });
+
+const subscribe = (listener: () => void) => {
+  listeners.add(listener);
+  return () => listeners.delete(listener);
+};
+
+const getSnapshot = () => snapshot;
+
+const hydrateTheme = async () => {
+  try {
+    const storedTheme = await storageService.getTheme();
+    updateSnapshot(storedTheme ?? getDefaultTheme());
+  } catch (error) {
+    console.error("Failed to hydrate theme", error);
+    updateSnapshot(getDefaultTheme());
   }
-}
+};
+
+void hydrateTheme();
 
 export default function useTheme() {
-  const [{ theme, isDarkMode }, dispatch] = useReducer(
-    themeReducer,
-    initialState
+  const { theme, isDarkMode } = useSyncExternalStore(
+    (listener) => {
+      const unsubscribeInternal = subscribe(listener);
+      const unsubscribeExternal = subscribeExternalChanges();
+      return () => {
+        unsubscribeInternal();
+        unsubscribeExternal();
+      };
+    },
+    getSnapshot,
+    getSnapshot,
   );
-
-  useEffect(() => {
-    (async () => {
-      const storedTheme = await storageService.getTheme();
-      dispatch({
-        type: "INIT_THEME",
-        payload: storedTheme ?? "system",
-      });
-    })();
-  }, []);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -73,7 +91,10 @@ export default function useTheme() {
   }, [isDarkMode]);
 
   const setTheme = useCallback((value: ThemeValue) => {
-    dispatch({ type: "SET_THEME", payload: value });
+    updateSnapshot(value);
+    storageService.setTheme({ theme: value }).catch((error) => {
+      console.error("Failed to persist theme", error);
+    });
   }, []);
 
   return {
