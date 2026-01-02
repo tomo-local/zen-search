@@ -1,11 +1,17 @@
 import { useCallback, useRef, useSyncExternalStore } from "react";
 import { runtimeService } from "@/services/runtime";
-import {
-  DEFAULT_MAX_COUNT,
-  ERROR_CODES,
-  ERROR_MESSAGES,
-} from "../useSearchResults/constants";
 import type { UseSearchResultsParams, UseSearchResultsSnapshot } from "./types";
+
+const MAX_COUNT = 5000;
+const ERROR_CODES = {
+  NETWORK: 1,
+  UNKNOWN: 999,
+} as const;
+
+const ERROR_MESSAGES = {
+  NETWORK: "Network error occurred while fetching search results.",
+  UNKNOWN: "An unknown error occurred while fetching search results.",
+} as const;
 
 type Snapshot = UseSearchResultsSnapshot;
 
@@ -122,7 +128,7 @@ const store = createStore();
 export default function useSearchResultsV2({
   query,
   categories,
-  maxCount = DEFAULT_MAX_COUNT,
+  maxCount = MAX_COUNT,
 }: UseSearchResultsParams): Snapshot {
   const paramsRef = useRef<Params | null>(null);
   const nextParams: Params = { query, categories, maxCount };

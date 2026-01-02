@@ -3,7 +3,13 @@
  */
 
 import type { Kind, Result } from "@/services/result";
-import type { LoadingState, ResultError } from "../useSearchResults/types";
+
+export type LoadingState = "idle" | "loading" | "succeeded" | "failed";
+
+export interface ResultError {
+  message: string;
+  code?: number;
+}
 
 export interface UseSearchResultsParams {
   query?: string;
