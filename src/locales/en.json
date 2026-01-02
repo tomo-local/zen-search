@@ -1,6 +1,6 @@
 {
   "ui": {
-    "loading": "Loading...",
+    "loading": "Searching...",
     "notFound": "Not found...",
     "results": "RESULTS",
     "searchPlaceholder": "Search or Enter URL ..."

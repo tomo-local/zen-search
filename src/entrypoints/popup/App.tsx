@@ -17,7 +17,7 @@ import { useTranslation } from "@/hooks/storage/useTranslation";
 import useControlTab from "@/hooks/useControlTab";
 import useSearch from "@/hooks/useSearch";
 import useSearchKeyboard from "@/hooks/useSearchKeyboard";
-import useSearchResults from "@/hooks/useSearchResults";
+import useSearchResultsV2 from "@/hooks/useSearchResultsV2";
 import useSearchShortcut from "@/hooks/useSearchShortcut";
 import type { Kind, Result } from "@/services/result";
 
@@ -36,7 +36,7 @@ export default function App() {
   } = useSearch();
 
   // 検索結果取得
-  const { results, loading: resultsLoading } = useSearchResults({
+  const { results, status } = useSearchResultsV2({
     query: debouncedQuery,
     categories,
   });
@@ -180,12 +180,13 @@ export default function App() {
         <div className="border-t border-gray-700 border-solid" />
         <ResultList
           ref={listRef}
+          loading={status === "loading"}
           items={results}
           onClick={handleSelect}
           selectedIndex={selectedIndex}
         />
         <div className="border-t border-gray-700 border-solid" />
-        <ResultFooter count={results.length} loading={resultsLoading} />
+        <ResultFooter count={results.length} loading={status === "loading"} />
       </div>
     </Layout>
   );
