@@ -40,7 +40,7 @@ const ResultList: React.FC<ResultListProps> = ({
         selected={index === selectedIndex}
       />
     ));
-  }, [loading, items]);
+  }, [loading, items, onClick, selectedIndex]);
 
   return (
     <div className="pt-3 pb-2 dark:bg-gray-800">
