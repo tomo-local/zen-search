@@ -21,7 +21,7 @@ const Spinner: React.FC<SpinnerProps> = ({ active, size = "md" }) => {
   return (
     <div className="flex justify-center">
       <div
-        className={`rounded-full animate-spin border-blue-500 border-t-transparent ${spinnerClass}`}
+        className={`rounded-full animate-spin border-sky-500 border-t-transparent ${spinnerClass}`}
       />
     </div>
   );
