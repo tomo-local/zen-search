@@ -4,7 +4,7 @@
 
 import type { Kind, Result } from "@/services/result";
 
-export type LoadingState = "idle" | "loading" | "succeeded" | "failed";
+export type LoadingState = "idle" | "loading" | "success" | "error";
 
 export interface ResultError {
   message: string;
