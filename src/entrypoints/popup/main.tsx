@@ -1,5 +1,5 @@
 import React from "react";
-import ReactDOM from "react-dom/client";
+import { createRoot } from "react-dom/client";
 import { contentService } from "@/services/content";
 import App from "./App";
 
@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((message) => {
   }
 });
 
-ReactDOM.createRoot(rootElement).render(
+createRoot(rootElement).render(
   <React.StrictMode>
     <App />
   </React.StrictMode>,
