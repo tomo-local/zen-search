@@ -30,3 +30,6 @@ dist
 
 .env
 .env.*
+
+# Local bin
+~/bin/*

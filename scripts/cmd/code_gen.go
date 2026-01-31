@@ -2,10 +2,10 @@ package cmd
 
 import (
 	"log"
-	fileutil "scripts/pkg/file-operator"
+	fileOperator "scripts/pkg/file-operator"
 	"scripts/pkg/prompt"
-	strutil "scripts/pkg/str-operator"
-	codegen "scripts/tasks/code-gen"
+	stringOperator "scripts/pkg/str-operator"
+	codeGen "scripts/tasks/code-gen"
 
 	"github.com/spf13/cobra"
 )
@@ -76,9 +76,9 @@ func newComponentCommand() *cobra.Command {
 	return cmd
 }
 
-func createCodeGenService() codegen.Service {
-	fileOperator := fileutil.NewFileOperator()
-	stringOperator := strutil.NewStringOperator()
+func createCodeGenService() codeGen.Service {
+	fileOperator := fileOperator.NewFileOperator()
+	stringOperator := stringOperator.NewStringOperator()
 	promptOperator := prompt.NewPromptOperator()
-	return codegen.NewCodeGenService(fileOperator, stringOperator, promptOperator)
+	return codeGen.NewCodeGenService(fileOperator, stringOperator, promptOperator)
 }

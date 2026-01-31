@@ -1,9 +1,9 @@
-package codegen
+package code_gen
 
 import (
-	fileutil "scripts/pkg/file-operator"
+	fileOperator "scripts/pkg/file-operator"
 	"scripts/pkg/prompt"
-	strutil "scripts/pkg/str-operator"
+	stringOperator "scripts/pkg/str-operator"
 )
 
 type Service interface {
@@ -12,12 +12,12 @@ type Service interface {
 }
 
 type codeGenService struct {
-	fileOperator   fileutil.Service
-	stringOperator strutil.Service
+	fileOperator   fileOperator.Service
+	stringOperator stringOperator.Service
 	promptOperator prompt.Service
 }
 
-func NewCodeGenService(fileOperator fileutil.Service, stringOperator strutil.Service, promptOperator prompt.Service) Service {
+func NewCodeGenService(fileOperator fileOperator.Service, stringOperator stringOperator.Service, promptOperator prompt.Service) Service {
 	return &codeGenService{
 		fileOperator:   fileOperator,
 		stringOperator: stringOperator,
