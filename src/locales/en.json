@@ -25,6 +25,15 @@
     "dark": "Dark",
     "system": "System"
   },
+  "viewMode": {
+    "popup": "Popup",
+    "sidepanel": "Side Panel"
+  },
+  "settings": {
+    "title": "Settings",
+    "theme": "Theme",
+    "viewMode": "View Mode"
+  },
   "language": {
     "en": "English",
     "ja": "日本語"

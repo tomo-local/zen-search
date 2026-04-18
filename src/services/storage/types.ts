@@ -4,12 +4,15 @@
 
 export enum SyncStorageKey {
   Theme = "theme",
+  ViewMode = "viewMode",
 }
 
 export type ThemeValue = "light" | "dark" | "system";
+export type ViewModeValue = "popup" | "sidepanel";
 
 export interface SyncStorage {
   [SyncStorageKey.Theme]: ThemeValue;
+  [SyncStorageKey.ViewMode]: ViewModeValue;
 }
 
 // リクエスト型定義

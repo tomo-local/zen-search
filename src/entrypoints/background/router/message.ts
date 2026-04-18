@@ -8,8 +8,14 @@ import {
   type UpdateTabRequest,
 } from "@/services/tab";
 
-const { OPEN_POPUP, CREATE_TAB, UPDATE_TAB, REMOVE_TAB, QUERY_RESULT } =
-  MessageType;
+const {
+  OPEN_POPUP,
+  CREATE_TAB,
+  UPDATE_TAB,
+  REMOVE_TAB,
+  QUERY_RESULT,
+  SWITCH_VIEW_MODE,
+} = MessageType;
 
 function sendResponse(
   type: string,
@@ -21,6 +27,7 @@ function sendResponse(
 
 type Message =
   | { type: "OPEN_POPUP" }
+  | { type: "SWITCH_VIEW_MODE" }
   | CreateTabRequest
   | UpdateTabRequest
   | RemoveTabRequest
@@ -68,6 +75,13 @@ export function routeMessage(
         .catch((error) => {
           console.error("Error handling QUERY_RESULT:", error);
         });
+      return true;
+    }
+
+    case SWITCH_VIEW_MODE: {
+      // ユーザージェスチャートークンが有効なうちに同期的に呼ぶ
+      chrome.action.openPopup().catch(console.error);
+      sendResponse(SWITCH_VIEW_MODE, true, response);
       return true;
     }
 

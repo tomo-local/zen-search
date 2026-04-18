@@ -3,7 +3,12 @@
  * 責任: Chrome storage sync APIの抽象化を担当
  */
 
-import { chromeStorageGet, chromeStorageSet, getDefaultTheme } from "./helper";
+import {
+  chromeStorageGet,
+  chromeStorageSet,
+  getDefaultTheme,
+  getDefaultViewMode,
+} from "./helper";
 import type * as Type from "./types";
 import { SyncStorageKey } from "./types";
 
@@ -21,6 +26,8 @@ export interface StorageService {
   ) => () => void;
   getTheme: () => Promise<Type.ThemeValue>;
   setTheme: (request: Type.SetThemeRequest) => Promise<boolean>;
+  getViewMode: () => Promise<Type.ViewModeValue>;
+  setViewMode: (viewMode: Type.ViewModeValue) => Promise<boolean>;
 }
 
 // サービス実装
@@ -84,6 +91,25 @@ const setTheme = async ({ theme }: Type.SetThemeRequest): Promise<boolean> => {
   }
 };
 
+const getViewMode = async (): Promise<Type.ViewModeValue> => {
+  try {
+    const viewMode = await chromeStorageGet(SyncStorageKey.ViewMode);
+    return viewMode || getDefaultViewMode();
+  } catch (error) {
+    console.error("Failed to get viewMode:", error);
+    return getDefaultViewMode();
+  }
+};
+
+const setViewMode = async (viewMode: Type.ViewModeValue): Promise<boolean> => {
+  try {
+    return await chromeStorageSet(SyncStorageKey.ViewMode, viewMode);
+  } catch (error) {
+    console.error("Failed to set viewMode:", error);
+    throw new Error("表示モードの保存に失敗しました");
+  }
+};
+
 // サービスオブジェクトのエクスポート
 export const storageService: StorageService = {
   get: getStorage,
@@ -91,6 +117,8 @@ export const storageService: StorageService = {
   subscribe: subscribeStorage,
   getTheme,
   setTheme,
+  getViewMode,
+  setViewMode,
 };
 
 // デフォルトエクスポート

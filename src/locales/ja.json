@@ -25,6 +25,15 @@
     "dark": "ダーク",
     "system": "システム"
   },
+  "viewMode": {
+    "popup": "ポップアップ",
+    "sidepanel": "サイドパネル"
+  },
+  "settings": {
+    "title": "設定",
+    "theme": "テーマ",
+    "viewMode": "表示モード"
+  },
   "language": {
     "en": "English",
     "ja": "日本語"
