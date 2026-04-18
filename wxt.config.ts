@@ -5,7 +5,6 @@ export default defineConfig({
   webExt: {
     disabled: true,
   },
-  extensionApi: "chrome",
   modules: ["@wxt-dev/module-react"],
   srcDir: "src",
   outDir: "dist",
