@@ -125,16 +125,18 @@ export default function SearchApp({
   const isSidepanel = variant === "sidepanel";
 
   return (
-    <Layout className={isSidepanel ? "w-full" : "min-w-[700px] max-w-min"}>
+    <Layout
+      className={isSidepanel ? "w-full h-screen" : "min-w-[700px] max-w-min"}
+    >
       <div
         className={clsx(
           layoutClassName.bg,
           layoutClassName.text,
           layoutClassName.p,
-          layoutClassName.space,
+          !isSidepanel && layoutClassName.space,
           !isSidepanel && layoutClassName.border,
           !isSidepanel && layoutClassName.shadow,
-          isSidepanel && "min-h-screen",
+          isSidepanel && "flex flex-col h-full overflow-hidden gap-2",
         )}
       >
         <SearchInput
@@ -186,6 +188,8 @@ export default function SearchApp({
           items={results}
           onClick={handleSelect}
           selectedIndex={selectedIndex}
+          className={isSidepanel ? "flex-1 min-h-0 flex flex-col" : undefined}
+          listClassName={isSidepanel ? "flex-1 overflow-y-auto" : "max-h-56"}
         />
         <div className="border-t border-gray-700 border-solid" />
         <ResultFooter count={results.length} loading={resultsLoading} />
