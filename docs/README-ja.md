@@ -1,31 +1,46 @@
 # Zen Search
 
-Zen Searchは、ブラウザでの検索体験をシンプルかつ効率的にする軽量で直感的な拡張機能です。
-モダンなUIと便利なショートカットを活用して、迅速で効率的な検索を実現します。
+Zen Searchは、[WXT](https://wxt.dev/) + React 19 + TypeScript + Tailwind CSS v4で構築された軽量で直感的なChrome/Firefox拡張機能です。検索ポップアップ（`Cmd+T` / `Ctrl+T`）を開き、タブ、ブックマーク、履歴、ブラウザの候補をひとつの画面から検索できます。
 
 ## 特徴
 
-- **カスタマイズ可能な検索エンジン**: お気に入りの検索エンジンを簡単に切り替え可能。
+- **統合検索**: タブ、ブックマーク、履歴、ブラウザの候補を1つのポップアップで横断検索。
 - **キーボードショートカット**: 矢印キーやEnterキーで結果を操作。
 - **軽量で高速**: 最小限のリソースで動作し、スムーズなパフォーマンスを提供。
-- **モダンなデザイン**: Tailwind CSSを使用した洗練されたレスポンシブUI。
+- **モダンなデザイン**: Tailwind CSS v4を使用した洗練されたレスポンシブUI。
 
-## ディレクトリ構成
+## アーキテクチャ
 
-プロジェクトのディレクトリ構成は以下の通りです:
+### ディレクトリ構成
 
 ```
 src/
-  assets/         # グローバルスタイルと共有アセット
-  components/     # ポップアップやコンテンツスクリプト向けUI部品
-    content/      # コンテンツスクリプト内で描画されるコンポーネント
-    modules/      # レイアウトモジュールや共通UIパターン
-    widgets/      # 検索結果や履歴などのポップアップウィジェット
-  context/        # Reactコンテキストプロバイダー (例: ThemeProvider)
-  entrypoints/    # 拡張機能のエントリーポイント (popup, background, content)
-  hooks/          # キーボード操作や状態管理のためのカスタムフック
+  entrypoints/    # 拡張機能のエントリーポイント
+    popup/        # 検索UI (main.tsxがReactを起動、App.tsxがフックを統合)
+    background/   # サービスワーカー (コマンド・メッセージルーティング)
+  features/       # ドメインごとのFeatureスコープのコンポーネントとフック
+    search/       # 検索状態、結果取得、キーボード操作、ショートカット
+    theme/        # テーマ管理 (useTheme, ThemeProvider)
+    tab/          # タブ関連のコンポーネントとフック
+    bookmark/     # ブックマーク関連のコンポーネント
+    history/      # 履歴関連のコンポーネント
+    suggestion/   # サジェスト関連のコンポーネント
+    action/       # アクションコンポーネント (例: 計算機)
   services/       # ビジネスロジックとChrome拡張API
+    result/       # 結果を並列で集約し、Fuse.jsで統合
+    tab/          # chrome.tabs APIへの問い合わせ
+    bookmark/     # chrome.bookmarks APIへの問い合わせ
+    history/      # chrome.history APIへの問い合わせ
+    suggestion/   # chrome.omnibox / 検索サジェストの問い合わせ
+    action/       # mathjsによる計算機アクション
+    storage/      # chrome.storage.syncのラッパー
+    content/      # chrome.action.openPopupによるポップアップの開閉
+    runtime/      # 型付きメッセージパッシングヘルパー
+  shared/         # 再利用可能なUIプリミティブ (Layout, ButtonItem, SquareIcon)
+  lib/            # ライブラリラッパー (i18n)
+  locales/        # ロケールファイル (en.json, ja.json)
   utils/          # 共有ヘルパーやアルゴリズム関数
+  assets/         # グローバルスタイル
 ```
 
 ## インストール方法
