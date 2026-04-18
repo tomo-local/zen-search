@@ -3,23 +3,23 @@ import MagnifyingGlassIcon from "@heroicons/react/16/solid/MagnifyingGlassIcon";
 import clsx from "clsx";
 import type React from "react";
 import { useCallback } from "react";
-import Badge from "@/components/modules/Badge/Badge";
-import Layout, {
-  commonClassName as layoutClassName,
-} from "@/components/modules/Layout/Layout";
-import SquareBadge from "@/components/modules/SquareBadge/SquareBadge";
-import ResultFooter from "@/components/widgets/ResultFooter/ResultFooter";
-import ResultList from "@/components/widgets/ResultList/ResultList";
+import Badge from "@/features/search/components/Badge/Badge";
+import ResultFooter from "@/features/search/components/ResultFooter/ResultFooter";
+import ResultList from "@/features/search/components/ResultList/ResultList";
 import SearchInput, {
   commonClassName as searchInputClassName,
-} from "@/components/widgets/SearchInput/SearchInput";
-import { useTranslation } from "@/hooks/storage/useTranslation";
-import useControlTab from "@/hooks/useControlTab";
-import useSearch from "@/hooks/useSearch";
-import useSearchKeyboard from "@/hooks/useSearchKeyboard";
-import useSearchResults from "@/hooks/useSearchResults";
-import useSearchShortcut from "@/hooks/useSearchShortcut";
+} from "@/features/search/components/SearchInput/SearchInput";
+import SquareBadge from "@/features/search/components/SquareBadge/SquareBadge";
+import useSearch from "@/features/search/hooks/useSearch";
+import useSearchKeyboard from "@/features/search/hooks/useSearchKeyboard";
+import useSearchResults from "@/features/search/hooks/useSearchResults";
+import useSearchShortcut from "@/features/search/hooks/useSearchShortcut";
+import useControlTab from "@/features/tab/hooks/useControlTab";
 import type { Kind, Result } from "@/services/result";
+import Layout, {
+  commonClassName as layoutClassName,
+} from "@/shared/components/Layout/Layout";
+import { useTranslation } from "@/shared/hooks/useTranslation";
 
 export default function App() {
   const { t } = useTranslation();
