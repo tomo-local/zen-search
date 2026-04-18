@@ -69,6 +69,9 @@ export default function useSearchResults(
   // キャッシュ（Ref使用で再レンダリングを防ぐ）
   const cacheRef = useRef<Map<string, CacheEntry<Result<Kind>[]>>>(new Map());
 
+  // リクエストID（古いレスポンスを無視するため）
+  const requestIdRef = useRef(0);
+
   /**
    * 検索結果を取得（内部関数）
    */
@@ -127,11 +130,13 @@ export default function useSearchResults(
    * 検索を実行
    */
   const executeSearch = useCallback(async () => {
+    const requestId = ++requestIdRef.current;
     setLoadingState("loading");
     setError(null);
 
     try {
       const results = await fetchResults(params.query, params.categories);
+      if (requestId !== requestIdRef.current) return;
       setResults(results);
       setLoadingState("success");
     } catch (err) {
@@ -164,6 +169,7 @@ export default function useSearchResults(
         };
       }
 
+      if (requestId !== requestIdRef.current) return;
       setError(resultError);
       setLoadingState("error");
       console.error("Failed to fetch search results:", err);

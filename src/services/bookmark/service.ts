@@ -16,12 +16,24 @@ export interface BookmarkService {
 }
 
 const queryBookmarks = async ({
-  query: _,
+  query,
+  option,
 }: Type.QueryBookmarksRequest): Promise<Type.Bookmark[]> => {
   try {
-    const response = await chrome.bookmarks.getTree();
+    const count = option?.count;
+    let nodes: chrome.bookmarks.BookmarkTreeNode[];
 
-    const bookmarks = filterValidBookmarks(response).map(convertBookmark);
+    if (query) {
+      nodes = await chrome.bookmarks.search({ query });
+    } else {
+      const tree = await chrome.bookmarks.getTree();
+      nodes = filterValidBookmarks(tree);
+    }
+
+    const bookmarks = nodes
+      .filter((n) => !!n.url)
+      .slice(0, count)
+      .map(convertBookmark);
 
     return bookmarks;
   } catch (error) {
