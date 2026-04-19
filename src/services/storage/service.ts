@@ -8,6 +8,7 @@ import {
   chromeStorageSet,
   getDefaultTheme,
   getDefaultViewMode,
+  isValidViewMode,
 } from "./helper";
 import type * as Type from "./types";
 import { SyncStorageKey } from "./types";
@@ -94,7 +95,7 @@ const setTheme = async ({ theme }: Type.SetThemeRequest): Promise<boolean> => {
 const getViewMode = async (): Promise<Type.ViewModeValue> => {
   try {
     const viewMode = await chromeStorageGet(SyncStorageKey.ViewMode);
-    return viewMode || getDefaultViewMode();
+    return isValidViewMode(viewMode) ? viewMode : getDefaultViewMode();
   } catch (error) {
     console.error("Failed to get viewMode:", error);
     return getDefaultViewMode();

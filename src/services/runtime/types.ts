@@ -26,5 +26,4 @@ export enum MessageType {
 
 export interface SwitchViewModeRequest {
   type: MessageType.SWITCH_VIEW_MODE;
-  viewMode: "popup" | "sidepanel";
 }

@@ -54,13 +54,26 @@ export default function SettingsButton(props: SettingsButtonProps) {
           lastFocusedWindow: true,
         });
         if (tab?.id) {
-          await chrome.sidePanel.open({ tabId: tab.id }).catch(console.error);
+          const opened = await chrome.sidePanel
+            .open({ tabId: tab.id })
+            .then(() => true)
+            .catch((e) => {
+              console.error(e);
+              return false;
+            });
+          if (opened) window.close();
         }
-        window.close();
       } else {
         // background 経由で openPopup を呼ぶ（ユーザージェスチャーが伝播する）
-        chrome.runtime.sendMessage({ type: MessageType.SWITCH_VIEW_MODE }, () =>
-          window.close(),
+        chrome.runtime.sendMessage(
+          { type: MessageType.SWITCH_VIEW_MODE },
+          () => {
+            if (chrome.runtime.lastError) {
+              console.error(chrome.runtime.lastError.message);
+              return;
+            }
+            window.close();
+          },
         );
       }
     },
@@ -81,6 +94,7 @@ export default function SettingsButton(props: SettingsButtonProps) {
   return (
     <Menu>
       <MenuButton
+        aria-label={t("settings.open")}
         className={clsx(
           "flex items-center hover:cursor-pointer hover:bg-gray-400 dark:hover:bg-gray-700 group relative space-x-2 p-1 rounded-md focus:outline-none",
           defaultClassName.bg,

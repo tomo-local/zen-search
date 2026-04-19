@@ -6,7 +6,7 @@ import Squares2X2Icon from "@heroicons/react/16/solid/Squares2X2Icon";
 import SunIcon from "@heroicons/react/16/solid/SunIcon";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
-import { useContext } from "react";
+import { useCallback, useContext } from "react";
 import useViewMode from "@/features/settings/hooks/useViewMode";
 import { ThemeContext } from "@/features/theme/context/ThemeProvider";
 import type { ThemeValue, ViewModeValue } from "@/services/storage/types";
@@ -37,6 +37,22 @@ function OptionsContent() {
   const { t } = useTranslation();
   const { theme, setTheme } = useContext(ThemeContext);
   const { viewMode, setViewMode } = useViewMode();
+
+  const handleViewModeChange = useCallback(
+    async (value: ViewModeValue) => {
+      setViewMode(value);
+      if (value === "sidepanel") {
+        const [tab] = await chrome.tabs.query({
+          active: true,
+          lastFocusedWindow: true,
+        });
+        if (tab?.id) {
+          await chrome.sidePanel.open({ tabId: tab.id }).catch(console.error);
+        }
+      }
+    },
+    [setViewMode],
+  );
 
   const themes: { value: ThemeValue; label: string }[] = [
     { value: "light", label: t("theme.light") },
@@ -85,7 +101,7 @@ function OptionsContent() {
             <button
               key={item.value}
               type="button"
-              onClick={() => setViewMode(item.value)}
+              onClick={() => handleViewModeChange(item.value)}
               className={clsx(
                 "flex items-center w-full px-4 py-3 rounded-lg border-2 transition-colors",
                 viewMode === item.value
