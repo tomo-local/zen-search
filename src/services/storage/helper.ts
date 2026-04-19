@@ -2,7 +2,12 @@
  * Storage Helper - Chrome storage関連のヘルパー関数
  */
 
-import type { SyncStorage, SyncStorageKey, ThemeValue } from "./types";
+import type {
+  SyncStorage,
+  SyncStorageKey,
+  ThemeValue,
+  ViewModeValue,
+} from "./types";
 
 /**
  * Promise化されたchrome.storage.sync.get
@@ -48,6 +53,18 @@ export const getDefaultTheme = (): ThemeValue => "system";
  */
 export const isValidTheme = (value: unknown): value is ThemeValue => {
   return ["light", "dark", "system"].includes(value as string);
+};
+
+/**
+ * デフォルト表示モード値を取得
+ */
+export const getDefaultViewMode = (): ViewModeValue => "popup";
+
+/**
+ * 表示モード値のバリデーション
+ */
+export const isValidViewMode = (value: unknown): value is ViewModeValue => {
+  return ["popup", "sidepanel"].includes(value as string);
 };
 
 /**

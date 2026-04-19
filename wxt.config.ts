@@ -6,6 +6,7 @@ export default defineConfig({
   webExt: {
     disabled: true,
   },
+  browser: "chrome",
   modules: ["@wxt-dev/module-react", "@wxt-dev/auto-icons", "@wxt-dev/i18n/module"],
   vite: () => ({
     plugins: [tailwindcss()],
@@ -18,7 +19,7 @@ export default defineConfig({
     current_locale: "en",
     description: "Search your bookmarks and history",
     version: "1.5.2",
-    permissions: ["tabs", "history", "activeTab", "bookmarks", "storage"],
+    permissions: ["tabs", "history", "activeTab", "bookmarks", "storage", "sidePanel"],
     commands: {
       OPEN_POPUP: {
         suggested_key: {

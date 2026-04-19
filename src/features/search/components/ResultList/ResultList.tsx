@@ -7,6 +7,8 @@ export interface ResultListProps {
   ref: React.Ref<HTMLUListElement>;
   selectedIndex?: number;
   onClick?: (item: Result<Kind>) => void;
+  className?: string;
+  listClassName?: string;
 }
 
 const ResultList: React.FC<ResultListProps> = ({
@@ -14,13 +16,15 @@ const ResultList: React.FC<ResultListProps> = ({
   onClick,
   ref,
   selectedIndex,
+  className,
+  listClassName = "max-h-56",
 }) => {
   const hasItems = items.length > 0;
 
   return (
-    <div className="pt-3 pb-2 dark:bg-gray-800">
+    <div className={`pt-3 pb-2 dark:bg-gray-800 ${className ?? ""}`}>
       <ul
-        className="pr-3 space-y-1 overflow-x-hidden overflow-y-auto max-h-56 snap-y snap-mandatory"
+        className={`pr-3 space-y-1 overflow-x-hidden overflow-y-auto snap-y snap-mandatory ${listClassName}`}
         ref={ref}
       >
         {hasItems ? (

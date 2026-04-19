@@ -21,4 +21,9 @@ export enum MessageType {
   UPDATE_TAB = "UPDATE_TAB",
   REMOVE_TAB = "REMOVE_TAB",
   QUERY_RESULT = "QUERY_RESULT",
+  SWITCH_VIEW_MODE = "SWITCH_VIEW_MODE",
+}
+
+export interface SwitchViewModeRequest {
+  type: MessageType.SWITCH_VIEW_MODE;
 }

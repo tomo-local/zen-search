@@ -1,5 +1,5 @@
 import SearchApp from "@/features/search/components/SearchApp/SearchApp";
 
 export default function App() {
-  return <SearchApp onClose={() => window.close()} />;
+  return <SearchApp variant="sidepanel" />;
 }
