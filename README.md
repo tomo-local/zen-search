@@ -1,5 +1,7 @@
 # Zen Search
 
+[日本語版はこちら](docs/README-ja.md)
+
 Zen Search is a lightweight and intuitive Chrome/Firefox extension built with [WXT](https://wxt.dev/) + React 19 + TypeScript + Tailwind CSS v4. It opens a search popup (`Cmd+T` / `Ctrl+T`) that lets you search tabs, bookmarks, history, and browser suggestions — all from one place.
 
 ## Features
@@ -65,39 +67,7 @@ src/
 
 ## Roadmap
 
-Here's how we're organizing upcoming work based on impact and theme:
-
-### ✅ Shipped
-- [x] Add support for dark mode.
-
-### 🏁 Next Up
-- [ ] Add unit tests for critical components.
-- [ ] Enhance search result filtering options.
-- [ ] Optimize performance for large datasets.
-
-### 🌐 Search Experience
-- [ ] Add support for multiple search engines (Google, Bing, DuckDuckGo, etc.).
-- [ ] Implement multi-language support for the UI.
-
-### ⚙️ Workflow & Automation
-- [ ] Add new Action types:
-  - [ ] Close a window.
-  - [ ] Open a window.
-  - [ ] Open a tab.
-  - [ ] Reload a tab.
-  - [ ] Duplicate a tab.
-  - [ ] Pin or unpin a tab.
-  - [ ] Create a new tab group.
-  - [ ] Add tabs to a group.
-  - [ ] Remove tabs from a group.
-  - [ ] Rename a tab group.
-  - [ ] Close a tab group.
-- [ ] Allow users to define and add custom actions.
-
-### 🛠 Settings & Personalization
-- [ ] Implement a settings page to configure:
-  - [ ] Default search engine.
-  - [ ] Custom actions.
+TBD
 
 ## License
 
