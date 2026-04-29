@@ -10,6 +10,7 @@ pnpm dev:firefox       # Start dev server (Firefox)
 pnpm build             # Build for Chrome
 pnpm build:firefox     # Build for Firefox
 pnpm zip               # Build + zip for Chrome release
+pnpm zip:firefox       # Build + zip for Firefox release
 pnpm compile           # TypeScript type check only
 pnpm check             # Biome lint + format (auto-fix)
 pnpm ci:check          # Biome check (no auto-fix, for CI)
@@ -22,10 +23,12 @@ This is a Chrome/Firefox extension built with [WXT](https://wxt.dev/) + React 19
 
 ### Entrypoints (`src/entrypoints/`)
 
-- **`popup/`** — The search UI rendered as an extension popup. `main.tsx` bootstraps React; `App.tsx` wires all hooks together.
+- **`popup/`** — The search UI rendered as an extension popup. `App.tsx` renders `<SearchApp onClose={() => window.close()} />`.
+- **`sidepanel/`** — Same `SearchApp` rendered as a side panel via `<SearchApp variant="sidepanel" />`. Users can switch between popup and sidepanel via `ViewModeValue` in storage.
+- **`options/`** — Extension options page.
 - **`background/`** — Service worker. Handles keyboard command (`OPEN_POPUP`) and message routing via `router/command.ts` and `router/message.ts`.
 
-The popup is opened via `chrome.action.openPopup()` in `contentService.open()`.
+The popup is opened via `chrome.action.openPopup()` in `contentService.open()`. `SWITCH_VIEW_MODE` must call `chrome.action.openPopup()` **synchronously** (before any await) to preserve the user gesture token — see `router/message.ts`.
 
 ### Service layer (`src/services/`)
 
@@ -49,6 +52,7 @@ Feature-scoped components and hooks, organized by domain:
 - **`search/hooks/useSearchKeyboard`** — Arrow key navigation, Enter/Tab/Escape/Backspace handlers.
 - **`search/hooks/useSearchShortcut`** — Detects if the registered keyboard shortcut was pressed.
 - **`theme/hooks/useTheme`** — Reads/writes theme from storage; syncs across tabs via `chrome.storage.onChanged`. Uses `useSyncExternalStore`.
+- **`settings/hooks/useViewMode`** — Reads/writes `viewMode` (`"popup"` | `"sidepanel"`) from storage. Same `useSyncExternalStore` pattern as `useTheme`.
 
 ### Shared (`src/shared/`)
 
@@ -56,6 +60,8 @@ Feature-scoped components and hooks, organized by domain:
 - `ButtonItem`, `SquareIcon` — Reusable UI primitives
 
 ### Storage pattern
+
+Current persisted keys: `theme` (`ThemeValue`) and `viewMode` (`ViewModeValue`).
 
 To add a new persisted setting:
 1. Add a key to `SyncStorageKey` enum in `src/services/storage/types.ts`
