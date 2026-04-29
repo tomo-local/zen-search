@@ -13,7 +13,6 @@
   --accent-hover: #9482ff;
   --accent-subtle: rgba(124, 106, 247, 0.12);
   --chrome-color: #4285f4;
-  --firefox-color: #ff6611;
   --radius: 12px;
   --radius-sm: 8px;
   --max-width: 960px;
@@ -138,7 +137,6 @@ nav {
 .btn:hover { opacity: 0.88; transform: translateY(-1px); }
 .btn:active { transform: translateY(0); }
 .btn-chrome { background: var(--chrome-color); color: #fff; }
-.btn-firefox { background: var(--firefox-color); color: #fff; }
 .btn-outline {
   background: transparent;
   color: var(--text-primary);

@@ -22,7 +22,6 @@ body:
       label: Browser
       options:
         - Chrome
-        - Firefox
         - Other (please specify in additional context)
     validations:
       required: true
