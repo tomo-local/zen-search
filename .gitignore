@@ -36,3 +36,6 @@ dist
 
 # Analysis outputs (local only)
 .analysis/
+
+# Local planning documents
+.plan/
