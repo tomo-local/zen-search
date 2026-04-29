@@ -10,11 +10,11 @@ import SearchInput, {
   commonClassName as searchInputClassName,
 } from "@/features/search/components/SearchInput/SearchInput";
 import SquareBadge from "@/features/search/components/SquareBadge/SquareBadge";
+import useControlTab from "@/features/search/hooks/useControlTab";
 import useSearch from "@/features/search/hooks/useSearch";
 import useSearchKeyboard from "@/features/search/hooks/useSearchKeyboard";
 import useSearchResults from "@/features/search/hooks/useSearchResults";
 import useSearchShortcut from "@/features/search/hooks/useSearchShortcut";
-import useControlTab from "@/features/tab/hooks/useControlTab";
 import type { Kind, Result } from "@/services/result";
 import Layout, {
   commonClassName as layoutClassName,

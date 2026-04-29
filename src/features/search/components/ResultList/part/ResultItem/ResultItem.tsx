@@ -1,9 +1,9 @@
-import CalculationItem from "@/features/action/components/CalculationItem/CalculationItem";
-import BookmarkItem from "@/features/bookmark/components/BookmarkItem/BookmarkItem";
-import HistoryItem from "@/features/history/components/HistoryItem/HistoryItem";
-import SuggestionItem from "@/features/suggestion/components/SuggestionItem/SuggestionItem";
-import TabItem from "@/features/tab/components/TabItem/TabItem";
 import type { Kind, Result } from "@/services/result";
+import BookmarkItem from "../BookmarkItem/BookmarkItem";
+import CalculationItem from "../CalculationItem/CalculationItem";
+import HistoryItem from "../HistoryItem/HistoryItem";
+import SuggestionItem from "../SuggestionItem/SuggestionItem";
+import TabItem from "../TabItem/TabItem";
 
 export type ResultItemProps<T extends Kind> = {
   item: Result<T>;
