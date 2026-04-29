@@ -40,3 +40,6 @@ ci:
       - any-glob-to-any-file:
           - ".github/workflows/**"
           - ".gemini/**"
+website:
+  - changed-files:
+      - any-glob-to-any-file: "website/**"

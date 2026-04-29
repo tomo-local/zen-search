@@ -1,0 +1,57 @@
+name: Support / Question
+description: Ask a question or get help using the extension.
+labels: ["support"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Need help? Fill out the form below and we'll do our best to assist you.
+
+  - type: input
+    id: version
+    attributes:
+      label: Extension Version
+      description: Find this in your browser's extension management page.
+      placeholder: e.g. 1.6.0
+    validations:
+      required: true
+
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options:
+        - Chrome
+        - Other (please specify in additional context)
+    validations:
+      required: true
+
+  - type: input
+    id: os
+    attributes:
+      label: Operating System
+      placeholder: e.g. macOS 14.4, Windows 11, Ubuntu 22.04
+    validations:
+      required: true
+
+  - type: textarea
+    id: goal
+    attributes:
+      label: What are you trying to do?
+      description: Describe what you want to accomplish with the extension.
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What happened?
+      description: Describe what actually happened or what you don't understand.
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Additional Context
+      description: Screenshots, error messages, or anything else that might help.
