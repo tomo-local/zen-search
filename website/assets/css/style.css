@@ -11,7 +11,7 @@
   --text-secondary: #8a8a9e;
   --accent: #7c6af7;
   --accent-hover: #9482ff;
-  --accent-subtle: rgba(124, 106, 247, 0.12);
+  --accent-subtle: color-mix(in srgb, var(--accent), transparent 88%);
   --chrome-color: #4285f4;
   --radius: 12px;
   --radius-sm: 8px;
@@ -21,7 +21,9 @@
 
 /* ── Reset ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: no-preference) {
+  html { scroll-behavior: smooth; }
+}
 body {
   font-family: var(--font);
   background: var(--bg);
@@ -48,7 +50,7 @@ nav {
   align-items: center;
   justify-content: space-between;
   padding: 16px 24px;
-  background: rgba(10, 10, 11, 0.85);
+  background: color-mix(in srgb, var(--bg), transparent 15%);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
   max-width: 100%;
@@ -235,7 +237,7 @@ section h2 {
   color: var(--accent);
   padding: 6px 12px;
   border-radius: 6px;
-  border: 1px solid rgba(124, 106, 247, 0.25);
+  border: 1px solid color-mix(in srgb, var(--accent), transparent 75%);
   white-space: nowrap;
 }
 .shortcut p { font-size: 0.875rem; color: var(--text-secondary); }
