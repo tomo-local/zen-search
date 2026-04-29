@@ -22,3 +22,4 @@ pnpm build     # Build for Chrome
 
 @.claude/rules/readme-sync.md
 @.claude/rules/code-generation-service.md
+@.claude/rules/ui-architecture.md
