@@ -25,7 +25,6 @@ This is a Chrome/Firefox extension built with [WXT](https://wxt.dev/) + React 19
 
 - **`popup/`** — The search UI rendered as an extension popup. `App.tsx` renders `<SearchApp onClose={() => window.close()} />`.
 - **`sidepanel/`** — Same `SearchApp` rendered as a side panel via `<SearchApp variant="sidepanel" />`. Users can switch between popup and sidepanel via `ViewModeValue` in storage.
-- **`options/`** — Extension options page.
 - **`background/`** — Service worker. Handles keyboard command (`OPEN_POPUP`) and message routing via `router/command.ts` and `router/message.ts`.
 
 The popup is opened via `chrome.action.openPopup()` in `contentService.open()`. `SWITCH_VIEW_MODE` must call `chrome.action.openPopup()` **synchronously** (before any await) to preserve the user gesture token — see `router/message.ts`.
