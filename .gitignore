@@ -33,3 +33,6 @@ dist
 
 # Local bin
 ~/bin/*
+
+# Analysis outputs (local only)
+.analysis/
