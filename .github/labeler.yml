@@ -3,15 +3,19 @@ doc:
       - any-glob-to-any-file: "docs/**"
 popup:
   - changed-files:
-      - any-glob-to-any-file: "src/entrypoints/popup/**"
+      - any-glob-to-any-file:
+          - "src/entrypoints/popup/**"
+          - "src/entrypoints/sidepanel/**"
 components:
   - changed-files:
       - any-glob-to-any-file:
-          - "src/components/**"
-          - "src/context/**"
+          - "src/features/*/components/**"
+          - "src/shared/components/**"
 hooks:
   - changed-files:
-      - any-glob-to-any-file: "src/hooks/**"
+      - any-glob-to-any-file:
+          - "src/features/*/hooks/**"
+          - "src/shared/hooks/**"
 backend:
   - changed-files:
       - any-glob-to-any-file:
@@ -22,13 +26,15 @@ service:
           - "src/services/**"
 utilities:
   - changed-files:
-      - any-glob-to-any-file: "src/utils/**"
+      - any-glob-to-any-file:
+          - "src/utils/**"
+          - "src/lib/**"
+i18n:
+  - changed-files:
+      - any-glob-to-any-file: "src/locales/**"
 scripts:
   - changed-files:
       - any-glob-to-any-file: "scripts/**"
-templates:
-  - changed-files:
-      - any-glob-to-any-file: "src/templates/**"
 ci:
   - changed-files:
       - any-glob-to-any-file:
