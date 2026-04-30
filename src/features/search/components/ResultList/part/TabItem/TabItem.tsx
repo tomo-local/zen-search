@@ -48,8 +48,8 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
 
   const RightContent = useMemo(
     () => (
-      <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>
+      <div className="flex items-center gap-1.5">
+        <span className={defaultClassName.actionLabel}>
           {t("actions.switchToTab")}
         </span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
@@ -77,11 +77,8 @@ const TabItem: React.FC<TabItemProps> = ({ item, onClick, selected }) => {
       LeftContent={LeftIcon}
       RightContent={RightContent}
     >
-      <div
-        id={item.data.id?.toString()}
-        className="relative flex flex-col items-center justify-center max-w-fit"
-      >
-        <div className="text-sm truncate max-w-[430px] md:max-w-md whitespace-nowrap">
+      <div id={item.data.id?.toString()} className="min-w-0 w-full">
+        <div className="text-sm truncate whitespace-nowrap">
           {item.data.title}
         </div>
       </div>

@@ -31,7 +31,6 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
   item,
 }) => {
   const { t } = useTranslation();
-
   const LeftIcon = useMemo(
     () => (
       <SquareIcon>
@@ -59,8 +58,10 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
 
   const RightContent = useMemo(
     () => (
-      <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>{t("actions.openTab")}</span>
+      <div className="flex items-center gap-1.5">
+        <span className={defaultClassName.actionLabel}>
+          {t("actions.openTab")}
+        </span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
           <PlusIcon
             className={clsx(
@@ -86,11 +87,8 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
         defaultClassName.hover,
       )}
     >
-      <div
-        id={item.data.id}
-        className="relative flex flex-col items-center justify-center max-w-fit"
-      >
-        <div className="text-sm truncate max-w-[450px] md:max-w-md whitespace-nowrap">
+      <div id={item.data.id} className="min-w-0 w-full">
+        <div className="text-sm truncate whitespace-nowrap">
           {item.data.title || item.data.url}
         </div>
       </div>

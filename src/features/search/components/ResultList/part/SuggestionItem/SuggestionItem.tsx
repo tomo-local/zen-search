@@ -43,8 +43,10 @@ const SuggestionItem: React.FC<SuggestionItemProps> = ({
 
   const RightContent = useMemo(
     () => (
-      <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>{t("actions.openTab")}</span>
+      <div className="flex items-center gap-1.5">
+        <span className={defaultClassName.actionLabel}>
+          {t("actions.openTab")}
+        </span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
           <PlusIcon
             className={clsx(
@@ -70,8 +72,8 @@ const SuggestionItem: React.FC<SuggestionItemProps> = ({
       LeftContent={LeftIcon}
       RightContent={RightContent}
     >
-      <div className="relative flex flex-col items-center justify-center max-w-fit">
-        <div className="text-sm truncate max-w-[450px] md:max-w-md whitespace-nowrap">
+      <div className="min-w-0 w-full">
+        <div className="text-sm truncate whitespace-nowrap">
           {item.data.title}
         </div>
       </div>
