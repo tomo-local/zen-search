@@ -33,24 +33,45 @@ type RouterMessage =
   | ({ type: MessageType.REMOVE_TAB } & RemoveTabRequest)
   | ({ type: MessageType.QUERY_RESULT } & QueryResultsRequest);
 
-const HANDLED_TYPES = new Set<string>([
-  MessageType.OPEN_POPUP,
-  MessageType.SWITCH_VIEW_MODE,
-  MessageType.CREATE_TAB,
-  MessageType.UPDATE_TAB,
-  MessageType.REMOVE_TAB,
-  MessageType.QUERY_RESULT,
-]);
-
 function isRouterMessage(msg: unknown): msg is RouterMessage {
-  return (
-    typeof msg === "object" &&
-    msg !== null &&
-    "type" in msg &&
-    HANDLED_TYPES.has((msg as { type: unknown }).type as string)
-  );
+  if (typeof msg !== "object" || msg === null || !("type" in msg)) return false;
+  const { type } = msg as { type: unknown };
+  switch (type) {
+    case MessageType.OPEN_POPUP:
+    case MessageType.SWITCH_VIEW_MODE:
+      return true;
+    case MessageType.CREATE_TAB:
+      return "url" in msg && typeof (msg as { url: unknown }).url === "string";
+    case MessageType.UPDATE_TAB:
+      return (
+        "tabId" in msg &&
+        typeof (msg as { tabId: unknown }).tabId === "number" &&
+        "windowId" in msg &&
+        typeof (msg as { windowId: unknown }).windowId === "number"
+      );
+    case MessageType.REMOVE_TAB:
+      return (
+        "tabId" in msg && typeof (msg as { tabId: unknown }).tabId === "number"
+      );
+    case MessageType.QUERY_RESULT:
+      return (
+        "filters" in msg &&
+        typeof (msg as { filters: unknown }).filters === "object" &&
+        (msg as { filters: unknown }).filters !== null
+      );
+    default:
+      return false;
+  }
 }
 
+/**
+ * 受信したメッセージを解析し、適切なサービスへルーティングします。
+ *
+ * @param message 受信したメッセージオブジェクト
+ * @param _sender メッセージの送信元情報
+ * @param response レスポンスを返却するためのコールバック関数
+ * @returns メッセージが正常に処理された場合は true、それ以外は false
+ */
 export function routeMessage(
   message: unknown,
   _sender: chrome.runtime.MessageSender,
