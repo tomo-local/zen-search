@@ -12,6 +12,38 @@ import type {
 import { RuntimeServiceError } from "./error";
 import { MessageType, type RuntimeResponse } from "./types";
 
+/**
+ * MV3 Service Worker が停止中に sendMessage すると
+ * "Could not establish connection. Receiving end does not exist." が発生する。
+ * この失敗自体が SW を起動するトリガーになるため、
+ * 起動完了を待ってから 1 回だけリトライする。
+ */
+const SW_RESTART_DELAY_MS = 500;
+
+function isConnectionError(error: unknown): boolean {
+  return (
+    error instanceof Error &&
+    (error.message.includes("Could not establish connection") ||
+      error.message.includes("Receiving end does not exist"))
+  );
+}
+
+async function sendRuntimeMessage<T>(message: object): Promise<T> {
+  try {
+    return (await chrome.runtime.sendMessage(message)) as T;
+  } catch (error) {
+    if (isConnectionError(error)) {
+      // SW が停止していた場合、上記の sendMessage が起動トリガーになる。
+      // 初期化完了を待ってからリトライする。
+      await new Promise<void>((resolve) =>
+        setTimeout(resolve, SW_RESTART_DELAY_MS),
+      );
+      return (await chrome.runtime.sendMessage(message)) as T;
+    }
+    throw error;
+  }
+}
+
 export interface RuntimeService {
   createTab: (request: CreateTabRequest) => Promise<void>;
   updateTab: (request: UpdateTabRequest) => Promise<void>;
@@ -23,7 +55,7 @@ export interface RuntimeService {
 
 const createTab = async ({ url }: CreateTabRequest): Promise<void> => {
   try {
-    await chrome.runtime.sendMessage({
+    await sendRuntimeMessage({
       type: MessageType.CREATE_TAB,
       url,
     });
@@ -45,7 +77,7 @@ const updateTab = async ({
   windowId,
 }: UpdateTabRequest): Promise<void> => {
   try {
-    await chrome.runtime.sendMessage({
+    await sendRuntimeMessage({
       type: MessageType.UPDATE_TAB,
       tabId,
       windowId,
@@ -65,7 +97,7 @@ const updateTab = async ({
 
 const removeTab = async ({ tabId }: RemoveTabRequest): Promise<void> => {
   try {
-    await chrome.runtime.sendMessage({
+    await sendRuntimeMessage({
       type: MessageType.REMOVE_TAB,
       tabId,
     });
@@ -86,10 +118,10 @@ const queryResults = async ({
   filters,
 }: QueryResultsRequest): Promise<Result<Kind>[]> => {
   try {
-    const response = (await chrome.runtime.sendMessage({
+    const response = await sendRuntimeMessage<RuntimeResponse<Result<Kind>[]>>({
       type: MessageType.QUERY_RESULT,
       filters,
-    })) as RuntimeResponse<Result<Kind>[]>;
+    });
 
     return response.result;
   } catch (error) {
@@ -107,7 +139,7 @@ const queryResults = async ({
 
 const openContent = async (): Promise<void> => {
   try {
-    await chrome.runtime.sendMessage({ type: MessageType.OPEN_POPUP });
+    await sendRuntimeMessage({ type: MessageType.OPEN_POPUP });
   } catch (error) {
     console.error(`Failed to open Content:`, error);
     // WARN: 処理が失敗した場合はPopup のサービスを表示する
@@ -118,7 +150,7 @@ const openContent = async (): Promise<void> => {
 
 const closeContent = async (): Promise<void> => {
   try {
-    await chrome.runtime.sendMessage({ type: MessageType.CLOSE_POPUP });
+    await sendRuntimeMessage({ type: MessageType.CLOSE_POPUP });
   } catch (error) {
     console.error(`Failed to close Content:`, error);
     // WARN: 処理が失敗した場合は Popup のサービスを表示する
