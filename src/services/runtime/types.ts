@@ -16,6 +16,7 @@ export interface QueryTabsRequest {
 
 export enum MessageType {
   CLOSE_POPUP = "CLOSE_POPUP",
+  CLOSE_SIDEPANEL = "CLOSE_SIDEPANEL",
   OPEN_POPUP = "OPEN_POPUP",
   CREATE_TAB = "CREATE_TAB",
   UPDATE_TAB = "UPDATE_TAB",
