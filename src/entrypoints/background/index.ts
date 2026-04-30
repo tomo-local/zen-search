@@ -26,13 +26,17 @@ export default defineBackground(() => {
     updateViewMode(viewMode ?? "popup");
   });
 
-  // サイドパネルの開閉状態をポート接続で追跡する
+  // ポート接続の処理:
+  // - "sidepanel": サイドパネルの開閉状態を追跡する
+  // - "keepalive": ポップアップからの SW 生存維持用（接続を受け入れるだけでよい）
+  // いずれのポートも接続が続く限り MV3 Service Worker を生存させる
   chrome.runtime.onConnect.addListener((port) => {
-    if (port.name !== "sidepanel") return;
-    sidePanelPort = port;
-    port.onDisconnect.addListener(() => {
-      sidePanelPort = null;
-    });
+    if (port.name === "sidepanel") {
+      sidePanelPort = port;
+      port.onDisconnect.addListener(() => {
+        sidePanelPort = null;
+      });
+    }
   });
 
   /**

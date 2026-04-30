@@ -1,14 +1,12 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { MessageType } from "@/services/runtime/types";
+import { MessageType, runtimeService } from "@/services/runtime";
 import App from "./App";
 
-// バックグラウンドにサイドパネルの開閉状態を通知するためのポート接続
-// ポート切断 = サイドパネルが閉じられたことをバックグラウンドが検知できる
-const port = chrome.runtime.connect({ name: "sidepanel" });
-
-port.onMessage.addListener((message) => {
-  if (message.type === MessageType.CLOSE_SIDEPANEL) {
+// バックグラウンドにサイドパネルの開閉状態を通知しつつ、
+// MV3 Service Worker のアイドル停止を防ぐ永続ポート接続を確立する
+runtimeService.connectPort("sidepanel", (message) => {
+  if ((message as { type: string }).type === MessageType.CLOSE_SIDEPANEL) {
     window.close();
   }
 });
