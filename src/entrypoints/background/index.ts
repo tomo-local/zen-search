@@ -6,6 +6,10 @@ import { routeCommand, routeMessage } from "./router";
 // await の前に呼び出せるよう viewMode をキャッシュしておく
 let cachedViewMode: ViewModeValue = "popup";
 
+// サイドパネルの開閉状態をポート接続で追跡する
+// ポートが存在する = サイドパネルが開いている
+let sidePanelPort: chrome.runtime.Port | null = null;
+
 export default defineBackground(() => {
   const updateViewMode = (viewMode: ViewModeValue) => {
     cachedViewMode = viewMode;
@@ -22,11 +26,20 @@ export default defineBackground(() => {
     updateViewMode(viewMode ?? "popup");
   });
 
+  // サイドパネルの開閉状態をポート接続で追跡する
+  chrome.runtime.onConnect.addListener((port) => {
+    if (port.name !== "sidepanel") return;
+    sidePanelPort = port;
+    port.onDisconnect.addListener(() => {
+      sidePanelPort = null;
+    });
+  });
+
   /**
    * @description コマンドのルーティング
    */
   chrome.commands.onCommand.addListener((command, tab) => {
-    routeCommand(command, tab, cachedViewMode);
+    routeCommand(command, tab, cachedViewMode, sidePanelPort);
   });
 
   /**
