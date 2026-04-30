@@ -9,6 +9,7 @@ import type {
   RemoveTabRequest,
   UpdateTabRequest,
 } from "@/services/tab/types";
+import { KEEPALIVE_INTERVAL_MS } from "./constants";
 import { RuntimeServiceError } from "./error";
 import { MessageType, type RuntimeResponse } from "./types";
 
@@ -28,9 +29,6 @@ export interface RuntimeService {
    */
   connectPort: (name: string, onMessage?: (message: unknown) => void) => void;
 }
-
-// SW の30秒アイドルタイマーをリセットするための ping 間隔
-const KEEPALIVE_INTERVAL_MS = 25000;
 
 function connectPort(
   name: string,
