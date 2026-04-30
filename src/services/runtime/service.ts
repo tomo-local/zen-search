@@ -19,6 +19,37 @@ export interface RuntimeService {
   queryResults: (request: QueryResultsRequest) => Promise<Result<Kind>[]>;
   openContent: () => Promise<void>;
   closeContent: () => Promise<void>;
+  /**
+   * MV3 Service Worker のアイドル停止を防ぐための永続ポート接続を確立する。
+   * 接続が切断された場合（SW 強制終了時）は自動的に再接続する。
+   *
+   * @param name - ポート名（background の onConnect で識別される）
+   * @param onMessage - ポート経由で受信したメッセージのハンドラ（省略可）
+   */
+  connectPort: (name: string, onMessage?: (message: unknown) => void) => void;
+}
+
+// SW の30秒アイドルタイマーをリセットするための ping 間隔
+const KEEPALIVE_INTERVAL_MS = 25000;
+
+function connectPort(
+  name: string,
+  onMessage?: (message: unknown) => void,
+): void {
+  const port = chrome.runtime.connect({ name });
+  const interval = setInterval(
+    () => port.postMessage({ type: "PING" }),
+    KEEPALIVE_INTERVAL_MS,
+  );
+
+  if (onMessage) {
+    port.onMessage.addListener(onMessage);
+  }
+
+  port.onDisconnect.addListener(() => {
+    clearInterval(interval);
+    connectPort(name, onMessage);
+  });
 }
 
 const createTab = async ({ url }: CreateTabRequest): Promise<void> => {
@@ -134,6 +165,7 @@ export const createRuntimeService = (): RuntimeService => ({
   queryResults,
   openContent,
   closeContent,
+  connectPort,
 });
 
 export const runtimeService = createRuntimeService();
