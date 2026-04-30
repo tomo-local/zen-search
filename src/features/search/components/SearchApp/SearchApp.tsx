@@ -125,9 +125,7 @@ export default function SearchApp({
   const isSidepanel = variant === "sidepanel";
 
   return (
-    <Layout
-      className={isSidepanel ? "w-full h-screen" : "min-w-[700px] max-w-min"}
-    >
+    <Layout className={isSidepanel ? "w-full h-screen" : "w-[700px]"}>
       <div
         className={clsx(
           layoutClassName.bg,

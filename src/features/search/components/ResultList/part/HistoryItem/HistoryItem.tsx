@@ -26,7 +26,6 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
   item,
 }) => {
   const { t } = useTranslation();
-
   const LeftIcon = useMemo(
     () => (
       <SquareIcon>
@@ -54,8 +53,10 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
 
   const RightContent = useMemo(
     () => (
-      <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>{t("actions.openTab")}</span>
+      <div className="flex items-center gap-1.5">
+        <span className="text-xs opacity-50 whitespace-nowrap">
+          {t("actions.openTab")}
+        </span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
           <PlusIcon
             className={clsx(
@@ -81,11 +82,8 @@ const HistoryItem: React.FC<HistoryItemProps> = ({
       LeftContent={LeftIcon}
       RightContent={RightContent}
     >
-      <div
-        id={item.data.id}
-        className="relative flex flex-col items-center justify-center max-w-fit"
-      >
-        <div className="text-sm truncate md:max-w-md whitespace-nowrap max-w-[450px]">
+      <div id={item.data.id} className="min-w-0 w-full">
+        <div className="text-sm truncate whitespace-nowrap">
           {item.data.title}
         </div>
       </div>

@@ -31,7 +31,6 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
   onClick,
 }) => {
   const { t } = useTranslation();
-
   const LeftIcon = useMemo(
     () => (
       <SquareIcon>
@@ -48,8 +47,10 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
 
   const RightIcon = useMemo(
     () => (
-      <div className="flex items-center space-x-2">
-        <span className={defaultClassName.text}>{t("actions.openResult")}</span>
+      <div className="flex items-center gap-1.5">
+        <span className="text-xs opacity-50 whitespace-nowrap">
+          {t("actions.openResult")}
+        </span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
           <PlusIcon
             className={clsx(
@@ -75,10 +76,12 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
         defaultClassName.hover,
       )}
     >
-      <div className="flex flex-row items-center space-x-2">
-        <div className="text-md">{item.data.expression}</div>
-        <div className="text-md">=</div>
-        <div className="text-lg">{item.data.result}</div>
+      <div className="flex w-full min-w-0 items-center gap-2 overflow-hidden">
+        <div className="min-w-0 flex-1 truncate text-md">
+          {item.data.expression}
+        </div>
+        <div className="text-md whitespace-nowrap">=</div>
+        <div className="text-lg whitespace-nowrap">{item.data.result}</div>
       </div>
     </ButtonItem>
   );

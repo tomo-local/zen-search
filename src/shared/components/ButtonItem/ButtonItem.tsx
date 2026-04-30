@@ -43,9 +43,9 @@ const ButtonItem: React.FC<ButtonItemProps> = (props) => {
         {props.LeftContent && (
           <div className="flex-none">{props.LeftContent}</div>
         )}
-        <div className="flex-1">{props.children}</div>
+        <div className="flex-1 min-w-0">{props.children}</div>
         {props.RightContent && (
-          <div className="flex-none">{props.RightContent}</div>
+          <div className="flex-none ml-3">{props.RightContent}</div>
         )}
       </button>
     </li>
