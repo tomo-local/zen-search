@@ -25,40 +25,60 @@ function sendResponse(
   response({ type, result });
 }
 
-type Message =
-  | { type: "OPEN_POPUP" }
-  | { type: "SWITCH_VIEW_MODE" }
-  | CreateTabRequest
-  | UpdateTabRequest
-  | RemoveTabRequest
-  | QueryResultsRequest;
+type RouterMessage =
+  | { type: MessageType.OPEN_POPUP }
+  | { type: MessageType.SWITCH_VIEW_MODE }
+  | ({ type: MessageType.CREATE_TAB } & CreateTabRequest)
+  | ({ type: MessageType.UPDATE_TAB } & UpdateTabRequest)
+  | ({ type: MessageType.REMOVE_TAB } & RemoveTabRequest)
+  | ({ type: MessageType.QUERY_RESULT } & QueryResultsRequest);
+
+const HANDLED_TYPES = new Set<string>([
+  MessageType.OPEN_POPUP,
+  MessageType.SWITCH_VIEW_MODE,
+  MessageType.CREATE_TAB,
+  MessageType.UPDATE_TAB,
+  MessageType.REMOVE_TAB,
+  MessageType.QUERY_RESULT,
+]);
+
+function isRouterMessage(msg: unknown): msg is RouterMessage {
+  return (
+    typeof msg === "object" &&
+    msg !== null &&
+    "type" in msg &&
+    HANDLED_TYPES.has((msg as { type: unknown }).type as string)
+  );
+}
 
 export function routeMessage(
-  message: { type: MessageType } & Message,
+  message: unknown,
   _sender: chrome.runtime.MessageSender,
   response: (res?: object) => void,
 ): boolean {
+  if (!isRouterMessage(message)) return false;
+
   switch (message.type) {
     case OPEN_POPUP:
       contentService.openTabs(contentService.open({}));
       return true;
 
     case CREATE_TAB: {
-      const { url } = message as CreateTabRequest;
+      const { url } = message;
       tabService.create({ url }).then(() => {
         sendResponse(CREATE_TAB, true, response);
       });
       return true;
     }
     case UPDATE_TAB: {
-      const { tabId, windowId } = message as UpdateTabRequest;
+      const { tabId, windowId } = message;
       tabService.update({ tabId, windowId }).then(() => {
         sendResponse(UPDATE_TAB, true, response);
       });
       return true;
     }
     case REMOVE_TAB: {
-      const { tabId } = message as RemoveTabRequest;
+      const { tabId } = message;
       tabService.remove({ tabId }).then(() => {
         sendResponse(REMOVE_TAB, true, response);
       });
@@ -66,7 +86,7 @@ export function routeMessage(
     }
 
     case QUERY_RESULT: {
-      const { filters } = message as QueryResultsRequest;
+      const { filters } = message;
       resultService
         .query({ filters })
         .then((results) => {
@@ -85,8 +105,9 @@ export function routeMessage(
       return true;
     }
 
-    default:
-      // 未対応メッセージ
+    default: {
+      const _exhaustive: never = message;
       return false;
+    }
   }
 }
