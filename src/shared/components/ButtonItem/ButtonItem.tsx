@@ -24,6 +24,7 @@ export const defaultClassName = {
     size: "size-5",
   },
   text: "dark:text-gray-300 text-xs font-medium",
+  actionLabel: "text-xs opacity-50 whitespace-nowrap",
 };
 
 const ButtonItem: React.FC<ButtonItemProps> = (props) => {

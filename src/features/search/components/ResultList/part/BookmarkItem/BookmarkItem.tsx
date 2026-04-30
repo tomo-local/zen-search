@@ -59,7 +59,7 @@ const BookmarkItem: React.FC<BookmarkItemProps> = ({
   const RightContent = useMemo(
     () => (
       <div className="flex items-center gap-1.5">
-        <span className="text-xs opacity-50 whitespace-nowrap">
+        <span className={defaultClassName.actionLabel}>
           {t("actions.openTab")}
         </span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>

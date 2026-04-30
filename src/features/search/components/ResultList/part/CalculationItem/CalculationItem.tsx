@@ -48,7 +48,7 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
   const RightIcon = useMemo(
     () => (
       <div className="flex items-center gap-1.5">
-        <span className="text-xs opacity-50 whitespace-nowrap">
+        <span className={defaultClassName.actionLabel}>
           {t("actions.openResult")}
         </span>
         <SquareIcon className={clsx(selected && defaultClassName.icon.bg)}>
@@ -77,11 +77,11 @@ const CalculationItem: React.FC<CalculationItemProps> = ({
       )}
     >
       <div className="flex w-full min-w-0 items-center gap-2 overflow-hidden">
-        <div className="min-w-0 flex-1 truncate text-md">
+        <div className="min-w-0 flex-1 truncate text-sm">
           {item.data.expression}
         </div>
-        <div className="text-md whitespace-nowrap">=</div>
-        <div className="text-lg whitespace-nowrap">{item.data.result}</div>
+        <div className="text-sm whitespace-nowrap">=</div>
+        <div className="text-base whitespace-nowrap">{item.data.result}</div>
       </div>
     </ButtonItem>
   );
