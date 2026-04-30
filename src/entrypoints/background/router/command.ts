@@ -2,16 +2,23 @@ import { contentService } from "@/services/content";
 import { MessageType } from "@/services/runtime/types";
 import type { ViewModeValue } from "@/services/storage/types";
 
+/**
+ * コマンドに基づいて適切なアクション（ポップアップまたはサイドパネル）を呼び出します。
+ *
+ * @param command コマンド名
+ * @param tab 実行時のタブ情報（コンテキストによっては undefined になる場合あり）
+ * @param viewMode 現在の表示モード
+ */
 export const routeCommand = (
   command: string,
-  tab: chrome.tabs.Tab,
+  tab: chrome.tabs.Tab | undefined,
   viewMode: ViewModeValue,
 ) => {
   switch (command) {
     case MessageType.OPEN_POPUP: {
       // chrome.sidePanel.open() はユーザージェスチャートークンが必要なため、
       // await より前に同期的に呼び出す
-      if (viewMode === "sidepanel" && tab.id) {
+      if (viewMode === "sidepanel" && tab?.id !== undefined) {
         chrome.sidePanel.open({ tabId: tab.id }).catch(console.error);
       } else {
         contentService.open({}).then((res) => {

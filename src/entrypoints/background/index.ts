@@ -7,21 +7,19 @@ import { routeCommand, routeMessage } from "./router";
 let cachedViewMode: ViewModeValue = "popup";
 
 export default defineBackground(() => {
-  // サイドパネルの初期化
-  storageService.getViewMode().then((viewMode) => {
+  const updateViewMode = (viewMode: ViewModeValue) => {
     cachedViewMode = viewMode;
     chrome.sidePanel
       .setPanelBehavior({ openPanelOnActionClick: viewMode === "sidepanel" })
       .catch(console.error);
-  });
+  };
+
+  // サイドパネルの初期化
+  storageService.getViewMode().then(updateViewMode);
 
   // viewMode変更時にキャッシュとサイドパネルの動作を更新
   storageService.subscribe(SyncStorageKey.ViewMode, (viewMode) => {
-    if (viewMode === undefined) return;
-    cachedViewMode = viewMode;
-    chrome.sidePanel
-      .setPanelBehavior({ openPanelOnActionClick: viewMode === "sidepanel" })
-      .catch(console.error);
+    updateViewMode(viewMode ?? "popup");
   });
 
   /**
