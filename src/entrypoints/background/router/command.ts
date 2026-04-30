@@ -1,13 +1,18 @@
 import { contentService } from "@/services/content";
 import { MessageType } from "@/services/runtime/types";
-import { storageService } from "@/services/storage";
+import type { ViewModeValue } from "@/services/storage/types";
 
-export const routeCommand = async (command: string, tab: chrome.tabs.Tab) => {
+export const routeCommand = (
+  command: string,
+  tab: chrome.tabs.Tab,
+  viewMode: ViewModeValue,
+) => {
   switch (command) {
     case MessageType.OPEN_POPUP: {
-      const viewMode = await storageService.getViewMode();
+      // chrome.sidePanel.open() はユーザージェスチャートークンが必要なため、
+      // await より前に同期的に呼び出す
       if (viewMode === "sidepanel" && tab.id) {
-        await chrome.sidePanel.open({ tabId: tab.id });
+        chrome.sidePanel.open({ tabId: tab.id }).catch(console.error);
       } else {
         contentService.open({}).then((res) => {
           if (!res.success) {
