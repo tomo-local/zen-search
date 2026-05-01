@@ -30,7 +30,7 @@ const ResultList: React.FC<ResultListProps> = ({
         {hasItems ? (
           items.map((item, index) => (
             <ItemComponent
-              key={`result-item-${item.type}-${index.toString()}`}
+              key={item.id}
               item={item}
               index={index}
               onClick={() => onClick?.(item)}
