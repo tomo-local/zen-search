@@ -1,5 +1,4 @@
 import type React from "react";
-import { useEffect, useRef } from "react";
 import { useTranslation } from "@/shared/hooks/useTranslation";
 
 export interface SearchInputProps {
@@ -58,20 +57,7 @@ export default function SearchInput({
   onBackspaceKeyDown,
 }: SearchInputProps) {
   const { t } = useTranslation();
-  const inputRef = useRef<HTMLInputElement>(null);
 
-  useEffect(() => {
-    if (document.hasFocus()) {
-      inputRef.current?.focus();
-      return;
-    }
-    const handleWindowFocus = () => {
-      inputRef.current?.focus();
-      window.removeEventListener("focus", handleWindowFocus);
-    };
-    window.addEventListener("focus", handleWindowFocus);
-    return () => window.removeEventListener("focus", handleWindowFocus);
-  }, []);
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "/") {
       e.preventDefault();
@@ -118,7 +104,6 @@ export default function SearchInput({
         <div className="flex items-center min-w-8">{leftContent}</div>
       )}
       <input
-        ref={inputRef}
         type="text"
         value={value}
         placeholder={t("ui.searchPlaceholder")}
