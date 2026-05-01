@@ -1,4 +1,4 @@
-import React from "react";
+import type React from "react";
 
 import ThemeProvider from "@/features/theme/context/ThemeProvider";
 
@@ -18,10 +18,8 @@ export type LayoutProps = {
 
 export default function Layout(props: LayoutProps) {
   return (
-    <React.StrictMode>
-      <ThemeProvider>
-        <div className={props.className}>{props.children}</div>
-      </ThemeProvider>
-    </React.StrictMode>
+    <ThemeProvider>
+      <div className={props.className}>{props.children}</div>
+    </ThemeProvider>
   );
 }

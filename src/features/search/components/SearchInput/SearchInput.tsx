@@ -57,6 +57,7 @@ export default function SearchInput({
   onBackspaceKeyDown,
 }: SearchInputProps) {
   const { t } = useTranslation();
+
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "/") {
       e.preventDefault();
