@@ -115,6 +115,7 @@ export function routeMessage(
         })
         .catch((error) => {
           console.error("Error handling QUERY_RESULT:", error);
+          sendResponse(QUERY_RESULT, [], response);
         });
       return true;
     }

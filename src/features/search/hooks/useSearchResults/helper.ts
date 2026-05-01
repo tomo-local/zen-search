@@ -16,7 +16,7 @@ export function generateCacheKey(
   categories: Kind[],
 ): string {
   const q = query || "";
-  const c = categories.sort().join(",");
+  const c = [...categories].sort().join(",");
   return `${q}::${c}`;
 }
 

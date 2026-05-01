@@ -41,13 +41,6 @@ const updateSnapshot = (theme: ThemeValue) => {
   notify();
 };
 
-const subscribeExternalChanges = () =>
-  storageService.subscribe(SyncStorageKey.Theme, (newTheme) => {
-    if (newTheme) {
-      updateSnapshot(newTheme);
-    }
-  });
-
 const subscribe = (listener: () => void) => {
   listeners.add(listener);
   return () => listeners.delete(listener);
@@ -65,18 +58,15 @@ const hydrateTheme = async () => {
   }
 };
 
+storageService.subscribe(SyncStorageKey.Theme, (newTheme) => {
+  if (newTheme) updateSnapshot(newTheme);
+});
+
 void hydrateTheme();
 
 export default function useTheme() {
   const { theme, isDarkMode } = useSyncExternalStore(
-    (listener) => {
-      const unsubscribeInternal = subscribe(listener);
-      const unsubscribeExternal = subscribeExternalChanges();
-      return () => {
-        unsubscribeInternal();
-        unsubscribeExternal();
-      };
-    },
+    subscribe,
     getSnapshot,
     getSnapshot,
   );
