@@ -40,11 +40,3 @@ export interface UseSearchOptions {
   /** suggestion判定の類似度閾値（0-1）。デフォルト: 0.6 */
   similarityThreshold?: number;
 }
-
-/** バリデーション結果 */
-export interface ValidationResult {
-  /** バリデーションが成功したか */
-  isValid: boolean;
-  /** エラーメッセージの配列 */
-  errors: string[];
-}
