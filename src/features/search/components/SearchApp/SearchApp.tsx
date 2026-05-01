@@ -15,7 +15,7 @@ import useSearch from "@/features/search/hooks/useSearch";
 import useSearchKeyboard from "@/features/search/hooks/useSearchKeyboard";
 import useSearchResults from "@/features/search/hooks/useSearchResults";
 import useSearchShortcut from "@/features/search/hooks/useSearchShortcut";
-import type { Kind, Result } from "@/services/result";
+import { isTabResult, type Kind, type Result } from "@/services/result";
 import Layout, {
   commonClassName as layoutClassName,
 } from "@/shared/components/Layout/Layout";
@@ -54,9 +54,8 @@ export default function SearchApp({
     (result: Result<Kind>) => {
       onClose();
 
-      if (result.type === "Tab") {
-        const tab = result as Result<"Tab">;
-        const { id: tabId, windowId } = tab.data;
+      if (isTabResult(result)) {
+        const { id: tabId, windowId } = result.data;
         updateTab(tabId, windowId);
         return;
       }

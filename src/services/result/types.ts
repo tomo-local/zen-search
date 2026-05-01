@@ -29,6 +29,35 @@ export type ResultDataMap = {
 
 export type ResultData<T extends Kind> = ResultDataMap[T];
 
+/** Result<Kind> を特定の型に絞り込む型ガード関数 */
+export function isTabResult(result: Result<Kind>): result is Result<"Tab"> {
+  return result.type === "Tab";
+}
+
+export function isBookmarkResult(
+  result: Result<Kind>,
+): result is Result<"Bookmark"> {
+  return result.type === "Bookmark";
+}
+
+export function isHistoryResult(
+  result: Result<Kind>,
+): result is Result<"History"> {
+  return result.type === "History";
+}
+
+export function isSuggestionResult(
+  result: Result<Kind>,
+): result is Result<"Suggestion"> {
+  return result.type === "Suggestion";
+}
+
+export function isActionResult(
+  result: Result<Kind>,
+): result is Result<"Action.Calculation"> {
+  return result.type === "Action.Calculation";
+}
+
 export interface QueryResultsRequest {
   filters: ResultFilters;
 }
