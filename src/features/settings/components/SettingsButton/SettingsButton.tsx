@@ -1,6 +1,7 @@
 import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
 import Cog6ToothIcon from "@heroicons/react/16/solid/Cog6ToothIcon";
 import ComputerDesktopIcon from "@heroicons/react/16/solid/ComputerDesktopIcon";
+import GlobeAltIcon from "@heroicons/react/16/solid/GlobeAltIcon";
 import MoonIcon from "@heroicons/react/16/solid/MoonIcon";
 import RectangleGroupIcon from "@heroicons/react/16/solid/RectangleGroupIcon";
 import Squares2X2Icon from "@heroicons/react/16/solid/Squares2X2Icon";
@@ -8,10 +9,15 @@ import SunIcon from "@heroicons/react/16/solid/SunIcon";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
 import { useCallback, useContext } from "react";
+import useSearchEngines from "@/features/settings/hooks/useSearchEngine";
 import useViewMode from "@/features/settings/hooks/useViewMode";
 import { ThemeContext } from "@/features/theme/context/ThemeProvider";
 import { MessageType } from "@/services/runtime/types";
-import type { ThemeValue, ViewModeValue } from "@/services/storage/types";
+import type {
+  SearchEngineValue,
+  ThemeValue,
+  ViewModeValue,
+} from "@/services/storage/types";
 import { defaultClassName } from "@/shared/components/ButtonItem/ButtonItem";
 import { useTranslation } from "@/shared/hooks/useTranslation";
 
@@ -43,6 +49,7 @@ export default function SettingsButton(props: SettingsButtonProps) {
   const { t } = useTranslation();
   const { theme, setTheme } = useContext(ThemeContext);
   const { viewMode, setViewMode } = useViewMode();
+  const { searchEngines, toggleSearchEngine } = useSearchEngines();
 
   const handleViewModeChange = useCallback(
     async (value: ViewModeValue) => {
@@ -89,6 +96,16 @@ export default function SettingsButton(props: SettingsButtonProps) {
   const modes: { value: ViewModeValue; label: string }[] = [
     { value: "popup", label: t("viewMode.popup") },
     { value: "sidepanel", label: t("viewMode.sidepanel") },
+  ];
+
+  const engines: { value: SearchEngineValue; label: string }[] = [
+    { value: "google", label: t("searchEngines.google") },
+    { value: "bing", label: t("searchEngines.bing") },
+    { value: "duckduckgo", label: t("searchEngines.duckduckgo") },
+    { value: "brave", label: t("searchEngines.brave") },
+    { value: "ecosia", label: t("searchEngines.ecosia") },
+    { value: "yahoo_japan", label: t("searchEngines.yahoo_japan") },
+    { value: "perplexity", label: t("searchEngines.perplexity") },
   ];
 
   return (
@@ -145,6 +162,35 @@ export default function SettingsButton(props: SettingsButtonProps) {
             )}
           </MenuItem>
         ))}
+        <div className="border-t border-gray-200 dark:border-gray-600 my-1" />
+        <div className="px-3 py-1 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
+          {t("settings.searchEngine")}
+        </div>
+        {engines.map((item) => {
+          const enabled = searchEngines.includes(item.value);
+          const isLast = enabled && searchEngines.length === 1;
+          return (
+            <MenuItem
+              as="button"
+              disabled={isLast}
+              key={item.value}
+              className={clsx(
+                "flex items-center w-full px-3 py-2 space-x-2 hover:cursor-pointer hover:bg-gray-400 hover:opacity-80 dark:hover:bg-gray-700",
+                enabled
+                  ? "text-gray-800 dark:text-gray-300"
+                  : "text-gray-400 dark:text-gray-500",
+                isLast && "opacity-50 cursor-not-allowed",
+              )}
+              onClick={() => toggleSearchEngine(item.value)}
+            >
+              <GlobeAltIcon className="size-5" />
+              <div className="min-w-24">{item.label}</div>
+              {enabled && (
+                <CheckCircleIcon className="flex-none ml-auto size-5" />
+              )}
+            </MenuItem>
+          );
+        })}
       </MenuItems>
     </Menu>
   );

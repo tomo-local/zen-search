@@ -63,10 +63,14 @@ const queryResults = async (
   }
 
   if (filters.categories.includes("Suggestion")) {
+    const engines = filters.searchEngines?.length
+      ? filters.searchEngines
+      : ["google" as const];
     queryPromises.push(
       resultServiceDependencies.suggestionService
-        .query({
+        .multiEngineQuery({
           query: filters?.query ?? "",
+          searchEngines: engines,
           option: { count },
         })
         .then((result) => ({ service: "Suggestion", data: result }) as const),

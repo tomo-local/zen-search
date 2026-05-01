@@ -3,6 +3,7 @@
  */
 
 import type { Kind, Result } from "@/services/result";
+import type { SearchEngineValue } from "@/services/storage/types";
 
 /** ローディング状態 */
 export type LoadingState = "idle" | "loading" | "success" | "error";
@@ -15,6 +16,8 @@ export interface UseSearchResultsParams {
   categories: Kind[];
   /** 取得する最大件数。デフォルト: 1000 */
   maxCount?: number;
+  /** 有効な検索エンジン一覧 */
+  searchEngines?: SearchEngineValue[];
 }
 
 /** 検索結果のオプション */

@@ -3,6 +3,7 @@
  */
 
 import type {
+  SearchEngineValue,
   SyncStorage,
   SyncStorageKey,
   ThemeValue,
@@ -65,6 +66,41 @@ export const getDefaultViewMode = (): ViewModeValue => "popup";
  */
 export const isValidViewMode = (value: unknown): value is ViewModeValue => {
   return ["popup", "sidepanel"].includes(value as string);
+};
+
+const VALID_SEARCH_ENGINES: SearchEngineValue[] = [
+  "google",
+  "bing",
+  "duckduckgo",
+  "brave",
+  "ecosia",
+  "yahoo_japan",
+  "perplexity",
+];
+
+/**
+ * デフォルト有効検索エンジン一覧を取得
+ */
+export const getDefaultSearchEngines = (): SearchEngineValue[] => ["google"];
+
+/**
+ * 検索エンジン値のバリデーション（単体）
+ */
+export const isValidSearchEngine = (
+  value: unknown,
+): value is SearchEngineValue => {
+  return VALID_SEARCH_ENGINES.includes(value as SearchEngineValue);
+};
+
+/**
+ * 検索エンジン配列のバリデーション
+ */
+export const isValidSearchEngines = (
+  value: unknown,
+): value is SearchEngineValue[] => {
+  return (
+    Array.isArray(value) && value.length > 0 && value.every(isValidSearchEngine)
+  );
 };
 
 /**

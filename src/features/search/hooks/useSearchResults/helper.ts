@@ -14,10 +14,12 @@ import type { CacheEntry } from "./types";
 export function generateCacheKey(
   query: string | undefined,
   categories: Kind[],
+  searchEngines?: string[],
 ): string {
   const q = query || "";
   const c = [...categories].sort().join(",");
-  return `${q}::${c}`;
+  const e = searchEngines ? [...searchEngines].sort().join(",") : "";
+  return `${q}::${c}::${e}`;
 }
 
 /**

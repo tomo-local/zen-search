@@ -20,6 +20,14 @@ export default defineConfig({
     description: "Search your bookmarks and history",
     version: "1.6.1",
     permissions: ["tabs", "history", "activeTab", "bookmarks", "storage", "sidePanel"],
+    host_permissions: [
+      "https://www.google.com/complete/*",
+      "https://api.bing.com/*",
+      "https://ac.duckduckgo.com/*",
+      "https://search.brave.com/api/*",
+      "https://ac.ecosia.org/*",
+      "https://search.yahoo.co.jp/sugg/*",
+    ],
     commands: {
       OPEN_POPUP: {
         suggested_key: {

@@ -79,9 +79,10 @@ export default function useSearchResults(
     async (
       query: string | undefined,
       categories: Kind[],
+      searchEngines: UseSearchResultsParams["searchEngines"],
     ): Promise<Result<Kind>[]> => {
       // キャッシュキー生成
-      const cacheKey = generateCacheKey(query, categories);
+      const cacheKey = generateCacheKey(query, categories, searchEngines);
 
       // キャッシュチェック
       if (opts.enableCache) {
@@ -94,7 +95,7 @@ export default function useSearchResults(
       // API呼び出し
       const fetchFn = async () => {
         const results = await runtimeService.queryResults({
-          filters: { query, categories, count: maxCount },
+          filters: { query, categories, count: maxCount, searchEngines },
         });
         return results;
       };
@@ -135,7 +136,11 @@ export default function useSearchResults(
     setError(null);
 
     try {
-      const results = await fetchResults(params.query, params.categories);
+      const results = await fetchResults(
+        params.query,
+        params.categories,
+        params.searchEngines,
+      );
       if (requestId !== requestIdRef.current) return;
       setResults(results);
       setLoadingState("success");
@@ -174,7 +179,7 @@ export default function useSearchResults(
       setLoadingState("error");
       console.error("Failed to fetch search results:", err);
     }
-  }, [fetchResults, params.query, params.categories]);
+  }, [fetchResults, params.query, params.categories, params.searchEngines]);
 
   /**
    * キャッシュをクリア
