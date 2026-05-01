@@ -61,7 +61,16 @@ export default function SearchInput({
   const inputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    inputRef.current?.focus();
+    if (document.hasFocus()) {
+      inputRef.current?.focus();
+      return;
+    }
+    const handleWindowFocus = () => {
+      inputRef.current?.focus();
+      window.removeEventListener("focus", handleWindowFocus);
+    };
+    window.addEventListener("focus", handleWindowFocus);
+    return () => window.removeEventListener("focus", handleWindowFocus);
   }, []);
   function handleKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
     if (e.key === "/") {
