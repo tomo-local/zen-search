@@ -8,5 +8,4 @@ export type {
   QueryState,
   ResultType,
   UseSearchOptions,
-  ValidationResult,
 } from "./types";

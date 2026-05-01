@@ -38,7 +38,9 @@ const getStorage = async <K extends Type.SyncStorageKey>({
   try {
     return await chromeStorageGet(key);
   } catch (error) {
-    console.error(`Failed to get storage for key ${key}:`, error);
+    if (import.meta.env.DEV) {
+      console.warn(`[storageService] get(${key}) failed:`, error);
+    }
     throw new Error(`ストレージの取得に失敗しました: ${key}`);
   }
 };
@@ -67,7 +69,9 @@ const setStorage = async <K extends Type.SyncStorageKey>({
   try {
     return await chromeStorageSet(key, value);
   } catch (error) {
-    console.error(`Failed to set storage for key ${key}:`, error);
+    if (import.meta.env.DEV) {
+      console.warn(`[storageService] set(${key}) failed:`, error);
+    }
     throw new Error(`ストレージの保存に失敗しました: ${key}`);
   }
 };
@@ -77,8 +81,9 @@ const getTheme = async (): Promise<Type.ThemeValue> => {
     const theme = await chromeStorageGet(SyncStorageKey.Theme);
     return theme || getDefaultTheme();
   } catch (error) {
-    console.error("Failed to get theme:", error);
-    // エラー時はデフォルトテーマを返す
+    if (import.meta.env.DEV) {
+      console.warn("[storageService] getTheme failed:", error);
+    }
     return getDefaultTheme();
   }
 };
@@ -87,7 +92,9 @@ const setTheme = async ({ theme }: Type.SetThemeRequest): Promise<boolean> => {
   try {
     return await chromeStorageSet(SyncStorageKey.Theme, theme);
   } catch (error) {
-    console.error("Failed to set theme:", error);
+    if (import.meta.env.DEV) {
+      console.warn("[storageService] setTheme failed:", error);
+    }
     throw new Error("テーマの保存に失敗しました");
   }
 };
@@ -97,7 +104,9 @@ const getViewMode = async (): Promise<Type.ViewModeValue> => {
     const viewMode = await chromeStorageGet(SyncStorageKey.ViewMode);
     return isValidViewMode(viewMode) ? viewMode : getDefaultViewMode();
   } catch (error) {
-    console.error("Failed to get viewMode:", error);
+    if (import.meta.env.DEV) {
+      console.warn("[storageService] getViewMode failed:", error);
+    }
     return getDefaultViewMode();
   }
 };
@@ -106,7 +115,9 @@ const setViewMode = async (viewMode: Type.ViewModeValue): Promise<boolean> => {
   try {
     return await chromeStorageSet(SyncStorageKey.ViewMode, viewMode);
   } catch (error) {
-    console.error("Failed to set viewMode:", error);
+    if (import.meta.env.DEV) {
+      console.warn("[storageService] setViewMode failed:", error);
+    }
     throw new Error("表示モードの保存に失敗しました");
   }
 };

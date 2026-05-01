@@ -2,11 +2,11 @@
  * 検索クエリと状態を管理するhook
  */
 
-import { useCallback, useEffect, useMemo, useReducer, useState } from "react";
+import { useCallback, useEffect, useReducer, useState } from "react";
 import { categoriesMap, initialState } from "./constants";
 import { matchType } from "./helper";
 import { queryReducer } from "./reducer";
-import type { ResultType, UseSearchOptions, ValidationResult } from "./types";
+import type { ResultType, UseSearchOptions } from "./types";
 
 /**
  * 検索クエリと状態を管理するhook
@@ -112,22 +112,6 @@ export default function useSearch(options: UseSearchOptions = {}) {
     dispatch({ type: "resetType" });
   }, []);
 
-  /**
-   * クエリのバリデーション結果
-   */
-  const validation = useMemo<ValidationResult>(() => {
-    const errors: string[] = [];
-
-    if (state.query.length > maxQueryLength) {
-      errors.push(`Query exceeds maximum length of ${maxQueryLength}`);
-    }
-
-    return {
-      isValid: errors.length === 0,
-      errors,
-    };
-  }, [state.query, maxQueryLength]);
-
   return {
     /** 現在の検索状態 */
     state,
@@ -135,8 +119,6 @@ export default function useSearch(options: UseSearchOptions = {}) {
     debouncedQuery,
     /** IME入力中かどうか */
     isComposing,
-    /** バリデーション結果 */
-    validation,
     /** クエリを設定 */
     setQuery,
     /** タイプを更新 */
