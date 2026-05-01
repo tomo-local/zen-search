@@ -1,6 +1,7 @@
 ---
 name: issue-doing
 description: "GitHub Issueを取得して、優先度を確認して1件以上のIssueを完了させる。Use when: issue triage, task management, sprint planning, backlog grooming"
+argument-hint: "bug fix, feature implementation, documentation update..."
 ---
 
 # Issue Doing
@@ -26,11 +27,12 @@ gh issue list --repo <owner>/<repo> --state open --label <label> --json number,t
 選択したIssueに対して、必要な対応作業を行います。コードの修正やドキュメントの更新など、Issueの内容に応じた作業を実施してください。
 
 1. Issueの内容を理解し、必要な変更を特定します。
-2. コードを修正し、必要に応じてテストコードも更新します。
-3. `/codex-review`コマンドを使用して、コードレビューを依頼します。
-4. コードレビューが完了し、問題がなければ、PRを作成します。
-5. PRを作成するとAIが自動的にコードレビューを行い、必要に応じてフィードバックを提供します。
-6. フィードバックのコメントを取得して、必要な修正を行います。
+2. 対応方針を整理して、確認し合意ができた段階で、作業を開始します。
+3. コードを修正し、必要に応じてテストコードも更新します。
+4. `/codex-review`コマンドを使用して、コードレビューを依頼します。
+5. コードレビューが完了し、問題がなければ、PRを作成します。
+6. PRを作成するとAIが自動的にコードレビューを行い、必要に応じてフィードバックを提供します。
+7. フィードバックのコメントを取得して、必要な修正を行います。
 
 ### Step 4: Issueの完了
 
