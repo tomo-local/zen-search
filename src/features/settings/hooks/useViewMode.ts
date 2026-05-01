@@ -21,13 +21,6 @@ const updateSnapshot = (viewMode: ViewModeValue) => {
   notify();
 };
 
-const subscribeExternalChanges = () =>
-  storageService.subscribe(SyncStorageKey.ViewMode, (newViewMode) => {
-    if (newViewMode) {
-      updateSnapshot(newViewMode);
-    }
-  });
-
 const subscribe = (listener: () => void) => {
   listeners.add(listener);
   return () => listeners.delete(listener);
@@ -45,21 +38,14 @@ const hydrateViewMode = async () => {
   }
 };
 
+storageService.subscribe(SyncStorageKey.ViewMode, (newViewMode) => {
+  updateSnapshot(newViewMode ?? getDefaultViewMode());
+});
+
 void hydrateViewMode();
 
 export default function useViewMode() {
-  const viewMode = useSyncExternalStore(
-    (listener) => {
-      const unsubscribeInternal = subscribe(listener);
-      const unsubscribeExternal = subscribeExternalChanges();
-      return () => {
-        unsubscribeInternal();
-        unsubscribeExternal();
-      };
-    },
-    getSnapshot,
-    getSnapshot,
-  );
+  const viewMode = useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 
   const setViewMode = useCallback((value: ViewModeValue) => {
     updateSnapshot(value);
