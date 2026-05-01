@@ -59,7 +59,7 @@ const hydrateTheme = async () => {
 };
 
 storageService.subscribe(SyncStorageKey.Theme, (newTheme) => {
-  if (newTheme) updateSnapshot(newTheme);
+  updateSnapshot(newTheme ?? getDefaultTheme());
 });
 
 void hydrateTheme();
