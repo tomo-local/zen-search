@@ -10,14 +10,14 @@ import type * as Type from "./types";
 // 型定義
 export interface ResultService {
   query: (
-    request: Type.QueryResultsRequest,
+    request: Type.QueryResultsInternalRequest,
   ) => Promise<Type.Result<Type.Kind>[]>;
 }
 
 const queryResults = async (
-  request: Type.QueryResultsRequest,
+  request: Type.QueryResultsInternalRequest,
 ): Promise<Type.Result<Type.Kind>[]> => {
-  const { filters } = request;
+  const { filters, signal } = request;
 
   const headResults: Type.Result<Type.Kind>[] = [];
   const queryPromises = [];
@@ -73,6 +73,7 @@ const queryResults = async (
           query: filters?.query ?? "",
           searchEngines: engines,
           option: { count },
+          signal,
         })
         .then((result) => ({ service: "Suggestion", data: result }) as const),
     );

@@ -17,6 +17,10 @@ const {
   SWITCH_VIEW_MODE,
 } = MessageType;
 
+// 送信元コンテキスト（popup / sidepanel）ごとに AbortController を管理する。
+// これにより、複数コンテキストが同時に開いていても互いにキャンセルしない。
+const queryResultControllers = new Map<string, AbortController>();
+
 function sendResponse(
   type: string,
   result: unknown,
@@ -68,13 +72,13 @@ function isRouterMessage(msg: unknown): msg is RouterMessage {
  * 受信したメッセージを解析し、適切なサービスへルーティングします。
  *
  * @param message 受信したメッセージオブジェクト
- * @param _sender メッセージの送信元情報
+ * @param sender メッセージの送信元情報
  * @param response レスポンスを返却するためのコールバック関数
  * @returns メッセージが正常に処理された場合は true、それ以外は false
  */
 export function routeMessage(
   message: unknown,
-  _sender: chrome.runtime.MessageSender,
+  sender: chrome.runtime.MessageSender,
   response: (res?: object) => void,
 ): boolean {
   if (!isRouterMessage(message)) return false;
@@ -107,14 +111,23 @@ export function routeMessage(
     }
 
     case QUERY_RESULT: {
+      // 送信元ごとに前回のリクエストをキャンセルして新しいコントローラーを作成
+      const senderKey = sender.documentId ?? sender.url ?? "unknown";
+      queryResultControllers.get(senderKey)?.abort();
+      const controller = new AbortController();
+      queryResultControllers.set(senderKey, controller);
+      const { signal } = controller;
+
       const { filters } = message;
       resultService
-        .query({ filters })
+        .query({ filters, signal })
         .then((results) => {
           sendResponse(QUERY_RESULT, results, response);
         })
         .catch((error) => {
-          console.error("Error handling QUERY_RESULT:", error);
+          if (!signal.aborted) {
+            console.error("Error handling QUERY_RESULT:", error);
+          }
           sendResponse(QUERY_RESULT, [], response);
         });
       return true;

@@ -29,14 +29,17 @@ export interface SuggestionService {
 const fetchApiSuggestions = async (
   query: string,
   engine: SearchEngineValue,
+  signal?: AbortSignal,
 ): Promise<string[]> => {
   const endpoint = buildSuggestUrl(query, engine);
   if (!endpoint) return [];
 
   try {
-    const response = await fetch(endpoint, {
-      signal: AbortSignal.timeout(3000),
-    });
+    const fetchSignal = signal
+      ? AbortSignal.any([signal, AbortSignal.timeout(3000)])
+      : AbortSignal.timeout(3000);
+
+    const response = await fetch(endpoint, { signal: fetchSignal });
 
     if (!response.ok) return [];
 
@@ -50,8 +53,18 @@ const fetchApiSuggestions = async (
     // ["query", ["s1", "s2", ...]] の plain JSON 形式
     return extractSuggestions(data);
   } catch (error) {
-    console.error("Error fetching suggestions:", { query, engine, endpoint, error });
-
+    if (
+      error instanceof Error &&
+      (error.name === "AbortError" || error.name === "TimeoutError")
+    ) {
+      return [];
+    }
+    console.error("Error fetching suggestions:", {
+      query,
+      engine,
+      endpoint,
+      error,
+    });
     return [];
   }
 };
@@ -82,10 +95,11 @@ const querySuggestions = async ({
   query,
   option,
   searchEngine = "google",
+  signal,
 }: Type.QuerySuggestionsRequest): Promise<Type.Suggestion[]> => {
   if (!query?.trim()) return [];
 
-  const texts = await fetchApiSuggestions(query, searchEngine);
+  const texts = await fetchApiSuggestions(query, searchEngine, signal);
 
   const result = [
     buildDirectSearch(query, searchEngine),
@@ -103,6 +117,7 @@ const multiEngineQuerySuggestions = async ({
   query,
   option,
   searchEngines,
+  signal,
 }: Type.MultiEngineQuerySuggestionsRequest): Promise<Type.Suggestion[]> => {
   if (!query?.trim()) return [];
 
@@ -111,7 +126,7 @@ const multiEngineQuerySuggestions = async ({
   );
 
   const apiResultsPerEngine = await Promise.all(
-    searchEngines.map((e) => fetchApiSuggestions(query, e)),
+    searchEngines.map((e) => fetchApiSuggestions(query, e, signal)),
   );
 
   const seenTitles = new Set<string>([query]); // 直接検索と同タイトルは除外

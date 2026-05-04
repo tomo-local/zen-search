@@ -59,8 +59,14 @@ export function isActionResult(
   return result.type === "Action.Calculation";
 }
 
+/** UI → background メッセージとして使用する公開型（構造化クローン可能） */
 export interface QueryResultsRequest {
   filters: ResultFilters;
+}
+
+/** バックグラウンドサービスワーカー内部でのみ使用する型。メッセージ境界を越えない。 */
+export interface QueryResultsInternalRequest extends QueryResultsRequest {
+  signal?: AbortSignal;
 }
 
 export interface ResultFilters {
