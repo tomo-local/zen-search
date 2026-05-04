@@ -53,7 +53,10 @@ const fetchApiSuggestions = async (
     // ["query", ["s1", "s2", ...]] の plain JSON 形式
     return extractSuggestions(data);
   } catch (error) {
-    if (error instanceof DOMException && error.name === "AbortError") {
+    if (
+      error instanceof Error &&
+      (error.name === "AbortError" || error.name === "TimeoutError")
+    ) {
       return [];
     }
     console.error("Error fetching suggestions:", { query, engine, endpoint, error });

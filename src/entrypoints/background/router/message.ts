@@ -119,12 +119,12 @@ export function routeMessage(
       resultService
         .query({ filters, signal })
         .then((results) => {
-          if (signal.aborted) return;
           sendResponse(QUERY_RESULT, results, response);
         })
         .catch((error) => {
-          if (signal.aborted) return;
-          console.error("Error handling QUERY_RESULT:", error);
+          if (!signal.aborted) {
+            console.error("Error handling QUERY_RESULT:", error);
+          }
           sendResponse(QUERY_RESULT, [], response);
         });
       return true;

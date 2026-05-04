@@ -73,6 +73,14 @@ export default defineBackground(() => {
     broadcastInvalidateCache("Bookmark"),
   );
 
+  // 履歴の変更をキャッシュ無効化に反映する
+  chrome.history.onVisited.addListener(() =>
+    broadcastInvalidateCache("History"),
+  );
+  chrome.history.onVisitRemoved.addListener(() =>
+    broadcastInvalidateCache("History"),
+  );
+
   /**
    * @description コマンドのルーティング
    */
