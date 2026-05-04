@@ -33,6 +33,7 @@
     "title": "Settings",
     "theme": "Theme",
     "viewMode": "View Mode",
+    "searchEngine": "Search Engine",
     "open": "Open settings"
   },
   "language": {
@@ -44,7 +45,9 @@
     "bing": "Bing",
     "duckduckgo": "DuckDuckGo",
     "brave": "Brave",
-    "ecosia": "Ecosia"
+    "ecosia": "Ecosia",
+    "yahoo_japan": "Yahoo! Japan",
+    "perplexity": "Perplexity"
   },
   "accessibility": {
     "favicon": "Favicon"

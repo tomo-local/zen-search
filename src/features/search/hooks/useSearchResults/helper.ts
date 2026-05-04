@@ -3,6 +3,7 @@
  */
 
 import type { Kind } from "@/services/result";
+import type { SearchEngineValue } from "@/services/storage/types";
 import type { CacheEntry } from "./types";
 
 /**
@@ -14,10 +15,12 @@ import type { CacheEntry } from "./types";
 export function generateCacheKey(
   query: string | undefined,
   categories: Kind[],
+  searchEngines?: SearchEngineValue[],
 ): string {
   const q = query || "";
   const c = [...categories].sort().join(",");
-  return `${q}::${c}`;
+  const e = searchEngines ? [...searchEngines].sort().join(",") : "";
+  return `${q}::${c}::${e}`;
 }
 
 /**

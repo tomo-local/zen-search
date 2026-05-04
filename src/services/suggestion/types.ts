@@ -1,8 +1,17 @@
 /**
- * Suggestion Service Types - Google検索候補関連の型定義
+ * Suggestion Service Types - 検索候補関連の型定義
  */
 
-type SearchKind = "Google" | "Bing" | "DuckDuckGo" | "Brave" | "Ecosia";
+import type { SearchEngineValue } from "@/services/storage/types";
+
+type SearchKind =
+  | "Google"
+  | "Bing"
+  | "DuckDuckGo"
+  | "Brave"
+  | "Ecosia"
+  | "Yahoo Japan"
+  | "Perplexity";
 
 export interface Suggestion {
   id: string;
@@ -21,6 +30,13 @@ export interface Suggestion {
 export interface QuerySuggestionsRequest {
   query: string;
   option?: QueryOption;
+  searchEngine?: SearchEngineValue;
+}
+
+export interface MultiEngineQuerySuggestionsRequest {
+  query: string;
+  option?: QueryOption;
+  searchEngines: SearchEngineValue[];
 }
 
 export interface QueryOption {

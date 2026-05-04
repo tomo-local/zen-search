@@ -33,6 +33,7 @@
     "title": "設定",
     "theme": "テーマ",
     "viewMode": "表示モード",
+    "searchEngine": "検索エンジン",
     "open": "設定を開く"
   },
   "language": {
@@ -44,7 +45,9 @@
     "bing": "Bing",
     "duckduckgo": "DuckDuckGo",
     "brave": "Brave",
-    "ecosia": "Ecosia"
+    "ecosia": "Ecosia",
+    "yahoo_japan": "Yahoo! Japan",
+    "perplexity": "Perplexity"
   },
   "accessibility": {
     "favicon": "ファビコン"

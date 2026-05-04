@@ -6,8 +6,10 @@
 import {
   chromeStorageGet,
   chromeStorageSet,
+  getDefaultSearchEngines,
   getDefaultTheme,
   getDefaultViewMode,
+  isValidSearchEngines,
   isValidViewMode,
 } from "./helper";
 import type * as Type from "./types";
@@ -29,6 +31,8 @@ export interface StorageService {
   setTheme: (request: Type.SetThemeRequest) => Promise<boolean>;
   getViewMode: () => Promise<Type.ViewModeValue>;
   setViewMode: (viewMode: Type.ViewModeValue) => Promise<boolean>;
+  getSearchEngines: () => Promise<Type.SearchEngineValue[]>;
+  setSearchEngines: (engines: Type.SearchEngineValue[]) => Promise<boolean>;
 }
 
 // サービス実装
@@ -122,6 +126,31 @@ const setViewMode = async (viewMode: Type.ViewModeValue): Promise<boolean> => {
   }
 };
 
+const getSearchEngines = async (): Promise<Type.SearchEngineValue[]> => {
+  try {
+    const engines = await chromeStorageGet(SyncStorageKey.SearchEngines);
+    return isValidSearchEngines(engines) ? engines : getDefaultSearchEngines();
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.warn("[storageService] getSearchEngines failed:", error);
+    }
+    return getDefaultSearchEngines();
+  }
+};
+
+const setSearchEngines = async (
+  engines: Type.SearchEngineValue[],
+): Promise<boolean> => {
+  try {
+    return await chromeStorageSet(SyncStorageKey.SearchEngines, engines);
+  } catch (error) {
+    if (import.meta.env.DEV) {
+      console.warn("[storageService] setSearchEngines failed:", error);
+    }
+    throw new Error("検索エンジンの保存に失敗しました");
+  }
+};
+
 // サービスオブジェクトのエクスポート
 export const storageService: StorageService = {
   get: getStorage,
@@ -131,6 +160,8 @@ export const storageService: StorageService = {
   setTheme,
   getViewMode,
   setViewMode,
+  getSearchEngines,
+  setSearchEngines,
 };
 
 // デフォルトエクスポート

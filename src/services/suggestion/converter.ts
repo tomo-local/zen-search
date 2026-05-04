@@ -1,37 +1,40 @@
 /**
- * Suggestion Converter - Google APIレスポンスをSuggestion型に変換
+ * Suggestion Converter - APIレスポンスをSuggestion型に変換
  */
 
+import type { SearchEngineValue } from "@/services/storage/types";
+import { buildSearchUrl } from "./helper";
 import type { Suggestion } from "./types";
 
-const SEARCH_URL = "https://www.google.com/search";
+type SearchKind = Suggestion["data"]["type"];
+
+const ENGINE_TO_KIND: Record<SearchEngineValue, SearchKind> = {
+  google: "Google",
+  bing: "Bing",
+  duckduckgo: "DuckDuckGo",
+  brave: "Brave",
+  ecosia: "Ecosia",
+  yahoo_japan: "Yahoo Japan",
+  perplexity: "Perplexity",
+};
 
 export function convertSuggestions(
   suggestion: string,
   originalQuery: string,
+  engine: SearchEngineValue = "google",
 ): Suggestion {
+  const url = buildSearchUrl(suggestion, engine);
   return {
     id: crypto.randomUUID(),
     type: "Suggestion",
     title: suggestion,
-    url: createSearchUrl(suggestion),
+    url,
     data: {
-      type: "Google",
-      suggestion: suggestion,
+      type: ENGINE_TO_KIND[engine],
+      suggestion,
       title: suggestion,
-      url: createSearchUrl(suggestion),
+      url,
       query: originalQuery,
     },
   };
-}
-
-/**
- * 検索URLを作成（URLの場合はそのまま、検索クエリの場合はGoogle検索URL）
- */
-function createSearchUrl(query: string): string {
-  if (/^https?:\/\//i.test(query)) {
-    return query;
-  }
-
-  return `${SEARCH_URL}?q=${encodeURIComponent(query)}`;
 }
