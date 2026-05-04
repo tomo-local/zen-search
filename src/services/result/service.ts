@@ -10,12 +10,12 @@ import type * as Type from "./types";
 // 型定義
 export interface ResultService {
   query: (
-    request: Type.QueryResultsRequest,
+    request: Type.QueryResultsInternalRequest,
   ) => Promise<Type.Result<Type.Kind>[]>;
 }
 
 const queryResults = async (
-  request: Type.QueryResultsRequest,
+  request: Type.QueryResultsInternalRequest,
 ): Promise<Type.Result<Type.Kind>[]> => {
   const { filters, signal } = request;
 
