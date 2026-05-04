@@ -1,4 +1,4 @@
-import { Menu, MenuButton, MenuItem, MenuItems } from "@headlessui/react";
+import { Popover, PopoverButton, PopoverPanel } from "@headlessui/react";
 import Cog6ToothIcon from "@heroicons/react/16/solid/Cog6ToothIcon";
 import ComputerDesktopIcon from "@heroicons/react/16/solid/ComputerDesktopIcon";
 import GlobeAltIcon from "@heroicons/react/16/solid/GlobeAltIcon";
@@ -108,9 +108,12 @@ export default function SettingsButton(props: SettingsButtonProps) {
     { value: "perplexity", label: t("searchEngines.perplexity") },
   ];
 
+  const itemClassName =
+    "flex items-center w-full px-3 py-2 space-x-2 text-gray-800 hover:cursor-pointer hover:bg-gray-400 hover:opacity-80 dark:hover:bg-gray-700 dark:text-gray-300";
+
   return (
-    <Menu>
-      <MenuButton
+    <Popover>
+      <PopoverButton
         aria-label={t("settings.open")}
         className={clsx(
           "flex items-center hover:cursor-pointer hover:bg-gray-400 dark:hover:bg-gray-700 group relative space-x-2 p-1 rounded-md focus:outline-none",
@@ -119,21 +122,21 @@ export default function SettingsButton(props: SettingsButtonProps) {
         )}
       >
         <Cog6ToothIcon className="size-5" />
-      </MenuButton>
-      <MenuItems
-        transition
+      </PopoverButton>
+      <PopoverPanel
         anchor="top start"
+        transition
         className="transition duration-200 ease-in-out bg-white border-2 border-gray-600 rounded-lg shadow-lg focus:outline-none dark:bg-gray-800 [--anchor-gap:--spacing(1)] data-[closed]:opacity-0 data-[closed]:scale-95"
       >
         <div className="px-3 py-1 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
           {t("settings.theme")}
         </div>
         {themes.map((item) => (
-          <MenuItem
-            as="button"
+          <button
+            type="button"
             disabled={theme === item.value}
             key={item.value}
-            className="flex items-center w-full px-3 py-2 space-x-2 text-gray-800 hover:cursor-pointer hover:bg-gray-400 hover:opacity-80 dark:hover:bg-gray-700 dark:text-gray-300"
+            className={itemClassName}
             onClick={() => setTheme(item.value)}
           >
             <ThemeIcon theme={item.value} className="size-5" />
@@ -141,18 +144,18 @@ export default function SettingsButton(props: SettingsButtonProps) {
             {theme === item.value && (
               <CheckCircleIcon className="flex-none ml-auto size-5" />
             )}
-          </MenuItem>
+          </button>
         ))}
         <div className="border-t border-gray-200 dark:border-gray-600 my-1" />
         <div className="px-3 py-1 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
           {t("settings.viewMode")}
         </div>
         {modes.map((item) => (
-          <MenuItem
-            as="button"
+          <button
+            type="button"
             disabled={viewMode === item.value}
             key={item.value}
-            className="flex items-center w-full px-3 py-2 space-x-2 text-gray-800 hover:cursor-pointer hover:bg-gray-400 hover:opacity-80 dark:hover:bg-gray-700 dark:text-gray-300"
+            className={itemClassName}
             onClick={() => handleViewModeChange(item.value)}
           >
             <ViewModeIcon mode={item.value} className="size-5" />
@@ -160,7 +163,7 @@ export default function SettingsButton(props: SettingsButtonProps) {
             {viewMode === item.value && (
               <CheckCircleIcon className="flex-none ml-auto size-5" />
             )}
-          </MenuItem>
+          </button>
         ))}
         <div className="border-t border-gray-200 dark:border-gray-600 my-1" />
         <div className="px-3 py-1 text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wide">
@@ -170,8 +173,8 @@ export default function SettingsButton(props: SettingsButtonProps) {
           const enabled = searchEngines.includes(item.value);
           const isLast = enabled && searchEngines.length === 1;
           return (
-            <MenuItem
-              as="button"
+            <button
+              type="button"
               disabled={isLast}
               key={item.value}
               className={clsx(
@@ -188,10 +191,10 @@ export default function SettingsButton(props: SettingsButtonProps) {
               {enabled && (
                 <CheckCircleIcon className="flex-none ml-auto size-5" />
               )}
-            </MenuItem>
+            </button>
           );
         })}
-      </MenuItems>
-    </Menu>
+      </PopoverPanel>
+    </Popover>
   );
 }
