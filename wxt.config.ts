@@ -28,6 +28,7 @@ export default defineConfig({
       "https://ac.ecosia.org/*",
       "https://search.yahoo.co.jp/sugg/*",
     ],
+    minimum_chrome_version: "116",
     commands: {
       OPEN_POPUP: {
         suggested_key: {
