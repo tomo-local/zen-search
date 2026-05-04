@@ -18,7 +18,7 @@ export default defineConfig({
     default_locale: "en",
     current_locale: "en",
     description: "Search your bookmarks and history",
-    version: "1.6.1",
+    version: "1.7.0",
     permissions: ["tabs", "history", "activeTab", "bookmarks", "storage", "sidePanel"],
     host_permissions: [
       "https://www.google.com/complete/*",
