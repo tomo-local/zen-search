@@ -61,6 +61,8 @@ export function isActionResult(
 
 export interface QueryResultsRequest {
   filters: ResultFilters;
+  /** バックグラウンド内部でのみ使用。メッセージ境界を越えない。 */
+  signal?: AbortSignal;
 }
 
 export interface ResultFilters {

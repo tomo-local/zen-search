@@ -17,7 +17,7 @@ export interface ResultService {
 const queryResults = async (
   request: Type.QueryResultsRequest,
 ): Promise<Type.Result<Type.Kind>[]> => {
-  const { filters } = request;
+  const { filters, signal } = request;
 
   const headResults: Type.Result<Type.Kind>[] = [];
   const queryPromises = [];
@@ -73,6 +73,7 @@ const queryResults = async (
           query: filters?.query ?? "",
           searchEngines: engines,
           option: { count },
+          signal,
         })
         .then((result) => ({ service: "Suggestion", data: result }) as const),
     );

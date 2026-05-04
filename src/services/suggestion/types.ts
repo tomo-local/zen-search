@@ -31,12 +31,14 @@ export interface QuerySuggestionsRequest {
   query: string;
   option?: QueryOption;
   searchEngine?: SearchEngineValue;
+  signal?: AbortSignal;
 }
 
 export interface MultiEngineQuerySuggestionsRequest {
   query: string;
   option?: QueryOption;
   searchEngines: SearchEngineValue[];
+  signal?: AbortSignal;
 }
 
 export interface QueryOption {

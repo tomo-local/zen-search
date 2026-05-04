@@ -1,3 +1,7 @@
+import {
+  type InvalidateCacheKind,
+  MessageType,
+} from "@/services/runtime/types";
 import { storageService } from "@/services/storage";
 import { SyncStorageKey, type ViewModeValue } from "@/services/storage/types";
 import { routeCommand, routeMessage } from "./router";
@@ -9,6 +13,18 @@ let cachedViewMode: ViewModeValue = "popup";
 // サイドパネルの開閉状態をポート接続で追跡する
 // ポートが存在する = サイドパネルが開いている
 let sidePanelPort: chrome.runtime.Port | null = null;
+
+/**
+ * ポップアップ・サイドパネルへキャッシュ無効化メッセージを送信する。
+ * 拡張機能ページが開いていない場合は無視する。
+ */
+const broadcastInvalidateCache = (kind: InvalidateCacheKind) => {
+  chrome.runtime
+    .sendMessage({ type: MessageType.INVALIDATE_CACHE, kind })
+    .catch(() => {
+      // ポップアップが開いていない場合は "Receiving end does not exist" になるが正常系
+    });
+};
 
 export default defineBackground(() => {
   const updateViewMode = (viewMode: ViewModeValue) => {
@@ -38,6 +54,24 @@ export default defineBackground(() => {
       });
     }
   });
+
+  // タブの変更をキャッシュ無効化に反映する
+  chrome.tabs.onCreated.addListener(() => broadcastInvalidateCache("Tab"));
+  chrome.tabs.onRemoved.addListener(() => broadcastInvalidateCache("Tab"));
+  chrome.tabs.onUpdated.addListener((_id, info) => {
+    if (info.status === "complete") broadcastInvalidateCache("Tab");
+  });
+
+  // ブックマークの変更をキャッシュ無効化に反映する
+  chrome.bookmarks.onCreated.addListener(() =>
+    broadcastInvalidateCache("Bookmark"),
+  );
+  chrome.bookmarks.onRemoved.addListener(() =>
+    broadcastInvalidateCache("Bookmark"),
+  );
+  chrome.bookmarks.onChanged.addListener(() =>
+    broadcastInvalidateCache("Bookmark"),
+  );
 
   /**
    * @description コマンドのルーティング

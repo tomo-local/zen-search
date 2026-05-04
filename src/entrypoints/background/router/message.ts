@@ -17,6 +17,9 @@ const {
   SWITCH_VIEW_MODE,
 } = MessageType;
 
+// 前回の QUERY_RESULT リクエストをキャンセルするためのコントローラー
+let queryResultController: AbortController | null = null;
+
 function sendResponse(
   type: string,
   result: unknown,
@@ -107,13 +110,20 @@ export function routeMessage(
     }
 
     case QUERY_RESULT: {
+      // 前のリクエストをキャンセルして新しいコントローラーを作成
+      queryResultController?.abort();
+      queryResultController = new AbortController();
+      const { signal } = queryResultController;
+
       const { filters } = message;
       resultService
-        .query({ filters })
+        .query({ filters, signal })
         .then((results) => {
+          if (signal.aborted) return;
           sendResponse(QUERY_RESULT, results, response);
         })
         .catch((error) => {
+          if (signal.aborted) return;
           console.error("Error handling QUERY_RESULT:", error);
           sendResponse(QUERY_RESULT, [], response);
         });
