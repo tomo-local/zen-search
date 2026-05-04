@@ -59,7 +59,12 @@ const fetchApiSuggestions = async (
     ) {
       return [];
     }
-    console.error("Error fetching suggestions:", { query, engine, endpoint, error });
+    console.error("Error fetching suggestions:", {
+      query,
+      engine,
+      endpoint,
+      error,
+    });
     return [];
   }
 };
