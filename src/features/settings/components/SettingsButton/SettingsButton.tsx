@@ -9,7 +9,7 @@ import SunIcon from "@heroicons/react/16/solid/SunIcon";
 import { CheckCircleIcon } from "@heroicons/react/20/solid";
 import clsx from "clsx";
 import { useCallback, useContext } from "react";
-import useSearchEngines from "@/features/settings/hooks/useSearchEngine";
+import useSearchEngines from "@/features/settings/hooks/useSearchEngines";
 import useViewMode from "@/features/settings/hooks/useViewMode";
 import { ThemeContext } from "@/features/theme/context/ThemeProvider";
 import { MessageType } from "@/services/runtime/types";

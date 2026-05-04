@@ -78,23 +78,12 @@ export const extractYahooJapanSuggestions = (data: unknown): string[] => {
   return hit
     .filter(
       (h): h is { Key: string } =>
-        typeof h === "object" && h !== null && "Key" in h,
+        typeof h === "object" &&
+        h !== null &&
+        "Key" in h &&
+        typeof (h as { Key: unknown }).Key === "string",
     )
     .map((h) => h.Key);
-};
-
-/**
- * Google サジェスト形式からテキストを抽出
- * 形式: ["query", [["suggestion1", 0], ["suggestion2", 0], ...], ...]
- */
-export const extractGoogleSuggestions = (data: unknown): string[] => {
-  if (!Array.isArray(data) || !Array.isArray(data[1])) return [];
-  return (data[1] as unknown[])
-    .filter(
-      (item): item is [string, ...unknown[]] =>
-        Array.isArray(item) && typeof item[0] === "string",
-    )
-    .map((item) => item[0]);
 };
 
 /**

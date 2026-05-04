@@ -15,7 +15,7 @@ import useSearch from "@/features/search/hooks/useSearch";
 import useSearchKeyboard from "@/features/search/hooks/useSearchKeyboard";
 import useSearchResults from "@/features/search/hooks/useSearchResults";
 import useSearchShortcut from "@/features/search/hooks/useSearchShortcut";
-import useSearchEngines from "@/features/settings/hooks/useSearchEngine";
+import useSearchEngines from "@/features/settings/hooks/useSearchEngines";
 import { isTabResult, type Kind, type Result } from "@/services/result";
 import Layout, {
   commonClassName as layoutClassName,

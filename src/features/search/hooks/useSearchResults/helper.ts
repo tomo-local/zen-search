@@ -3,6 +3,7 @@
  */
 
 import type { Kind } from "@/services/result";
+import type { SearchEngineValue } from "@/services/storage/types";
 import type { CacheEntry } from "./types";
 
 /**
@@ -14,7 +15,7 @@ import type { CacheEntry } from "./types";
 export function generateCacheKey(
   query: string | undefined,
   categories: Kind[],
-  searchEngines?: string[],
+  searchEngines?: SearchEngineValue[],
 ): string {
   const q = query || "";
   const c = [...categories].sort().join(",");

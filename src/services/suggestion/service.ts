@@ -34,21 +34,23 @@ const fetchApiSuggestions = async (
   if (!endpoint) return [];
 
   try {
-    const response = await fetch(endpoint);
+    const response = await fetch(endpoint, {
+      signal: AbortSignal.timeout(3000),
+    });
 
     if (!response.ok) return [];
 
-    const text = await response.text();
+    const data = JSON.parse(await response.text());
 
     if (engine === "yahoo_japan") {
-      return extractYahooJapanSuggestions(JSON.parse(text));
+      return extractYahooJapanSuggestions(data);
     }
 
     // Google (client=firefox) および Bing・DDG 等はすべて
     // ["query", ["s1", "s2", ...]] の plain JSON 形式
-    return extractSuggestions(JSON.parse(text));
-  } catch {
-    console.error("Error fetching suggestions:", { query, engine, endpoint });
+    return extractSuggestions(data);
+  } catch (error) {
+    console.error("Error fetching suggestions:", { query, engine, endpoint, error });
 
     return [];
   }

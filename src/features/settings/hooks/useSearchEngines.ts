@@ -49,6 +49,10 @@ storageService.subscribe(SyncStorageKey.SearchEngines, (newEngines) => {
 
 void hydrateSearchEngines();
 
+/**
+ * 有効な検索エンジン一覧を取得し、トグル操作を提供するフック。
+ * Chrome Storage と同期し、変更は即座に UI へ反映される。
+ */
 export default function useSearchEngines() {
   const searchEngines = useSyncExternalStore(
     subscribe,
@@ -58,9 +62,11 @@ export default function useSearchEngines() {
 
   const setSearchEngines = useCallback((engines: SearchEngineValue[]) => {
     if (engines.length === 0) return;
+    const previous = snapshot;
     updateSnapshot(engines);
     storageService.setSearchEngines(engines).catch((error) => {
       console.error("Failed to persist searchEngines", error);
+      updateSnapshot(previous);
     });
   }, []);
 
