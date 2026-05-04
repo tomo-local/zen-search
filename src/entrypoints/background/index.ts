@@ -22,7 +22,7 @@ const broadcastInvalidateCache = (kind: InvalidateCacheKind) => {
   chrome.runtime
     .sendMessage({ type: MessageType.INVALIDATE_CACHE, kind })
     .catch(() => {
-      // ポップアップが開いていない場合は "Receiving end does not exist" になるが正常系
+      // ポップアップ・サイドパネルが開いていない場合は正常系
     });
 };
 

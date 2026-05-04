@@ -228,13 +228,13 @@ export default function useSearchResults(
       const kind = (message as { kind?: InvalidateCacheKind }).kind;
       if (!kind || !params.categories.includes(kind as Kind)) return;
 
-      cacheRef.current.clear();
+      clearCache();
       executeSearch();
     };
 
     chrome.runtime.onMessage.addListener(handleMessage);
     return () => chrome.runtime.onMessage.removeListener(handleMessage);
-  }, [params.categories, executeSearch]);
+  }, [params.categories, executeSearch, clearCache]);
 
   return {
     results,
