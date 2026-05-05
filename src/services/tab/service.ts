@@ -3,9 +3,9 @@
  * 責任: タブの検索、作成、更新、削除を担当
  */
 
-import { convertNewTabToData } from "./converter";
+import { convertTabToData } from "./converter";
 import { TabServiceError, toError } from "./error";
-import { limitResults } from "./helper";
+import { limitResults, queryFiltered } from "./helper";
 import type { TabService } from "./interface";
 import { createTabLogger } from "./logger";
 import type * as Type from "./types";
@@ -13,13 +13,14 @@ import type * as Type from "./types";
 const logger = createTabLogger();
 
 const queryTabs = async ({
+  query,
   option,
 }: Type.QueryTabsRequest): Promise<Type.Tab[]> => {
   try {
     const response = await chrome.tabs.query({});
 
-    const tabs = response
-      .map(convertNewTabToData)
+    const tabs = queryFiltered(response, query)
+      .map(convertTabToData)
       .sort((a, b) => b.data.lastAccessed - a.data.lastAccessed);
 
     logger.info(`Queried tabs: ${tabs.length} tabs found`, {
