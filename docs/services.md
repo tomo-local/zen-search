@@ -148,6 +148,14 @@ import { toTab } from "@/services/tab/converter";
 
 `helper.ts`, `converter.ts`, `internal.ts`, and `container.ts` are implementation details of the service and must never be accessed from outside their own service directory.
 
+### Why this rule exists
+
+Each service exposes a deliberate public surface through `index.ts`. Restricting imports to that surface gives three concrete guarantees:
+
+- **Refactorability** — internal files (`helper.ts`, `converter.ts`, etc.) can be renamed, split, or deleted without affecting any code outside the service. If external code could import them directly, every refactor would risk breaking callers.
+- **Encapsulation** — `internal.ts` holds the error class and logger. Exposing these externally would leak service internals and create implicit coupling between services (e.g. catching `TabServiceError` outside the tab service).
+- **Single source of truth for the contract** — `index.ts` is the explicit declaration of what a service considers stable API. Anything not listed there is intentionally unstable.
+
 ## Design Notes
 
 ### Why are tab/bookmark/history classified as Infrastructure?
