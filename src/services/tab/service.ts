@@ -3,41 +3,48 @@
  * 責任: タブの検索、作成、更新、削除を担当
  */
 
-import { convertNewTabToData } from "./converter";
-import { limitResults } from "./helper";
+import { convertTabToData } from "./converter";
+import { TabServiceError, toError } from "./error";
+import { fuseFilter, limitResults } from "./helper";
+import type { TabService } from "./interface";
+import { createTabLogger } from "./logger";
 import type * as Type from "./types";
 
-// 型定義
-export interface TabService {
-  query: (request: Type.QueryTabsRequest) => Promise<Type.Tab[]>;
-  create: (request: Type.CreateTabRequest) => Promise<void>;
-  update: (request: Type.UpdateTabRequest) => Promise<void>;
-  remove: (request: Type.RemoveTabRequest) => Promise<void>;
-}
+const logger = createTabLogger();
 
 const queryTabs = async ({
+  query,
   option,
 }: Type.QueryTabsRequest): Promise<Type.Tab[]> => {
   try {
     const response = await chrome.tabs.query({});
 
-    const tabs = response
-      .map(convertNewTabToData)
-      .sort((a, b) => b.data.lastAccessed - a.data.lastAccessed);
+    const tabs = fuseFilter(
+      response
+        .map(convertTabToData)
+        .sort((a, b) => b.data.lastAccessed - a.data.lastAccessed),
+      query,
+    );
+
+    logger.info(`Queried tabs: ${tabs.length} tabs found`, {
+      payload: { option },
+      count: tabs.length,
+    });
 
     return limitResults(option?.count)(tabs);
   } catch (error) {
-    console.error("Failed to newQuery tabs:", error);
-    throw new Error("タブの検索に失敗しました");
+    logger.error("Failed to query tabs:", error, { payload: { option } });
+    throw new TabServiceError("Failed to query tabs", toError(error));
   }
 };
 
 const createTab = async ({ url }: Type.CreateTabRequest): Promise<void> => {
   try {
+    logger.info(`Creating tab with URL: ${url}`);
     await chrome.tabs.create({ url });
   } catch (error) {
-    console.error("Failed to create tab:", error);
-    throw new Error("タブの作成に失敗しました");
+    logger.error("Failed to create tab:", error, { payload: { url } });
+    throw new TabServiceError("Failed to create tab", toError(error));
   }
 };
 
@@ -46,6 +53,7 @@ const updateTab = async ({
   windowId,
 }: Type.UpdateTabRequest): Promise<void> => {
   try {
+    logger.info(`Updating tab with ID: ${tabId}`);
     await chrome.tabs.update(tabId, { active: true });
 
     // Focus on the window
@@ -53,22 +61,25 @@ const updateTab = async ({
       await chrome.windows.update(windowId, { focused: true });
     }
   } catch (error) {
-    console.error("Failed to update tab:", error);
-    throw new Error("タブの更新に失敗しました");
+    logger.error("Failed to update tab:", error, {
+      payload: { tabId, windowId },
+    });
+    throw new TabServiceError("Failed to update tab", toError(error));
   }
 };
 
 const removeTab = async ({ tabId }: Type.RemoveTabRequest): Promise<void> => {
   try {
+    logger.info(`Removing tab with ID: ${tabId}`);
     await chrome.tabs.remove(tabId);
   } catch (error) {
-    console.error("Failed to remove tab:", error);
-    throw new Error("タブの削除に失敗しました");
+    logger.error("Failed to remove tab:", error, { payload: { tabId } });
+    throw new TabServiceError("Failed to remove tab", toError(error));
   }
 };
 
 // サービスファクトリー（依存性注入対応）
-export const createTabService = (): TabService => ({
+const createTabService = (): TabService => ({
   query: queryTabs,
   create: createTab,
   update: updateTab,
@@ -77,6 +88,3 @@ export const createTabService = (): TabService => ({
 
 // デフォルトサービスインスタンス
 export const tabService = createTabService();
-
-// 個別エクスポート（後方互換性のため）
-export { type queryTabs, createTab, updateTab, removeTab };

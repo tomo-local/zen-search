@@ -1,3 +1,4 @@
+import Fuse from "fuse.js";
 import type { Tab } from "./types";
 
 export const limitResults =
@@ -5,36 +6,26 @@ export const limitResults =
   (items: Tab[]): Tab[] =>
     count ? items.slice(0, count) : items;
 
-const parseQuery = (query: string): string[] => {
-  return query.split(/\s+/).filter((k) => k.length > 0);
-};
+const normalizeKana = (str: string): string =>
+  str.replace(/[\u30A1-\u30F6]/g, (ch) =>
+    String.fromCharCode(ch.charCodeAt(0) - 0x60),
+  );
 
-const isTextMatch = (text: string, keyword: string): boolean => {
-  const escapedKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  const regex = new RegExp(escapedKeyword, "i");
-  return regex.test(text);
-};
+export const fuseFilter = (tabs: Tab[], query?: string): Tab[] => {
+  if (!query) return tabs;
 
-export const queryFiltered = (
-  response: chrome.tabs.Tab[],
-  query?: string,
-): chrome.tabs.Tab[] => {
-  if (!query) {
-    return response;
-  }
+  const fuse = new Fuse(tabs, {
+    keys: ["title", "url"],
+    threshold: 0.4,
+    ignoreLocation: true,
+    getFn: (obj, path) => {
+      const val = Fuse.config.getFn(obj, path);
+      if (typeof val === "string") return normalizeKana(val);
+      if (Array.isArray(val))
+        return val.map((v) => (typeof v === "string" ? normalizeKana(v) : v));
+      return val;
+    },
+  });
 
-  const keywords = parseQuery(query);
-
-  if (keywords.length === 0) {
-    return response;
-  }
-
-  return response.filter((tab) => {
-    const title = tab.title || "";
-    const url = tab.url ? new URL(tab.url).href : "";
-
-    return keywords.every(
-      (keyword) => isTextMatch(title, keyword) || isTextMatch(url, keyword),
-    );
-  }) as chrome.tabs.Tab[];
+  return fuse.search(normalizeKana(query)).map((res) => res.item);
 };

@@ -19,13 +19,11 @@ export interface CreateTabRequest {
   url: string;
 }
 
-// TODO: RequestをNewTabに追加
 export interface UpdateTabRequest {
   tabId: number;
   windowId: number;
 }
 
-// TODO: RequestをNewTabに追加
 export interface RemoveTabRequest {
   tabId: number;
 }
