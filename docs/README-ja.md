@@ -23,25 +23,23 @@ src/
   features/       # ドメインごとのFeatureスコープのコンポーネントとフック
     search/       # 検索状態、結果取得、キーボード操作、ショートカット
     theme/        # テーマ管理 (useTheme, ThemeProvider)
-    tab/          # タブ関連のコンポーネントとフック
-    bookmark/     # ブックマーク関連のコンポーネント
-    history/      # 履歴関連のコンポーネント
-    suggestion/   # サジェスト関連のコンポーネント
-    action/       # アクションコンポーネント (例: 計算機)
-  services/       # ビジネスロジックとChrome拡張API
+    settings/     # 設定 (表示モード、検索エンジン選択)
+  services/       # サービス層 — 層設計の詳細は docs/services.md を参照
     result/       # 結果を並列で集約し、Fuse.jsで統合
-    tab/          # chrome.tabs APIへの問い合わせ
-    bookmark/     # chrome.bookmarks APIへの問い合わせ
-    history/      # chrome.history APIへの問い合わせ
-    suggestion/   # chrome.omnibox / 検索サジェストの問い合わせ
-    action/       # mathjsによる計算機アクション
-    storage/      # chrome.storage.syncのラッパー
+    tab/          # chrome.tabs API のラッパー
+    bookmark/     # chrome.bookmarks API のラッパー
+    history/      # chrome.history API のラッパー
+    suggestion/   # 外部検索サジェスト API のラッパー
+    action/       # mathjsによる計算機アクション（純粋なドメインロジック）
+    storage/      # chrome.storage.sync のラッパー
     content/      # chrome.action.openPopupによるポップアップの開閉
-    runtime/      # 型付きメッセージパッシングヘルパー
-  shared/         # 再利用可能なUIプリミティブ (Layout, ButtonItem, SquareIcon)
-  lib/            # ライブラリラッパー (i18n)
+    runtime/      # UIとバックグラウンド間の型付きIPCブリッジ
+  shared/         # フィーチャー横断のユーティリティとUIプリミティブ
+    components/   # 再利用可能なUIプリミティブ (Layout, ButtonItem, SquareIcon)
+    hooks/        # 共有フック (useTranslation)
+    utils/        # 純粋なユーティリティ関数 (アルゴリズムヘルパー)
+    lib/          # ライブラリラッパー (i18n)
   locales/        # ロケールファイル (en.json, ja.json)
-  utils/          # 共有ヘルパーやアルゴリズム関数
   assets/         # グローバルスタイル
 ```
 

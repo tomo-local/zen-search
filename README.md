@@ -23,25 +23,23 @@ src/
   features/       # Feature-scoped components and hooks by domain
     search/       # Search state, results, keyboard navigation, shortcuts
     theme/        # Theme management (useTheme, ThemeProvider)
-    tab/          # Tab-related components and hooks
-    bookmark/     # Bookmark-related components
-    history/      # History-related components
-    suggestion/   # Suggestion-related components
-    action/       # Action components (e.g., calculator)
-  services/       # Business logic and Chrome extension APIs
+    settings/     # Settings (view mode, search engine selection)
+  services/       # Service layer — see docs/services.md for layer design
     result/       # Aggregates results in parallel, fuses with Fuse.js
-    tab/          # Queries chrome.tabs API
-    bookmark/     # Queries chrome.bookmarks API
-    history/      # Queries chrome.history API
-    suggestion/   # Queries chrome.omnibox / search suggestions
-    action/       # Calculator action via mathjs
+    tab/          # Wraps chrome.tabs API
+    bookmark/     # Wraps chrome.bookmarks API
+    history/      # Wraps chrome.history API
+    suggestion/   # Wraps external search suggestion APIs
+    action/       # Calculator action via mathjs (pure domain logic)
     storage/      # Wraps chrome.storage.sync
     content/      # Opens/closes the popup via chrome.action.openPopup
-    runtime/      # Typed message passing helpers
-  shared/         # Reusable UI primitives (Layout, ButtonItem, SquareIcon)
-  lib/            # Library wrappers (i18n)
+    runtime/      # Typed IPC bridge between UI and background
+  shared/         # Cross-feature utilities and UI primitives
+    components/   # Reusable UI primitives (Layout, ButtonItem, SquareIcon)
+    hooks/        # Shared hooks (useTranslation)
+    utils/        # Pure utility functions (algorithm helpers)
+    lib/          # Library wrappers (i18n)
   locales/        # Locale files (en.json, ja.json)
-  utils/          # Shared helper and algorithm functions
   assets/         # Global styles
 ```
 
