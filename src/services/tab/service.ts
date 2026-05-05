@@ -30,7 +30,7 @@ const queryTabs = async ({
     return limitResults(option?.count)(tabs);
   } catch (error) {
     logger.error("Failed to query tabs:", error, { payload: { option } });
-    throw new TabServiceError("タブの検索に失敗しました", toError(error));
+    throw new TabServiceError("Failed to query tabs", toError(error));
   }
 };
 
@@ -40,7 +40,7 @@ const createTab = async ({ url }: Type.CreateTabRequest): Promise<void> => {
     await chrome.tabs.create({ url });
   } catch (error) {
     logger.error("Failed to create tab:", error, { payload: { url } });
-    throw new TabServiceError("タブの作成に失敗しました", toError(error));
+    throw new TabServiceError("Failed to create tab", toError(error));
   }
 };
 
@@ -60,7 +60,7 @@ const updateTab = async ({
     logger.error("Failed to update tab:", error, {
       payload: { tabId, windowId },
     });
-    throw new TabServiceError("タブの更新に失敗しました", toError(error));
+    throw new TabServiceError("Failed to update tab", toError(error));
   }
 };
 
@@ -70,7 +70,7 @@ const removeTab = async ({ tabId }: Type.RemoveTabRequest): Promise<void> => {
     await chrome.tabs.remove(tabId);
   } catch (error) {
     logger.error("Failed to remove tab:", error, { payload: { tabId } });
-    throw new TabServiceError("タブの削除に失敗しました", toError(error));
+    throw new TabServiceError("Failed to remove tab", toError(error));
   }
 };
 
