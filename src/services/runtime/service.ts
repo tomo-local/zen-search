@@ -10,12 +10,9 @@ import type {
 } from "@/services/tab/types";
 import { KEEPALIVE_INTERVAL_MS } from "./constants";
 import runtimeServiceDependencies from "./container";
-import { RuntimeServiceError, toError } from "./error";
 import type { RuntimeService } from "./interface";
-import { createRuntimeLogger } from "./logger";
+import { logger, RuntimeServiceError, toError } from "./internal";
 import { MessageType, type RuntimeResponse } from "./types";
-
-const logger = createRuntimeLogger();
 
 function connectPort(
   name: string,
@@ -124,7 +121,7 @@ const closeContent = (): void => {
   runtimeServiceDependencies.contentService.close();
 };
 
-export const createRuntimeService = (): RuntimeService => ({
+const createRuntimeService = (): RuntimeService => ({
   createTab,
   updateTab,
   removeTab,

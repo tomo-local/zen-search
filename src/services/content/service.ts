@@ -4,10 +4,8 @@
  */
 
 import type { ContentService } from "./interface";
-import { createContentLogger } from "./logger";
+import { logger } from "./internal";
 import type * as Type from "./types";
-
-const logger = createContentLogger();
 
 // サービス実装
 const open = async ({
@@ -35,11 +33,13 @@ const openTabs = async (
 };
 
 // サービスオブジェクトのエクスポート
-export const contentService: ContentService = {
+const createContentService = (): ContentService => ({
   open,
   close,
   openTabs,
-};
+});
+
+export const contentService = createContentService();
 
 // デフォルトエクスポート
 export default contentService;

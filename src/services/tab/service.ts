@@ -4,13 +4,10 @@
  */
 
 import { convertTabToData } from "./converter";
-import { TabServiceError, toError } from "./error";
 import { fuseFilter, limitResults } from "./helper";
 import type { TabService } from "./interface";
-import { createTabLogger } from "./logger";
+import { logger, TabServiceError, toError } from "./internal";
 import type * as Type from "./types";
-
-const logger = createTabLogger();
 
 const queryTabs = async ({
   query,

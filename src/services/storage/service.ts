@@ -3,7 +3,6 @@
  * 責任: Chrome storage sync APIの抽象化を担当
  */
 
-import { StorageServiceError, toError } from "./error";
 import {
   chromeStorageGet,
   chromeStorageSet,
@@ -14,11 +13,9 @@ import {
   isValidViewMode,
 } from "./helper";
 import type { StorageService } from "./interface";
-import { createStorageLogger } from "./logger";
+import { logger, StorageServiceError, toError } from "./internal";
 import type * as Type from "./types";
 import { SyncStorageKey } from "./types";
-
-const logger = createStorageLogger();
 
 // サービス実装
 const getStorage = async <K extends Type.SyncStorageKey>({
@@ -130,7 +127,7 @@ const setSearchEngines = async (
 };
 
 // サービスオブジェクトのエクスポート
-export const storageService: StorageService = {
+const createStorageService = (): StorageService => ({
   get: getStorage,
   set: setStorage,
   subscribe: subscribeStorage,
@@ -140,7 +137,9 @@ export const storageService: StorageService = {
   setViewMode,
   getSearchEngines,
   setSearchEngines,
-};
+});
+
+export const storageService = createStorageService();
 
 // デフォルトエクスポート
 export default storageService;

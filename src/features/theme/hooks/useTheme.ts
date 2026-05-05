@@ -1,7 +1,5 @@
 import { useCallback, useEffect, useSyncExternalStore } from "react";
 import {
-  getDefaultTheme,
-  isWindowDarkMode,
   SyncStorageKey,
   storageService,
   type ThemeValue,
@@ -18,12 +16,20 @@ export type ThemeState = ThemeSnapshot & {
 
 const listeners = new Set<() => void>();
 
+/**
+ * ウィンドウのダークモード設定を取得
+ */
+export const isWindowDarkMode = (): boolean => {
+  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
+  return mediaQuery.matches;
+};
+
 const buildSnapshot = (theme: ThemeValue): ThemeSnapshot => ({
   theme,
   isDarkMode: theme === "system" ? isWindowDarkMode() : theme === "dark",
 });
 
-let snapshot: ThemeSnapshot = buildSnapshot(getDefaultTheme());
+let snapshot: ThemeSnapshot = buildSnapshot("system");
 
 export const initialState: ThemeState = {
   ...snapshot,
@@ -51,15 +57,15 @@ const getSnapshot = () => snapshot;
 const hydrateTheme = async () => {
   try {
     const storedTheme = await storageService.getTheme();
-    updateSnapshot(storedTheme ?? getDefaultTheme());
+    updateSnapshot(storedTheme ?? "system");
   } catch (error) {
     console.error("Failed to hydrate theme", error);
-    updateSnapshot(getDefaultTheme());
+    updateSnapshot("system");
   }
 };
 
 storageService.subscribe(SyncStorageKey.Theme, (newTheme) => {
-  updateSnapshot(newTheme ?? getDefaultTheme());
+  updateSnapshot(newTheme ?? "system");
 });
 
 if (typeof window !== "undefined" && window.matchMedia) {

@@ -1,7 +1,5 @@
 import { useCallback, useSyncExternalStore } from "react";
 import {
-  getDefaultSearchEngines,
-  isValidSearchEngines,
   type SearchEngineValue,
   SyncStorageKey,
   storageService,
@@ -9,7 +7,7 @@ import {
 
 const listeners = new Set<() => void>();
 
-let snapshot: SearchEngineValue[] = getDefaultSearchEngines();
+let snapshot: SearchEngineValue[] = [];
 
 const notify = () => {
   for (const listener of listeners) {
@@ -32,19 +30,17 @@ const getSnapshot = () => snapshot;
 const hydrateSearchEngines = async () => {
   try {
     const stored = await storageService.getSearchEngines();
-    updateSnapshot(
-      isValidSearchEngines(stored) ? stored : getDefaultSearchEngines(),
-    );
+    updateSnapshot(stored);
   } catch (error) {
     console.error("Failed to hydrate searchEngines", error);
-    updateSnapshot(getDefaultSearchEngines());
+    updateSnapshot(["google"]);
   }
 };
 
 storageService.subscribe(SyncStorageKey.SearchEngines, (newEngines) => {
-  updateSnapshot(
-    isValidSearchEngines(newEngines) ? newEngines : getDefaultSearchEngines(),
-  );
+  if (newEngines) {
+    updateSnapshot(newEngines);
+  }
 });
 
 void hydrateSearchEngines();

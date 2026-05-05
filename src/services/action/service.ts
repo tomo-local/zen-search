@@ -4,13 +4,10 @@
  */
 
 import { convertCalculation } from "./converter";
-import { ActionServiceError } from "./error";
 import { calculate, isCalculation } from "./helper";
 import type { ActionService } from "./interface";
-import { createActionLogger } from "./logger";
+import { ActionServiceError, logger } from "./internal";
 import type { Action, CalculationRequest } from "./types";
-
-const logger = createActionLogger();
 
 const calculateAction = (
   request: CalculationRequest,

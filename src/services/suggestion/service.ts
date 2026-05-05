@@ -13,10 +13,8 @@ import {
   limitResults,
 } from "./helper";
 import type { SuggestionService } from "./interface";
-import { createSuggestionLogger } from "./logger";
+import { logger } from "./internal";
 import type * as Type from "./types";
-
-const logger = createSuggestionLogger();
 
 /**
  * 検索エンジン API からサジェストテキストのみを取得する。
@@ -143,10 +141,12 @@ const multiEngineQuerySuggestions = async ({
 };
 
 // サービスオブジェクトのエクスポート
-export const suggestionService: SuggestionService = {
+const createSuggestionService = (): SuggestionService => ({
   query: querySuggestions,
   multiEngineQuery: multiEngineQuerySuggestions,
-};
+});
+
+export const suggestionService = createSuggestionService();
 
 // デフォルトエクスポート
 export default suggestionService;

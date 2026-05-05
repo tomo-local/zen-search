@@ -2,14 +2,11 @@
  * Result Service - Result管理サービス
  */
 
-import { getDefaultSearchEngines } from "@/services/storage/helper";
 import resultServiceDependencies from "./container";
 import * as Helper from "./helper";
 import type { ResultService } from "./interface";
-import { createResultLogger } from "./logger";
+import { logger } from "./internal";
 import type * as Type from "./types";
-
-const logger = createResultLogger();
 
 const queryResults = async (
   request: Type.QueryResultsInternalRequest,
@@ -63,7 +60,7 @@ const queryResults = async (
   if (filters.categories.includes("Suggestion")) {
     const engines = filters.searchEngines?.length
       ? filters.searchEngines
-      : getDefaultSearchEngines();
+      : await resultServiceDependencies.storageService.getSearchEngines();
     queryPromises.push(
       resultServiceDependencies.suggestionService
         .multiEngineQuery({
@@ -111,6 +108,8 @@ const queryResults = async (
 };
 
 /** サービスのエクスポート */
-export const resultService: ResultService = {
+const createResultService = (): ResultService => ({
   query: queryResults,
-};
+});
+
+export const resultService = createResultService();
