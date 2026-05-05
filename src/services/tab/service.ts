@@ -6,7 +6,7 @@
 import { convertNewTabToData } from "./converter";
 import { TabServiceError, toError } from "./error";
 import { limitResults } from "./helper";
-import type TabService from "./interface";
+import type { TabService } from "./interface";
 import { createTabLogger } from "./logger";
 import type * as Type from "./types";
 
@@ -29,7 +29,7 @@ const queryTabs = async ({
 
     return limitResults(option?.count)(tabs);
   } catch (error) {
-    logger.error("Failed to newQuery tabs:", error, { payload: { option } });
+    logger.error("Failed to query tabs:", error, { payload: { option } });
     throw new TabServiceError("タブの検索に失敗しました", toError(error));
   }
 };

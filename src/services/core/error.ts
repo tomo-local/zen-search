@@ -9,7 +9,7 @@ export abstract class ServiceError extends Error {
     message: string,
     public readonly cause?: Error,
   ) {
-    super(message);
+    super(message, { cause });
     this.name = this.constructor.name;
   }
 }
