@@ -1,4 +1,3 @@
-import { contentService } from "@/services/content";
 import type {
   Kind,
   QueryResultsRequest,
@@ -10,6 +9,7 @@ import type {
   UpdateTabRequest,
 } from "@/services/tab/types";
 import { KEEPALIVE_INTERVAL_MS } from "./constants";
+import runtimeServiceDependencies from "./container";
 import { RuntimeServiceError, toError } from "./error";
 import type { RuntimeService } from "./interface";
 import { createRuntimeLogger } from "./logger";
@@ -116,12 +116,12 @@ const openContent = async (): Promise<void> => {
     logger.error("Failed to open content:", error);
     // WARN: 処理が失敗した場合はPopup のサービスを表示する
     // Contentが表示できない場合はにPopupを表示する
-    contentService.open({});
+    runtimeServiceDependencies.contentService.open({});
   }
 };
 
 const closeContent = (): void => {
-  contentService.close();
+  runtimeServiceDependencies.contentService.close();
 };
 
 export const createRuntimeService = (): RuntimeService => ({
