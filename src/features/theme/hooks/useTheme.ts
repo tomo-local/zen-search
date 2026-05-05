@@ -62,6 +62,14 @@ storageService.subscribe(SyncStorageKey.Theme, (newTheme) => {
   updateSnapshot(newTheme ?? getDefaultTheme());
 });
 
+window
+  .matchMedia("(prefers-color-scheme: dark)")
+  .addEventListener("change", () => {
+    if (snapshot.theme === "system") {
+      updateSnapshot("system");
+    }
+  });
+
 void hydrateTheme();
 
 export default function useTheme() {

@@ -19,7 +19,7 @@ export interface RuntimeService {
   removeTab: (request: RemoveTabRequest) => Promise<void>;
   queryResults: (request: QueryResultsRequest) => Promise<Result<Kind>[]>;
   openContent: () => Promise<void>;
-  closeContent: () => Promise<void>;
+  closeContent: () => void;
   /**
    * MV3 Service Worker のアイドル停止を防ぐための永続ポート接続を確立する。
    * 接続が切断された場合（SW 強制終了時）は自動的に再接続する。
@@ -145,15 +145,8 @@ const openContent = async (): Promise<void> => {
   }
 };
 
-const closeContent = async (): Promise<void> => {
-  try {
-    await chrome.runtime.sendMessage({ type: MessageType.CLOSE_POPUP });
-  } catch (error) {
-    console.error(`Failed to close Content:`, error);
-    // WARN: 処理が失敗した場合は Popup のサービスを表示する
-    // Contentが表示できない場合はにPopupを表示する
-    contentService.close();
-  }
+const closeContent = (): void => {
+  contentService.close();
 };
 
 export const createRuntimeService = (): RuntimeService => ({

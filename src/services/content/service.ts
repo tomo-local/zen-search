@@ -28,13 +28,11 @@ const close = (): void => {
   window?.close();
 };
 
-const openTabs = async (action: Promise<Type.OpenResponse>): Promise<void> =>
-  chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-    const tabId = tabs[0].id;
-    if (tabId) {
-      await action;
-    }
-  });
+const openTabs = async (action: Promise<Type.OpenResponse>): Promise<void> => {
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tabs[0]?.id) return;
+  await action;
+};
 
 // サービスオブジェクトのエクスポート
 export const contentService: ContentService = {

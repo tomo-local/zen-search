@@ -14,6 +14,7 @@ import {
   DEFAULT_OPTIONS,
   ERROR_CODES,
   ERROR_MESSAGES,
+  MAX_CACHE_SIZE,
 } from "./constants";
 import {
   generateCacheKey,
@@ -117,13 +118,17 @@ export default function useSearchResults(
         fetchedResults = await withTimeout(fetchFn(), opts.timeoutMs);
       }
 
-      // キャッシュに保存
+      // キャッシュに保存（FIFO eviction でサイズ上限を維持）
       if (opts.enableCache) {
         cacheRef.current.set(cacheKey, {
           data: fetchedResults,
           timestamp: Date.now(),
           key: cacheKey,
         });
+        if (cacheRef.current.size > MAX_CACHE_SIZE) {
+          const oldestKey = cacheRef.current.keys().next().value;
+          if (oldestKey !== undefined) cacheRef.current.delete(oldestKey);
+        }
       }
 
       return fetchedResults;
