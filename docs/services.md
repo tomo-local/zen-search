@@ -105,12 +105,48 @@ Each service follows a consistent file structure:
 
 ```
 src/services/<name>/
-  types.ts      # Interfaces, enums, and request/response types
-  service.ts    # Public service implementation
-  helper.ts     # Pure utility functions (no side effects)
-  converter.ts  # Data transformation from Chrome API types to domain types (where needed)
-  index.ts      # Re-exports public API
+  index.ts      # Public API — re-exports from service.ts and types.ts only
+  service.ts    # Service implementation and exported singleton
+  interface.ts  # Service interface (contract)
+  types.ts      # Request/response types and domain types
+  helper.ts     # Pure utility functions (no side effects) — internal only
+  converter.ts  # Chrome API type → domain type conversion — internal only
+  internal.ts   # Error class and logger instance — internal only
+  container.ts  # Dependency injection (present only when cross-service deps exist) — internal only
 ```
+
+## Public API Contract
+
+**Only files listed in `index.ts` may be imported from outside the service.**
+
+`index.ts` re-exports only from `service.ts` and `types.ts`:
+
+```typescript
+// ✅ Correct — index.ts
+export * from "./service";
+export * from "./types";
+
+// ❌ Wrong — never re-export internal files
+export * from "./helper";
+export * from "./converter";
+export * from "./internal";
+export * from "./container";
+```
+
+External code must import exclusively through the service index:
+
+```typescript
+// ✅ Correct — import through index
+import { tabService } from "@/services/tab";
+import type { Tab } from "@/services/tab";
+
+// ❌ Wrong — direct import of internal files
+import { fuseFilter } from "@/services/tab/helper";
+import { TabServiceError } from "@/services/tab/internal";
+import { toTab } from "@/services/tab/converter";
+```
+
+`helper.ts`, `converter.ts`, `internal.ts`, and `container.ts` are implementation details of the service and must never be accessed from outside their own service directory.
 
 ## Design Notes
 
