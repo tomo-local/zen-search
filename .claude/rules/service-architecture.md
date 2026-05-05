@@ -37,13 +37,25 @@ When touching `useTheme`, `useViewMode`, or `popup/main.tsx`, do not add further
 
 ---
 
+## Service Layers
+
+Services in `src/services/` fall into three layers:
+
+| Layer | Services | Characteristics |
+| --- | --- | --- |
+| **Application** | `result`, `action` (future) | Orchestrate multiple services; no direct Chrome API calls |
+| **Infrastructure** | `tab`, `bookmark`, `history`, `suggestion`, `storage`, `content`, `runtime` | Wrap Chrome APIs or external systems; no business logic |
+| **Domain** | `action` (current) | Pure logic; no Chrome API or network dependency |
+
+`action` is currently a Domain service (pure mathjs logic). As more action types are added, it will evolve into an Application service with sub-handlers, similar to `result`.
+
 ## Service Roles
 
 Each service in `src/services/` has a single, well-defined responsibility. Follow the patterns below when implementing or extending services.
 
 ### result
 
-**Role:** Orchestrator. Aggregates results from all source services in parallel and applies fuzzy search.
+**Role:** Application orchestrator. Aggregates results from all source services in parallel and applies fuzzy search.
 
 - Calls Tab / Bookmark / History / Suggestion / Action in parallel via `Promise.allSettled()`
 - Distributes the requested count evenly across services
@@ -89,12 +101,13 @@ Each service in `src/services/` has a single, well-defined responsibility. Follo
 
 ### action
 
-**Role:** Detect and evaluate mathematical expressions.
+**Role:** Detect and evaluate actions. Currently handles only mathematical expressions, but is designed to grow into an orchestrator (similar to `result`) as more action types are added.
 
 - Uses `mathjs` to evaluate expressions matching `/[0-9]+(\s*[+\-*/]\s*[0-9]+)+/`
 - Returns a single `Action<"Action.Calculation">` item with the result formatted as `"expr = result"`
 - Result URL links to `https://www.google.com/search?q={expr}` for click-through
 - Currently the only action kind is `Action.Calculation`
+- **Future:** each action type will be extracted to `handlers/` (e.g., `handlers/calculation.ts`, `handlers/conversion.ts`); `service.ts` will become an orchestrator
 
 ### content
 

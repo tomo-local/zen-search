@@ -2,13 +2,13 @@
 
 ## Overview
 
-The service layer in zen-search is organized around Domain-Driven Design (DDD) principles, adapted pragmatically for a browser extension environment. Services are grouped into three layers based on their responsibility.
+The service layer in zen-search follows a layered architecture adapted pragmatically for a browser extension environment. Services are grouped into three layers based on their responsibility.
 
 ## Service Layers
 
 ### Application Services
 
-Coordinate multiple domain services to fulfill a single use case.
+Orchestrate multiple infrastructure services to fulfill a single use case.
 
 | Service | Responsibility |
 | --- | --- |
@@ -16,31 +16,60 @@ Coordinate multiple domain services to fulfill a single use case.
 
 ### Domain Services
 
-Encapsulate domain logic and own the data model for a single domain concept.
+Encapsulate pure business logic with no dependency on Chrome APIs or external systems.
 
 | Service | Responsibility |
 | --- | --- |
-| `tab` | Query, create, activate, and remove browser tabs |
-| `bookmark` | Search bookmarks and retrieve recent bookmarks |
-| `history` | Search browser history with optional time-range filtering |
-| `suggestion` | Fetch search suggestions from Google Suggest API |
-| `action` | Detect and evaluate mathematical expressions |
+| `action` | Detect and evaluate mathematical expressions via mathjs. Currently handles only calculation, but is designed to grow into an orchestrator (similar to `result`) as more action types are added. |
 
 ### Infrastructure Services
 
-Abstract external systems and cross-cutting concerns away from domain logic.
+Wrap Chrome APIs or external systems and expose them as typed interfaces. These services have no business logic of their own — they translate between Chrome's types and the app's domain types.
 
 | Service | Responsibility |
 | --- | --- |
-| `storage` | Persist and subscribe to user preferences via `chrome.storage.sync` |
-| `content` | Open and close the extension popup or side panel |
-| `runtime` | Typed IPC bridge between UI and the background service worker |
+| `tab` | Wrap `chrome.tabs` — query, create, activate, and remove browser tabs |
+| `bookmark` | Wrap `chrome.bookmarks` — search bookmarks and retrieve recent bookmarks |
+| `history` | Wrap `chrome.history` — search browser history with optional time-range filtering |
+| `suggestion` | Wrap external search suggestion APIs — fetch and deduplicate suggestions across engines |
+| `storage` | Wrap `chrome.storage.sync` — persist and subscribe to user preferences |
+| `content` | Wrap `chrome.action` — open and close the extension popup or side panel |
+| `runtime` | Typed IPC bridge between UI and the background service worker via `chrome.runtime` |
+
+## Data Flow
+
+### Read (search)
+
+```
+UI
+ └─ runtimeService.queryResults()
+      └─ sendMessage(QUERY_RESULT)
+           └─ background router        ← Application layer
+                └─ resultService       ← Orchestrates in parallel
+                     ├─ tabService.query()
+                     ├─ bookmarkService.query()
+                     ├─ historyService.query()
+                     ├─ suggestionService.query()
+                     └─ actionService.calculate()
+```
+
+### Write (tab operations)
+
+```
+UI
+ └─ runtimeService.createTab()
+      └─ sendMessage(CREATE_TAB)
+           └─ background router        ← Application layer
+                └─ tabService.create() ← Infrastructure (direct call, no orchestration needed)
+```
+
+Write operations are called directly from the background router because each write maps 1:1 to a single Chrome API call — no orchestration is required.
 
 ## Access Rules
 
 ### Intended Architecture
 
-UI contexts (popup, sidepanel, features) must reference **only the `runtime` service** at runtime. All domain and infrastructure logic runs exclusively inside the background service worker.
+UI contexts (popup, sidepanel, features) must reference **only the `runtime` service** at runtime. All service logic runs exclusively inside the background service worker.
 
 ```
 [UI: popup / sidepanel / features]
@@ -85,15 +114,33 @@ src/services/<name>/
 
 ## Design Notes
 
-### Why DDD?
+### Why are tab/bookmark/history classified as Infrastructure?
 
-Each domain concept (tab, bookmark, history, suggestion, action) is owned by exactly one service. This prevents logic from spreading across files and makes it straightforward to find, change, or replace an individual domain's behavior.
+These services are thin wrappers around Chrome APIs. They translate Chrome's raw types (`chrome.tabs.Tab`, `chrome.bookmarks.BookmarkTreeNode`, etc.) into the app's domain types, but contain no business logic. The routing decisions (when to call them, how to combine results) live in the `result` service or the background router.
+
+### Why does result sit above tab/bookmark/history?
+
+`result` is the only service that needs to coordinate multiple sources. It runs queries in parallel via `Promise.allSettled`, merges the results, and applies fuzzy search — all of which are application-level concerns rather than Chrome API concerns.
+
+### Future direction for action
+
+Currently `action` contains only calculation logic and is classified as a Domain Service. As more action types are added (e.g., unit conversion, URL utilities), `action` is expected to evolve into an Application Service — an orchestrator that coordinates multiple action handlers, similar to how `result` coordinates multiple source services. Each handler will remain a pure function where possible; handlers requiring external APIs will be treated as Infrastructure.
+
+```
+src/services/action/         ← future structure
+  service.ts                 ← orchestrator (like result)
+  types.ts
+  handlers/
+    calculation.ts           ← current logic (pure domain)
+    conversion.ts            ← future (unit / currency)
+    ...
+```
 
 ### Why runtime-only access from UI?
 
-The background service worker is the only context that has stable, long-lived access to Chrome APIs. Routing all service calls through the background avoids timing issues with the service worker lifecycle and keeps UI code free of Chrome API dependencies.
+The background service worker is the only context with stable, long-lived access to Chrome APIs. Routing all service calls through the background avoids timing issues with the service worker lifecycle and keeps UI code free of Chrome API dependencies.
 
 ### Tradeoffs
 
 - `storage` is currently accessed directly from UI hooks (`useTheme`, `useViewMode`) because `chrome.storage.onChanged` subscriptions need to run in the UI context for reactive state updates. This will be resolved as the migration progresses.
-- `converter.ts` acts as a factory or value-object transformer in DDD terms, but is kept as a simple file of pure functions for pragmatic simplicity.
+- `converter.ts` acts as a factory in layered architecture terms, but is kept as a file of pure functions for pragmatic simplicity.

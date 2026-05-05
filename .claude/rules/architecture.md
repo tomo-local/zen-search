@@ -21,7 +21,12 @@ Chrome/Firefox extension built with [WXT](https://wxt.dev/) + React 19 + TypeScr
 
 ## Shared (`src/shared/`)
 
-`Layout`, `ButtonItem`, `SquareIcon` — Reusable UI primitives.
+Cross-feature resources organized by type:
+
+- **`components/`** — Reusable UI primitives (`Layout`, `ButtonItem`, `SquareIcon`)
+- **`hooks/`** — Shared hooks (`useTranslation`)
+- **`utils/`** — Pure utility functions (`algorithm.ts` — n-gram similarity)
+- **`lib/`** — Library wrappers (`i18n.ts`)
 
 ## Storage pattern
 
