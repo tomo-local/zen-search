@@ -85,7 +85,7 @@ export function routeMessage(
 
   switch (message.type) {
     case OPEN_POPUP:
-      contentService.openTabs(contentService.open({}));
+      contentService.openTabs(() => contentService.open({}));
       return true;
 
     case CREATE_TAB: {

@@ -17,6 +17,9 @@ export const DEFAULT_OPTIONS: Required<UseSearchResultsOptions> = {
 /** デフォルトの最大取得件数 */
 export const DEFAULT_MAX_COUNT = 1000;
 
+/** キャッシュの最大エントリ数（FIFO eviction） */
+export const MAX_CACHE_SIZE = 50;
+
 /** エラーメッセージ */
 export const ERROR_MESSAGES = {
   TIMEOUT: "検索がタイムアウトしました",
