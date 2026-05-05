@@ -4,5 +4,5 @@
 
 export * from "./converter";
 export * from "./helper";
-export { type BookmarkService, bookmarkService } from "./service";
+export { bookmarkService } from "./service";
 export type * from "./types";

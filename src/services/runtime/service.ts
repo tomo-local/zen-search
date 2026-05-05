@@ -10,25 +10,12 @@ import type {
   UpdateTabRequest,
 } from "@/services/tab/types";
 import { KEEPALIVE_INTERVAL_MS } from "./constants";
-import { RuntimeServiceError } from "./error";
+import { RuntimeServiceError, toError } from "./error";
+import type { RuntimeService } from "./interface";
+import { createRuntimeLogger } from "./logger";
 import { MessageType, type RuntimeResponse } from "./types";
 
-export interface RuntimeService {
-  createTab: (request: CreateTabRequest) => Promise<void>;
-  updateTab: (request: UpdateTabRequest) => Promise<void>;
-  removeTab: (request: RemoveTabRequest) => Promise<void>;
-  queryResults: (request: QueryResultsRequest) => Promise<Result<Kind>[]>;
-  openContent: () => Promise<void>;
-  closeContent: () => void;
-  /**
-   * MV3 Service Worker のアイドル停止を防ぐための永続ポート接続を確立する。
-   * 接続が切断された場合（SW 強制終了時）は自動的に再接続する。
-   *
-   * @param name - ポート名（background の onConnect で識別される）
-   * @param onMessage - ポート経由で受信したメッセージのハンドラ（省略可）
-   */
-  connectPort: (name: string, onMessage?: (message: unknown) => void) => void;
-}
+const logger = createRuntimeLogger();
 
 function connectPort(
   name: string,
@@ -61,11 +48,8 @@ const createTab = async ({ url }: CreateTabRequest): Promise<void> => {
       throw error;
     }
 
-    console.error("Failed to create tab via runtime:", error);
-    throw new RuntimeServiceError(
-      "タブの作成に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
+    logger.error("Failed to create tab via runtime:", error);
+    throw new RuntimeServiceError("Failed to create tab", toError(error));
   }
 };
 
@@ -84,11 +68,8 @@ const updateTab = async ({
       throw error;
     }
 
-    console.error("Failed to update tab via runtime:", error);
-    throw new RuntimeServiceError(
-      "タブの更新に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
+    logger.error("Failed to update tab via runtime:", error);
+    throw new RuntimeServiceError("Failed to update tab", toError(error));
   }
 };
 
@@ -103,11 +84,8 @@ const removeTab = async ({ tabId }: RemoveTabRequest): Promise<void> => {
       throw error;
     }
 
-    console.error("Failed to remove tab via runtime:", error);
-    throw new RuntimeServiceError(
-      "タブの削除に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
+    logger.error("Failed to remove tab via runtime:", error);
+    throw new RuntimeServiceError("Failed to remove tab", toError(error));
   }
 };
 
@@ -126,11 +104,8 @@ const queryResults = async ({
       throw error;
     }
 
-    console.error("Failed to query results via runtime:", error);
-    throw new RuntimeServiceError(
-      "結果の検索に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
+    logger.error("Failed to query results via runtime:", error);
+    throw new RuntimeServiceError("Failed to query results", toError(error));
   }
 };
 
@@ -138,7 +113,7 @@ const openContent = async (): Promise<void> => {
   try {
     await chrome.runtime.sendMessage({ type: MessageType.OPEN_POPUP });
   } catch (error) {
-    console.error(`Failed to open Content:`, error);
+    logger.error("Failed to open content:", error);
     // WARN: 処理が失敗した場合はPopup のサービスを表示する
     // Contentが表示できない場合はにPopupを表示する
     contentService.open({});

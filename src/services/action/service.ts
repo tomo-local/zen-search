@@ -4,13 +4,13 @@
  */
 
 import { convertCalculation } from "./converter";
+import { ActionServiceError } from "./error";
 import { calculate, isCalculation } from "./helper";
+import type { ActionService } from "./interface";
+import { createActionLogger } from "./logger";
 import type { Action, CalculationRequest } from "./types";
 
-export interface ActionService {
-  calculate(request: CalculationRequest): Action<"Action.Calculation">;
-  isCalculation(query: string): boolean;
-}
+const logger = createActionLogger();
 
 const calculateAction = (
   request: CalculationRequest,
@@ -18,7 +18,10 @@ const calculateAction = (
   const response = calculate(request.expression);
 
   if (!response.success) {
-    throw new Error("Calculation failed");
+    logger.error("Calculation failed", undefined, {
+      expression: request.expression,
+    });
+    throw new ActionServiceError("Failed to evaluate expression");
   }
 
   return convertCalculation(request.expression, response.result);
@@ -26,7 +29,7 @@ const calculateAction = (
 
 const isAvailableCalculation = (query: string): boolean => isCalculation(query);
 
-const createActionService = () => ({
+const createActionService = (): ActionService => ({
   calculate: calculateAction,
   isCalculation: isAvailableCalculation,
 });

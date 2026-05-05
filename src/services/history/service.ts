@@ -5,11 +5,12 @@
 
 import { DEFAULT_COUNT } from "./constant";
 import { convertItemToHistory } from "./converter";
+import { HistoryServiceError, toError } from "./error";
+import type { HistoryService } from "./interface";
+import { createHistoryLogger } from "./logger";
 import type * as Type from "./types";
 
-export interface HistoryService {
-  query(request: Type.SearchHistoryRequest): Promise<Type.History[]>;
-}
+const logger = createHistoryLogger();
 
 const queryHistory = async ({
   query,
@@ -27,8 +28,10 @@ const queryHistory = async ({
 
     return response.map((item) => convertItemToHistory(item));
   } catch (error) {
-    console.error("Failed to query history:", error);
-    throw new Error("履歴の取得に失敗しました");
+    logger.error("Failed to query history:", error, {
+      payload: { query, count },
+    });
+    throw new HistoryServiceError("Failed to query history", toError(error));
   }
 };
 

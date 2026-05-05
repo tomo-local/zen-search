@@ -3,6 +3,7 @@
  * 責任: Chrome storage sync APIの抽象化を担当
  */
 
+import { StorageServiceError, toError } from "./error";
 import {
   chromeStorageGet,
   chromeStorageSet,
@@ -12,28 +13,12 @@ import {
   isValidSearchEngines,
   isValidViewMode,
 } from "./helper";
+import type { StorageService } from "./interface";
+import { createStorageLogger } from "./logger";
 import type * as Type from "./types";
 import { SyncStorageKey } from "./types";
 
-// 型定義
-export interface StorageService {
-  get: <K extends Type.SyncStorageKey>(
-    request: Type.GetStorageRequest<K>,
-  ) => Promise<Type.SyncStorage[K] | undefined>;
-  set: <K extends Type.SyncStorageKey>(
-    request: Type.SetStorageRequest<K>,
-  ) => Promise<boolean>;
-  subscribe: <K extends Type.SyncStorageKey>(
-    key: K,
-    callback: (value: Type.SyncStorage[K] | undefined) => void,
-  ) => () => void;
-  getTheme: () => Promise<Type.ThemeValue>;
-  setTheme: (request: Type.SetThemeRequest) => Promise<boolean>;
-  getViewMode: () => Promise<Type.ViewModeValue>;
-  setViewMode: (viewMode: Type.ViewModeValue) => Promise<boolean>;
-  getSearchEngines: () => Promise<Type.SearchEngineValue[]>;
-  setSearchEngines: (engines: Type.SearchEngineValue[]) => Promise<boolean>;
-}
+const logger = createStorageLogger();
 
 // サービス実装
 const getStorage = async <K extends Type.SyncStorageKey>({
@@ -42,10 +27,11 @@ const getStorage = async <K extends Type.SyncStorageKey>({
   try {
     return await chromeStorageGet(key);
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.warn(`[storageService] get(${key}) failed:`, error);
-    }
-    throw new Error(`ストレージの取得に失敗しました: ${key}`);
+    logger.warn(`get(${key}) failed`, { error });
+    throw new StorageServiceError(
+      `Failed to get storage: ${key}`,
+      toError(error),
+    );
   }
 };
 
@@ -73,10 +59,11 @@ const setStorage = async <K extends Type.SyncStorageKey>({
   try {
     return await chromeStorageSet(key, value);
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.warn(`[storageService] set(${key}) failed:`, error);
-    }
-    throw new Error(`ストレージの保存に失敗しました: ${key}`);
+    logger.warn(`set(${key}) failed`, { error });
+    throw new StorageServiceError(
+      `Failed to set storage: ${key}`,
+      toError(error),
+    );
   }
 };
 
@@ -85,9 +72,7 @@ const getTheme = async (): Promise<Type.ThemeValue> => {
     const theme = await chromeStorageGet(SyncStorageKey.Theme);
     return theme || getDefaultTheme();
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.warn("[storageService] getTheme failed:", error);
-    }
+    logger.warn("getTheme failed", { error });
     return getDefaultTheme();
   }
 };
@@ -96,10 +81,8 @@ const setTheme = async ({ theme }: Type.SetThemeRequest): Promise<boolean> => {
   try {
     return await chromeStorageSet(SyncStorageKey.Theme, theme);
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.warn("[storageService] setTheme failed:", error);
-    }
-    throw new Error("テーマの保存に失敗しました");
+    logger.warn("setTheme failed", { error });
+    throw new StorageServiceError("Failed to save theme", toError(error));
   }
 };
 
@@ -108,9 +91,7 @@ const getViewMode = async (): Promise<Type.ViewModeValue> => {
     const viewMode = await chromeStorageGet(SyncStorageKey.ViewMode);
     return isValidViewMode(viewMode) ? viewMode : getDefaultViewMode();
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.warn("[storageService] getViewMode failed:", error);
-    }
+    logger.warn("getViewMode failed", { error });
     return getDefaultViewMode();
   }
 };
@@ -119,10 +100,8 @@ const setViewMode = async (viewMode: Type.ViewModeValue): Promise<boolean> => {
   try {
     return await chromeStorageSet(SyncStorageKey.ViewMode, viewMode);
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.warn("[storageService] setViewMode failed:", error);
-    }
-    throw new Error("表示モードの保存に失敗しました");
+    logger.warn("setViewMode failed", { error });
+    throw new StorageServiceError("Failed to save view mode", toError(error));
   }
 };
 
@@ -131,9 +110,7 @@ const getSearchEngines = async (): Promise<Type.SearchEngineValue[]> => {
     const engines = await chromeStorageGet(SyncStorageKey.SearchEngines);
     return isValidSearchEngines(engines) ? engines : getDefaultSearchEngines();
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.warn("[storageService] getSearchEngines failed:", error);
-    }
+    logger.warn("getSearchEngines failed", { error });
     return getDefaultSearchEngines();
   }
 };
@@ -144,10 +121,11 @@ const setSearchEngines = async (
   try {
     return await chromeStorageSet(SyncStorageKey.SearchEngines, engines);
   } catch (error) {
-    if (import.meta.env.DEV) {
-      console.warn("[storageService] setSearchEngines failed:", error);
-    }
-    throw new Error("検索エンジンの保存に失敗しました");
+    logger.warn("setSearchEngines failed", { error });
+    throw new StorageServiceError(
+      "Failed to save search engines",
+      toError(error),
+    );
   }
 };
 

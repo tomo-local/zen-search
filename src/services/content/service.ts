@@ -3,13 +3,11 @@
  * 責任: 各種コンテンツ（ポップアップ、タブ、ランタイム）の開閉を担当
  */
 
+import type { ContentService } from "./interface";
+import { createContentLogger } from "./logger";
 import type * as Type from "./types";
 
-export interface ContentService {
-  open: (request: Type.OpenRequest) => Promise<Type.OpenResponse>;
-  close: () => void;
-  openTabs: (action: () => Promise<Type.OpenResponse>) => Promise<void>;
-}
+const logger = createContentLogger();
 
 // サービス実装
 const open = async ({
@@ -19,7 +17,7 @@ const open = async ({
     await chrome.action.openPopup({ windowId });
     return { success: true };
   } catch (error) {
-    console.error(`Failed to open Content:`, error);
+    logger.error("Failed to open content:", error, { payload: { windowId } });
     return { success: false };
   }
 };

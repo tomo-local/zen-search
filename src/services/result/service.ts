@@ -5,14 +5,11 @@
 import { getDefaultSearchEngines } from "@/services/storage/helper";
 import resultServiceDependencies from "./container";
 import * as Helper from "./helper";
+import type { ResultService } from "./interface";
+import { createResultLogger } from "./logger";
 import type * as Type from "./types";
 
-// 型定義
-export interface ResultService {
-  query: (
-    request: Type.QueryResultsInternalRequest,
-  ) => Promise<Type.Result<Type.Kind>[]>;
-}
+const logger = createResultLogger();
 
 const queryResults = async (
   request: Type.QueryResultsInternalRequest,
@@ -96,7 +93,7 @@ const queryResults = async (
 
   const results = resultArrays.reduce((acc, curr) => {
     if (curr.status === "rejected") {
-      console.error("Error querying results:", curr.reason);
+      logger.error("Error querying results:", curr.reason);
       return acc;
     }
 

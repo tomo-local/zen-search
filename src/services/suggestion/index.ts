@@ -4,5 +4,5 @@
 
 export * from "./converter";
 export * from "./helper";
-export { type SuggestionService, suggestionService } from "./service";
+export { suggestionService } from "./service";
 export type * from "./types";

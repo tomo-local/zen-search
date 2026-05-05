@@ -12,15 +12,11 @@ import {
   extractYahooJapanSuggestions,
   limitResults,
 } from "./helper";
+import type { SuggestionService } from "./interface";
+import { createSuggestionLogger } from "./logger";
 import type * as Type from "./types";
 
-// 型定義
-export interface SuggestionService {
-  query: (request: Type.QuerySuggestionsRequest) => Promise<Type.Suggestion[]>;
-  multiEngineQuery: (
-    request: Type.MultiEngineQuerySuggestionsRequest,
-  ) => Promise<Type.Suggestion[]>;
-}
+const logger = createSuggestionLogger();
 
 /**
  * 検索エンジン API からサジェストテキストのみを取得する。
@@ -59,11 +55,10 @@ const fetchApiSuggestions = async (
     ) {
       return [];
     }
-    console.error("Error fetching suggestions:", {
+    logger.error("Error fetching suggestions:", error, {
       query,
       engine,
       endpoint,
-      error,
     });
     return [];
   }

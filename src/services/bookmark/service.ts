@@ -4,16 +4,13 @@
  */
 
 import { convertBookmark } from "./converter";
+import { BookmarkServiceError, toError } from "./error";
 import { filterValidBookmarks } from "./helper";
+import type { BookmarkService } from "./interface";
+import { createBookmarkLogger } from "./logger";
 import type * as Type from "./types";
 
-// 型定義
-export interface BookmarkService {
-  query: (request: Type.QueryBookmarksRequest) => Promise<Type.Bookmark[]>;
-  getRecent: (
-    request: Type.GetRecentBookmarksRequest,
-  ) => Promise<Type.Bookmark[]>;
-}
+const logger = createBookmarkLogger();
 
 const queryBookmarks = async ({
   query,
@@ -37,8 +34,10 @@ const queryBookmarks = async ({
 
     return bookmarks;
   } catch (error) {
-    console.error("Failed to query bookmarks:", error);
-    throw new Error("ブックマークの取得に失敗しました");
+    logger.error("Failed to query bookmarks:", error, {
+      payload: { query, option },
+    });
+    throw new BookmarkServiceError("Failed to query bookmarks", toError(error));
   }
 };
 
@@ -53,13 +52,17 @@ const getRecentBookmarks = async ({
 
     return bookmarks;
   } catch (error) {
-    console.error("Failed to get recent bookmarks:", error);
-    throw new Error("最近のブックマークの取得に失敗しました");
+    logger.error("Failed to get recent bookmarks:", error, {
+      payload: { option },
+    });
+    throw new BookmarkServiceError(
+      "Failed to get recent bookmarks",
+      toError(error),
+    );
   }
 };
 
-// サービスオブジェクトのエクスポート
-export const createBookmarkService = (): BookmarkService => ({
+const createBookmarkService = (): BookmarkService => ({
   query: queryBookmarks,
   getRecent: getRecentBookmarks,
 });
