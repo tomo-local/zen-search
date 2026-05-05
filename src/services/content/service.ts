@@ -8,7 +8,7 @@ import type * as Type from "./types";
 export interface ContentService {
   open: (request: Type.OpenRequest) => Promise<Type.OpenResponse>;
   close: () => void;
-  openTabs: (action: Promise<Type.OpenResponse>) => Promise<void>;
+  openTabs: (action: () => Promise<Type.OpenResponse>) => Promise<void>;
 }
 
 // サービス実装
@@ -28,10 +28,12 @@ const close = (): void => {
   window?.close();
 };
 
-const openTabs = async (action: Promise<Type.OpenResponse>): Promise<void> => {
+const openTabs = async (
+  action: () => Promise<Type.OpenResponse>,
+): Promise<void> => {
   const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tabs[0]?.id) return;
-  await action;
+  await action();
 };
 
 // サービスオブジェクトのエクスポート
