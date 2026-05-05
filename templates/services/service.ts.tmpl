@@ -2,21 +2,26 @@
  * {{.ServiceNamePascal}} Service - {{.ServiceNamePascal}}管理サービス
  */
 
+import type { {{.ServiceNamePascal}}Service } from "./interface";
+import { logger, {{.ServiceNamePascal}}ServiceError, toError } from "./internal";
 import type * as Type from "./types";
 
-// 型定義
-export interface {{.ServiceNamePascal}}Service {
-  search: (query: string) => Promise<Type.{{.ServiceNamePascal}}[]>;
-}
-
-// サンプル実装
-const search{{.ServiceNamePascal}}s = async (query: string): Promise<Type.{{.ServiceNamePascal}}[]> => {
-  // TODO: {{.ServiceNamePascal}}の検索ロジックを実装
-  console.log(`Searching {{.ServiceNamePascal}}s with query: ${query}`);
-  return [];
+// TODO: サービスの処理を実装
+const search{{.ServiceNamePascal}}s = async (
+  _query: string,
+): Promise<Type.{{.ServiceNamePascal}}[]> => {
+  try {
+    // TODO: 検索ロジックを実装
+    return [];
+  } catch (error) {
+    logger.error("Failed to search:", error);
+    throw new {{.ServiceNamePascal}}ServiceError("Failed to search", toError(error));
+  }
 };
 
-// サービスのエクスポート
-export const {{.ServiceNameCamel}}Service: {{.ServiceNamePascal}}Service = {
+const create{{.ServiceNamePascal}}Service = (): {{.ServiceNamePascal}}Service => ({
   search: search{{.ServiceNamePascal}}s,
-};
+});
+
+/** {{.ServiceNamePascal}}サービスのシングルトンインスタンス。 */
+export const {{.ServiceNameCamel}}Service = create{{.ServiceNamePascal}}Service();

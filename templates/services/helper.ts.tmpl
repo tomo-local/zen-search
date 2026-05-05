@@ -1,12 +1,6 @@
 /**
- * {{.ServiceNamePascal}} Service Helper - {{.ServiceNamePascal}}サービスのヘルパー関数
+ * {{.ServiceNamePascal}} Service Helper - 内部ユーティリティ関数
+ * このファイルはサービス内部でのみ使用します。index.ts から再エクスポートしないでください。
  */
 
-import type { {{.ServiceNamePascal}} } from "./types";
-
-/**
- * サンプルヘルパー関数
- */
-export const filterValid{{.ServiceNamePascal}}s = (items: any[]): any[] => {
-  return items.filter(item => item && item.id);
-};
+// TODO: ヘルパー関数を実装

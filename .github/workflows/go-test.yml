@@ -1,0 +1,33 @@
+name: Run Go Tests
+
+on:
+  pull_request:
+    branches:
+      - main
+    types:
+      - opened
+      - synchronize
+    paths:
+      - "scripts/**/*.go"
+  workflow_dispatch:
+
+env:
+  GO_VERSION: "1.22"
+
+jobs:
+  test:
+    name: "Run Go Tests"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Set up Go ${{ env.GO_VERSION }}
+        uses: actions/setup-go@v5
+        with:
+          go-version: ${{ env.GO_VERSION }}
+          cache-dependency-path: scripts/go.sum
+
+      - name: Run tests
+        working-directory: scripts
+        run: go test ./...
