@@ -16,9 +16,11 @@ src/
 │   └── [feature]/
 │       ├── components/    # UI layer — receives props, renders only
 │       └── hooks/         # Props-creation layer — logic, state, side effects
-├── shared/
+├── shared/            # Cross-feature resources
 │   ├── components/    # Reusable primitives used across features
-│   └── hooks/         # Reusable hooks used across features
+│   ├── hooks/         # Reusable hooks used across features
+│   ├── utils/         # Pure utility functions (no side effects)
+│   └── lib/           # Library wrappers (e.g. i18n)
 ```
 
 ---
@@ -139,9 +141,13 @@ return [query, { setQuery, reset }];
 
 ---
 
-## Shared Components
+## Shared
 
-`src/shared/components/` contains primitives reused across features:
+`src/shared/` contains everything used across multiple features, organized by type:
+
+### components/
+
+Primitives reused across features:
 
 | Component | Role |
 |---|---|
@@ -150,6 +156,18 @@ return [query, { setQuery, reset }];
 | `Layout` | App root wrapper — applies `ThemeProvider` and base styles |
 
 `defaultClassName` exported from `ButtonItem` is the source of truth for all item styling (bg, border, hover, selected states). Feature components reference these rather than duplicating Tailwind classes.
+
+### hooks/
+
+Reusable hooks not tied to a specific feature (e.g., `useTranslation`).
+
+### utils/
+
+Pure utility functions with no side effects (e.g., `algorithm.ts` for n-gram similarity). Do not put React hooks or Chrome API calls here.
+
+### lib/
+
+Library initialization wrappers (e.g., `i18n.ts`). One file per library.
 
 ---
 
