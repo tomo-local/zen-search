@@ -33,7 +33,7 @@ const hydrateSearchEngines = async () => {
     updateSnapshot(stored);
   } catch (error) {
     console.error("Failed to hydrate searchEngines", error);
-    updateSnapshot([]);
+    updateSnapshot(["google"]);
   }
 };
 
