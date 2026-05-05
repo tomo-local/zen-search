@@ -33,11 +33,13 @@ const openTabs = async (
 };
 
 // サービスオブジェクトのエクスポート
-export const contentService: ContentService = {
+const createContentService = (): ContentService => ({
   open,
   close,
   openTabs,
-};
+});
+
+export const contentService = createContentService();
 
 // デフォルトエクスポート
 export default contentService;

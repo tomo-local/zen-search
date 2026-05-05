@@ -121,7 +121,7 @@ const closeContent = (): void => {
   runtimeServiceDependencies.contentService.close();
 };
 
-export const createRuntimeService = (): RuntimeService => ({
+const createRuntimeService = (): RuntimeService => ({
   createTab,
   updateTab,
   removeTab,

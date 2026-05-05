@@ -32,7 +32,7 @@ const queryHistory = async ({
   }
 };
 
-export const createHistoryService = (): HistoryService => ({
+const createHistoryService = (): HistoryService => ({
   query: queryHistory,
 });
 

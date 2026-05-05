@@ -141,10 +141,12 @@ const multiEngineQuerySuggestions = async ({
 };
 
 // サービスオブジェクトのエクスポート
-export const suggestionService: SuggestionService = {
+const createSuggestionService = (): SuggestionService => ({
   query: querySuggestions,
   multiEngineQuery: multiEngineQuerySuggestions,
-};
+});
+
+export const suggestionService = createSuggestionService();
 
 // デフォルトエクスポート
 export default suggestionService;

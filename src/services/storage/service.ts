@@ -127,7 +127,7 @@ const setSearchEngines = async (
 };
 
 // サービスオブジェクトのエクスポート
-export const storageService: StorageService = {
+const createStorageService = (): StorageService => ({
   get: getStorage,
   set: setStorage,
   subscribe: subscribeStorage,
@@ -137,7 +137,9 @@ export const storageService: StorageService = {
   setViewMode,
   getSearchEngines,
   setSearchEngines,
-};
+});
+
+export const storageService = createStorageService();
 
 // デフォルトエクスポート
 export default storageService;

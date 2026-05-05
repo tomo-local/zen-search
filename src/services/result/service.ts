@@ -108,6 +108,8 @@ const queryResults = async (
 };
 
 /** サービスのエクスポート */
-export const resultService: ResultService = {
+const createResultService = (): ResultService => ({
   query: queryResults,
-};
+});
+
+export const resultService = createResultService();
