@@ -5,7 +5,7 @@
 
 import { convertTabToData } from "./converter";
 import { TabServiceError, toError } from "./error";
-import { limitResults, queryFiltered } from "./helper";
+import { fuseFilter, limitResults } from "./helper";
 import type { TabService } from "./interface";
 import { createTabLogger } from "./logger";
 import type * as Type from "./types";
@@ -19,9 +19,12 @@ const queryTabs = async ({
   try {
     const response = await chrome.tabs.query({});
 
-    const tabs = queryFiltered(response, query)
-      .map(convertTabToData)
-      .sort((a, b) => b.data.lastAccessed - a.data.lastAccessed);
+    const tabs = fuseFilter(
+      response
+        .map(convertTabToData)
+        .sort((a, b) => b.data.lastAccessed - a.data.lastAccessed),
+      query,
+    );
 
     logger.info(`Queried tabs: ${tabs.length} tabs found`, {
       payload: { option },
