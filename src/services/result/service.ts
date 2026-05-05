@@ -2,7 +2,6 @@
  * Result Service - Result管理サービス
  */
 
-import { getDefaultSearchEngines } from "@/services/storage/helper";
 import resultServiceDependencies from "./container";
 import * as Helper from "./helper";
 import type { ResultService } from "./interface";
@@ -61,7 +60,7 @@ const queryResults = async (
   if (filters.categories.includes("Suggestion")) {
     const engines = filters.searchEngines?.length
       ? filters.searchEngines
-      : getDefaultSearchEngines();
+      : await resultServiceDependencies.storageService.getSearchEngines();
     queryPromises.push(
       resultServiceDependencies.suggestionService
         .multiEngineQuery({
