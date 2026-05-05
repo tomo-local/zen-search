@@ -103,10 +103,3 @@ export const isValidSearchEngines = (
   );
 };
 
-/**
- * ウィンドウのダークモード設定を取得
- */
-export const isWindowDarkMode = (): boolean => {
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  return mediaQuery.matches;
-};
