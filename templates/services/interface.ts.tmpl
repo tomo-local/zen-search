@@ -1,0 +1,7 @@
+import type * as Type from "./types";
+
+/** TODO: {{.ServiceNamePascal}}サービスの説明を記載 */
+export interface {{.ServiceNamePascal}}Service {
+  /** TODO: メソッドの説明を記載 */
+  search: (query: string) => Promise<Type.{{.ServiceNamePascal}}[]>;
+}

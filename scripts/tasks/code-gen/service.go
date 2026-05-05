@@ -62,10 +62,12 @@ func (c *codeGenService) generateServiceFile(filePath string, serviceName string
 
 	serviceNamePascal := c.stringOperator.ToPascalCase(serviceName)
 	serviceNameCamel := c.stringOperator.ToCamelCase(serviceName)
+	serviceNameUpper := c.stringOperator.ToUpperSnakeCase(serviceName)
 
 	mapping := map[string]string{
 		"{{.ServiceNamePascal}}": serviceNamePascal,
 		"{{.ServiceNameCamel}}":  serviceNameCamel,
+		"{{.ServiceNameUpper}}":  serviceNameUpper,
 	}
 
 	content, err := c.replaceMappingValues(filePath, mapping)

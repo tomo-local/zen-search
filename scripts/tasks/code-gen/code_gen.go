@@ -1,4 +1,4 @@
-package codegen
+package code_gen
 
 import (
 	fileOperator "scripts/pkg/file-operator"

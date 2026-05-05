@@ -1,15 +1,8 @@
 /**
- * {{.ServiceNamePascal}} Service Converter - {{.ServiceNamePascal}}の変換ヘルパー
+ * {{.ServiceNamePascal}} Service Converter - 内部データ変換関数
+ * このファイルはサービス内部でのみ使用します。index.ts から再エクスポートしないでください。
  */
 
-import type { {{.ServiceNamePascal}} } from "./types";
+import type * as Type from "./types";
 
-/**
- * サンプル変換関数
- */
-export const convert{{.ServiceNamePascal}}ToResult = (data: any): {{.ServiceNamePascal}} => {
-  return {
-    id: data.id || "",
-    title: data.title || "Untitled",
-  };
-};
+// TODO: Chrome API の型からドメイン型への変換関数を実装

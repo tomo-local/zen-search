@@ -7,6 +7,7 @@ import (
 type Service interface {
 	ToCamelCase(s string) string
 	ToPascalCase(s string) string
+	ToUpperSnakeCase(s string) string
 	ReplaceAllMapping(original string, mapping map[string]string) string
 }
 
@@ -43,6 +44,16 @@ func (s *stringOperator) ToPascalCase(str string) string {
 		}
 	}
 	return result
+}
+
+// ToUpperSnakeCase は文字列をアッパースネークケースに変換 (例: "my-service" → "MY_SERVICE")
+func (s *stringOperator) ToUpperSnakeCase(str string) string {
+	words := strings.Split(str, "-")
+	upper := make([]string, len(words))
+	for i, w := range words {
+		upper[i] = strings.ToUpper(w)
+	}
+	return strings.Join(upper, "_")
 }
 
 func (s *stringOperator) ReplaceAllMapping(original string, mapping map[string]string) string {
