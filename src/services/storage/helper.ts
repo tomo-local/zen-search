@@ -102,4 +102,3 @@ export const isValidSearchEngines = (
     Array.isArray(value) && value.length > 0 && value.every(isValidSearchEngine)
   );
 };
-
