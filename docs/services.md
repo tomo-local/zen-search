@@ -20,7 +20,7 @@ Encapsulate pure business logic with no dependency on Chrome APIs or external sy
 
 | Service | Responsibility |
 | --- | --- |
-| `action` | Detect and evaluate mathematical expressions via mathjs |
+| `action` | Detect and evaluate mathematical expressions via mathjs. Currently handles only calculation, but is designed to grow into an orchestrator (similar to `result`) as more action types are added. |
 
 ### Infrastructure Services
 
@@ -121,6 +121,20 @@ These services are thin wrappers around Chrome APIs. They translate Chrome's raw
 ### Why does result sit above tab/bookmark/history?
 
 `result` is the only service that needs to coordinate multiple sources. It runs queries in parallel via `Promise.allSettled`, merges the results, and applies fuzzy search — all of which are application-level concerns rather than Chrome API concerns.
+
+### Future direction for action
+
+Currently `action` contains only calculation logic and is classified as a Domain Service. As more action types are added (e.g., unit conversion, URL utilities), `action` is expected to evolve into an Application Service — an orchestrator that coordinates multiple action handlers, similar to how `result` coordinates multiple source services. Each handler will remain a pure function where possible; handlers requiring external APIs will be treated as Infrastructure.
+
+```
+src/services/action/         ← future structure
+  service.ts                 ← orchestrator (like result)
+  types.ts
+  handlers/
+    calculation.ts           ← current logic (pure domain)
+    conversion.ts            ← future (unit / currency)
+    ...
+```
 
 ### Why runtime-only access from UI?
 
