@@ -4,16 +4,13 @@
  */
 
 import { convertNewTabToData } from "./converter";
+import { TabServiceError, toError } from "./error";
 import { limitResults } from "./helper";
+import type TabService from "./interface";
+import { createTabLogger } from "./logger";
 import type * as Type from "./types";
 
-// 型定義
-export interface TabService {
-  query: (request: Type.QueryTabsRequest) => Promise<Type.Tab[]>;
-  create: (request: Type.CreateTabRequest) => Promise<void>;
-  update: (request: Type.UpdateTabRequest) => Promise<void>;
-  remove: (request: Type.RemoveTabRequest) => Promise<void>;
-}
+const logger = createTabLogger();
 
 const queryTabs = async ({
   option,
@@ -25,19 +22,25 @@ const queryTabs = async ({
       .map(convertNewTabToData)
       .sort((a, b) => b.data.lastAccessed - a.data.lastAccessed);
 
+    logger.info(`Queried tabs: ${tabs.length} tabs found`, {
+      payload: { option },
+      count: tabs.length,
+    });
+
     return limitResults(option?.count)(tabs);
   } catch (error) {
-    console.error("Failed to newQuery tabs:", error);
-    throw new Error("タブの検索に失敗しました");
+    logger.error("Failed to newQuery tabs:", error, { payload: { option } });
+    throw new TabServiceError("タブの検索に失敗しました", toError(error));
   }
 };
 
 const createTab = async ({ url }: Type.CreateTabRequest): Promise<void> => {
   try {
+    logger.info(`Creating tab with URL: ${url}`);
     await chrome.tabs.create({ url });
   } catch (error) {
-    console.error("Failed to create tab:", error);
-    throw new Error("タブの作成に失敗しました");
+    logger.error("Failed to create tab:", error, { payload: { url } });
+    throw new TabServiceError("タブの作成に失敗しました", toError(error));
   }
 };
 
@@ -46,6 +49,7 @@ const updateTab = async ({
   windowId,
 }: Type.UpdateTabRequest): Promise<void> => {
   try {
+    logger.info(`Updating tab with ID: ${tabId}`);
     await chrome.tabs.update(tabId, { active: true });
 
     // Focus on the window
@@ -53,17 +57,20 @@ const updateTab = async ({
       await chrome.windows.update(windowId, { focused: true });
     }
   } catch (error) {
-    console.error("Failed to update tab:", error);
-    throw new Error("タブの更新に失敗しました");
+    logger.error("Failed to update tab:", error, {
+      payload: { tabId, windowId },
+    });
+    throw new TabServiceError("タブの更新に失敗しました", toError(error));
   }
 };
 
 const removeTab = async ({ tabId }: Type.RemoveTabRequest): Promise<void> => {
   try {
+    logger.info(`Removing tab with ID: ${tabId}`);
     await chrome.tabs.remove(tabId);
   } catch (error) {
-    console.error("Failed to remove tab:", error);
-    throw new Error("タブの削除に失敗しました");
+    logger.error("Failed to remove tab:", error, { payload: { tabId } });
+    throw new TabServiceError("タブの削除に失敗しました", toError(error));
   }
 };
 
@@ -77,6 +84,3 @@ export const createTabService = (): TabService => ({
 
 // デフォルトサービスインスタンス
 export const tabService = createTabService();
-
-// 個別エクスポート（後方互換性のため）
-export { type queryTabs, createTab, updateTab, removeTab };
