@@ -13,10 +13,8 @@ import {
   limitResults,
 } from "./helper";
 import type { SuggestionService } from "./interface";
-import { createSuggestionLogger } from "./logger";
+import { logger } from "./internal";
 import type * as Type from "./types";
-
-const logger = createSuggestionLogger();
 
 /**
  * 検索エンジン API からサジェストテキストのみを取得する。

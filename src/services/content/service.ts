@@ -4,10 +4,8 @@
  */
 
 import type { ContentService } from "./interface";
-import { createContentLogger } from "./logger";
+import { logger } from "./internal";
 import type * as Type from "./types";
-
-const logger = createContentLogger();
 
 // サービス実装
 const open = async ({

@@ -5,12 +5,9 @@
 
 import { DEFAULT_COUNT } from "./constant";
 import { convertItemToHistory } from "./converter";
-import { HistoryServiceError, toError } from "./error";
 import type { HistoryService } from "./interface";
-import { createHistoryLogger } from "./logger";
+import { HistoryServiceError, logger, toError } from "./internal";
 import type * as Type from "./types";
-
-const logger = createHistoryLogger();
 
 const queryHistory = async ({
   query,

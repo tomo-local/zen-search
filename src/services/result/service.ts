@@ -6,10 +6,8 @@ import { getDefaultSearchEngines } from "@/services/storage/helper";
 import resultServiceDependencies from "./container";
 import * as Helper from "./helper";
 import type { ResultService } from "./interface";
-import { createResultLogger } from "./logger";
+import { logger } from "./internal";
 import type * as Type from "./types";
-
-const logger = createResultLogger();
 
 const queryResults = async (
   request: Type.QueryResultsInternalRequest,

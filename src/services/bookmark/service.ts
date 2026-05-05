@@ -4,13 +4,10 @@
  */
 
 import { convertBookmark } from "./converter";
-import { BookmarkServiceError, toError } from "./error";
 import { filterValidBookmarks } from "./helper";
 import type { BookmarkService } from "./interface";
-import { createBookmarkLogger } from "./logger";
+import { BookmarkServiceError, logger, toError } from "./internal";
 import type * as Type from "./types";
-
-const logger = createBookmarkLogger();
 
 const queryBookmarks = async ({
   query,
