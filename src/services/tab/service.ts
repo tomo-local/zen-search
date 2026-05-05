@@ -75,7 +75,7 @@ const removeTab = async ({ tabId }: Type.RemoveTabRequest): Promise<void> => {
 };
 
 // サービスファクトリー（依存性注入対応）
-export const createTabService = (): TabService => ({
+const createTabService = (): TabService => ({
   query: queryTabs,
   create: createTab,
   update: updateTab,
