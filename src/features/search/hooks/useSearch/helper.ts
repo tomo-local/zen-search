@@ -2,7 +2,7 @@
  * useSearch関連のユーティリティ関数
  */
 
-import { matchScore } from "@/utils/algorithm";
+import { matchScore } from "@/shared/utils/algorithm";
 import type { ResultType } from "./types";
 
 /**
