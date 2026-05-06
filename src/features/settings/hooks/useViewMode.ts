@@ -48,7 +48,7 @@ const hydrateViewMode = async () => {
 };
 
 // バックグラウンドからの STORAGE_CHANGED 通知でスナップショットを更新
-chrome.runtime.onMessage.addListener((message: unknown) => {
+const handleStorageChanged = (message: unknown) => {
   if (
     isStorageChangedMessage(message) &&
     message.key === SyncStorageKey.ViewMode
@@ -57,7 +57,16 @@ chrome.runtime.onMessage.addListener((message: unknown) => {
       isValidViewMode(message.value) ? message.value : getDefaultViewMode(),
     );
   }
-});
+};
+
+chrome.runtime.onMessage.addListener(handleStorageChanged);
+
+// HMRでモジュールが再評価される際にリスナーを削除してリークを防ぐ
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    chrome.runtime.onMessage.removeListener(handleStorageChanged);
+  });
+}
 
 void hydrateViewMode();
 
