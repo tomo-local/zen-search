@@ -8,6 +8,18 @@ export interface RuntimeResponse<T = unknown> {
   result: T;
 }
 
+export function isRuntimeResponse<T>(
+  value: unknown,
+): value is RuntimeResponse<T> {
+  return (
+    typeof value === "object" &&
+    value !== null &&
+    "type" in value &&
+    typeof (value as { type: unknown }).type === "string" &&
+    "result" in value
+  );
+}
+
 // リクエスト型定義（将来的な拡張用）
 export interface QueryTabsRequest {
   query: string;

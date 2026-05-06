@@ -12,7 +12,7 @@ import { KEEPALIVE_INTERVAL_MS } from "./constants";
 import runtimeServiceDependencies from "./container";
 import type { RuntimeService } from "./interface";
 import { logger, RuntimeServiceError, toError } from "./internal";
-import { MessageType, type RuntimeResponse } from "./types";
+import { isRuntimeResponse, MessageType } from "./types";
 
 function connectPort(
   name: string,
@@ -92,12 +92,18 @@ const queryResults = async ({
   filters,
 }: QueryResultsRequest): Promise<Result<Kind>[]> => {
   try {
-    const response = (await chrome.runtime.sendMessage({
+    const raw = await chrome.runtime.sendMessage({
       type: MessageType.QUERY_RESULT,
       filters,
-    })) as RuntimeResponse<Result<Kind>[]>;
+    });
 
-    return response.result;
+    if (!isRuntimeResponse<Result<Kind>[]>(raw)) {
+      throw new RuntimeServiceError(
+        "Unexpected response shape from QUERY_RESULT",
+      );
+    }
+
+    return raw.result;
   } catch (error) {
     if (error instanceof RuntimeServiceError) {
       throw error;
