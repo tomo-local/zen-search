@@ -16,12 +16,16 @@ export type ThemeState = ThemeSnapshot & {
 
 const listeners = new Set<() => void>();
 
+const darkModeMediaQuery =
+  typeof window !== "undefined" && window.matchMedia
+    ? window.matchMedia("(prefers-color-scheme: dark)")
+    : null;
+
 /**
  * ウィンドウのダークモード設定を取得
  */
 export const isWindowDarkMode = (): boolean => {
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  return mediaQuery.matches;
+  return darkModeMediaQuery?.matches ?? false;
 };
 
 const buildSnapshot = (theme: ThemeValue): ThemeSnapshot => ({
@@ -68,14 +72,19 @@ storageService.subscribe(SyncStorageKey.Theme, (newTheme) => {
   updateSnapshot(newTheme ?? "system");
 });
 
-if (typeof window !== "undefined" && window.matchMedia) {
-  window
-    .matchMedia("(prefers-color-scheme: dark)")
-    .addEventListener("change", () => {
-      if (snapshot.theme === "system") {
-        updateSnapshot("system");
-      }
-    });
+const handleColorSchemeChange = () => {
+  if (snapshot.theme === "system") {
+    updateSnapshot("system");
+  }
+};
+
+darkModeMediaQuery?.addEventListener("change", handleColorSchemeChange);
+
+// HMRでモジュールが再評価される際にリスナーを削除してリークを防ぐ
+if (import.meta.hot) {
+  import.meta.hot.dispose(() => {
+    darkModeMediaQuery?.removeEventListener("change", handleColorSchemeChange);
+  });
 }
 
 void hydrateTheme();
