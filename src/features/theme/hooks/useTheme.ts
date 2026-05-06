@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useSyncExternalStore } from "react";
+import { runtimeService } from "@/services/runtime";
+import { isStorageChangedMessage } from "@/services/runtime/types";
 import {
   getDefaultTheme,
   isValidTheme,
   SyncStorageKey,
-  storageService,
   type ThemeValue,
 } from "@/services/storage";
 
@@ -72,17 +73,27 @@ const getSnapshot = () => snapshot;
 
 const hydrateTheme = async () => {
   try {
-    const storedTheme = await storageService.getTheme();
-    updateSnapshot(storedTheme ?? "system");
+    const storedTheme = await runtimeService.getTheme();
+    updateSnapshot(storedTheme);
   } catch (error) {
     console.error("Failed to hydrate theme", error);
-    updateSnapshot("system");
+    updateSnapshot(getDefaultTheme());
   }
 };
 
-storageService.subscribe(SyncStorageKey.Theme, (newTheme) => {
-  updateSnapshot(isValidTheme(newTheme) ? newTheme : getDefaultTheme());
-});
+// バックグラウンドからの STORAGE_CHANGED 通知でスナップショットを更新
+const handleStorageChanged = (message: unknown) => {
+  if (
+    isStorageChangedMessage(message) &&
+    message.key === SyncStorageKey.Theme
+  ) {
+    updateSnapshot(
+      isValidTheme(message.value) ? message.value : getDefaultTheme(),
+    );
+  }
+};
+
+chrome.runtime.onMessage.addListener(handleStorageChanged);
 
 const handleColorSchemeChange = () => {
   if (snapshot.theme === "system") {
@@ -96,6 +107,7 @@ darkModeMediaQuery?.addEventListener("change", handleColorSchemeChange);
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
     darkModeMediaQuery?.removeEventListener("change", handleColorSchemeChange);
+    chrome.runtime.onMessage.removeListener(handleStorageChanged);
   });
 }
 
@@ -119,7 +131,7 @@ export default function useTheme() {
 
   const setTheme = useCallback((value: ThemeValue) => {
     updateSnapshot(value);
-    storageService.setTheme({ theme: value }).catch((error) => {
+    runtimeService.setTheme(value).catch((error) => {
       console.error("Failed to persist theme", error);
     });
   }, []);

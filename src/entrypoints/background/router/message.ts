@@ -1,6 +1,7 @@
 import { contentService } from "@/services/content";
 import { type QueryResultsRequest, resultService } from "@/services/result";
 import { MessageType } from "@/services/runtime/types";
+import { storageService } from "@/services/storage";
 import {
   type CreateTabRequest,
   type RemoveTabRequest,
@@ -13,6 +14,12 @@ const {
   CREATE_TAB,
   UPDATE_TAB,
   REMOVE_TAB,
+  GET_THEME,
+  SET_THEME,
+  GET_VIEW_MODE,
+  SET_VIEW_MODE,
+  GET_SEARCH_ENGINES,
+  SET_SEARCH_ENGINES,
   QUERY_RESULT,
   SWITCH_VIEW_MODE,
 } = MessageType;
@@ -35,7 +42,13 @@ type RouterMessage =
   | ({ type: MessageType.CREATE_TAB } & CreateTabRequest)
   | ({ type: MessageType.UPDATE_TAB } & UpdateTabRequest)
   | ({ type: MessageType.REMOVE_TAB } & RemoveTabRequest)
-  | ({ type: MessageType.QUERY_RESULT } & QueryResultsRequest);
+  | ({ type: MessageType.QUERY_RESULT } & QueryResultsRequest)
+  | { type: MessageType.GET_THEME }
+  | { type: MessageType.SET_THEME; theme: string }
+  | { type: MessageType.GET_VIEW_MODE }
+  | { type: MessageType.SET_VIEW_MODE; viewMode: string }
+  | { type: MessageType.GET_SEARCH_ENGINES }
+  | { type: MessageType.SET_SEARCH_ENGINES; engines: string[] };
 
 function isRouterMessage(msg: unknown): msg is RouterMessage {
   if (typeof msg !== "object" || msg === null || !("type" in msg)) return false;
@@ -43,7 +56,23 @@ function isRouterMessage(msg: unknown): msg is RouterMessage {
   switch (type) {
     case MessageType.OPEN_POPUP:
     case MessageType.SWITCH_VIEW_MODE:
+    case MessageType.GET_THEME:
+    case MessageType.GET_VIEW_MODE:
+    case MessageType.GET_SEARCH_ENGINES:
       return true;
+    case MessageType.SET_THEME:
+      return (
+        "theme" in msg && typeof (msg as { theme: unknown }).theme === "string"
+      );
+    case MessageType.SET_VIEW_MODE:
+      return (
+        "viewMode" in msg &&
+        typeof (msg as { viewMode: unknown }).viewMode === "string"
+      );
+    case MessageType.SET_SEARCH_ENGINES:
+      return (
+        "engines" in msg && Array.isArray((msg as { engines: unknown }).engines)
+      );
     case MessageType.CREATE_TAB:
       return "url" in msg && typeof (msg as { url: unknown }).url === "string";
     case MessageType.UPDATE_TAB:
@@ -157,6 +186,81 @@ export function routeMessage(
       // ユーザージェスチャートークンが有効なうちに同期的に呼ぶ
       chrome.action.openPopup().catch(console.error);
       sendResponse(SWITCH_VIEW_MODE, true, response);
+      return true;
+    }
+
+    case GET_THEME: {
+      storageService
+        .getTheme()
+        .then((theme) => sendResponse(GET_THEME, theme, response))
+        .catch((error) => {
+          console.error("Error handling GET_THEME:", error);
+          sendResponse(GET_THEME, "system", response);
+        });
+      return true;
+    }
+
+    case SET_THEME: {
+      const { theme } = message;
+      storageService
+        .setTheme({
+          theme: theme as import("@/services/storage/types").ThemeValue,
+        })
+        .then(() => sendResponse(SET_THEME, true, response))
+        .catch((error) => {
+          console.error("Error handling SET_THEME:", error);
+          sendResponse(SET_THEME, false, response);
+        });
+      return true;
+    }
+
+    case GET_VIEW_MODE: {
+      storageService
+        .getViewMode()
+        .then((viewMode) => sendResponse(GET_VIEW_MODE, viewMode, response))
+        .catch((error) => {
+          console.error("Error handling GET_VIEW_MODE:", error);
+          sendResponse(GET_VIEW_MODE, "popup", response);
+        });
+      return true;
+    }
+
+    case SET_VIEW_MODE: {
+      const { viewMode } = message;
+      storageService
+        .setViewMode(
+          viewMode as import("@/services/storage/types").ViewModeValue,
+        )
+        .then(() => sendResponse(SET_VIEW_MODE, true, response))
+        .catch((error) => {
+          console.error("Error handling SET_VIEW_MODE:", error);
+          sendResponse(SET_VIEW_MODE, false, response);
+        });
+      return true;
+    }
+
+    case GET_SEARCH_ENGINES: {
+      storageService
+        .getSearchEngines()
+        .then((engines) => sendResponse(GET_SEARCH_ENGINES, engines, response))
+        .catch((error) => {
+          console.error("Error handling GET_SEARCH_ENGINES:", error);
+          sendResponse(GET_SEARCH_ENGINES, ["google"], response);
+        });
+      return true;
+    }
+
+    case SET_SEARCH_ENGINES: {
+      const { engines } = message;
+      storageService
+        .setSearchEngines(
+          engines as import("@/services/storage/types").SearchEngineValue[],
+        )
+        .then(() => sendResponse(SET_SEARCH_ENGINES, true, response))
+        .catch((error) => {
+          console.error("Error handling SET_SEARCH_ENGINES:", error);
+          sendResponse(SET_SEARCH_ENGINES, false, response);
+        });
       return true;
     }
 
