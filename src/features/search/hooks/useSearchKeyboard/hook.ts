@@ -1,44 +1,8 @@
 /**
  * useSearchKeyboard - キーボードナビゲーションを管理するhook
- */
-
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
-import {
-  DEFAULT_OPTIONS,
-  EMACS_KEYBINDINGS,
-  STANDARD_KEYBINDINGS,
-  VIM_KEYBINDINGS,
-} from "./constants";
-import {
-  calculateNewIndex,
-  debounce,
-  findAction,
-  scrollToIndex,
-} from "./helper";
-import type {
-  KeyBinding,
-  UseSearchKeyboardOptions,
-  UseSearchKeyboardParams,
-  UseSearchKeyboardReturn,
-} from "./types";
-
-/**
- * キーボードナビゲーションを管理するhook
  *
- * @description
- * このhookは以下の機能を提供します：
- * - Arrowキーによるナビゲーション
- * - Vim風キーバインド（j/k/g/G）
- * - Emacs風キーバインド（Ctrl+N/P）
- * - Home/End/PageUp/PageDownキー
- * - Enter/Tab/Backspace/Escapeキー
- * - IME入力中の誤動作防止
- * - スムーズスクロール
- * - キー操作のデバウンス（連打対策）
- *
- * @param params - パラメータ
- * @param options - オプション設定
- * @returns キーボード操作関数とstate
+ * useNavigationKey / useSubmitKey / useEscapeKey を束ねるオーケストレーター。
+ * 各サブhookは単独でテスト・拡張可能。
  *
  * @example
  * ```tsx
@@ -56,6 +20,19 @@ import type {
  * );
  * ```
  */
+
+import { useCallback, useMemo } from "react";
+import { DEFAULT_OPTIONS } from "./constants";
+import { debounce } from "./helper";
+import type {
+  UseSearchKeyboardOptions,
+  UseSearchKeyboardParams,
+  UseSearchKeyboardReturn,
+} from "./types";
+import useEscapeKey from "./useEscapeKey";
+import useNavigationKey from "./useNavigationKey";
+import useSubmitKey from "./useSubmitKey";
+
 export default function useSearchKeyboard(
   params: UseSearchKeyboardParams,
   options: UseSearchKeyboardOptions = {},
@@ -64,181 +41,52 @@ export default function useSearchKeyboard(
   const { results, isComposing, onSelect, onTab, onBackspace, onEscape } =
     params;
 
-  const [selectedIndex, setSelectedIndex] = useState(0);
-  const vimGStateRef = useRef<"idle" | "g_pending">("idle");
-  const listRef = useRef<HTMLUListElement>(null);
+  const navigation = useNavigationKey(
+    { resultsLength: results.length, isComposing },
+    opts,
+  );
 
-  // キーバインドの統合
-  const keyBindings = useMemo<KeyBinding[]>(() => {
-    const bindings = [...STANDARD_KEYBINDINGS];
-
-    if (opts.enableVimBindings) {
-      bindings.push(...VIM_KEYBINDINGS);
-    }
-
-    if (opts.enableEmacsBindings) {
-      bindings.push(...EMACS_KEYBINDINGS);
-    }
-
-    return bindings;
-  }, [opts.enableVimBindings, opts.enableEmacsBindings]);
-
-  // 選択項目が変更されたらスクロール
-  useEffect(() => {
-    scrollToIndex(listRef, selectedIndex, opts.scrollBehavior);
-  }, [selectedIndex, opts.scrollBehavior]);
-
-  /**
-   * インデックスをリセット
-   */
-  const resetSelectedIndex = useCallback(() => {
-    setSelectedIndex(0);
-  }, []);
-
-  /**
-   * ナビゲーションキーのハンドラー
-   */
-  const handleNavigationKey = useCallback(
-    (e: React.KeyboardEvent) => {
-      // IME入力中は無効化
-      if (opts.disableOnComposing && isComposing) {
-        return;
-      }
-
-      // Vim風のgg（最初に移動）の処理
-      if (
-        opts.enableVimBindings &&
-        e.key === "g" &&
-        !e.ctrlKey &&
-        !e.altKey &&
-        !e.metaKey
-      ) {
-        if (vimGStateRef.current === "g_pending") {
-          e.preventDefault();
-          setSelectedIndex(0);
-          vimGStateRef.current = "idle";
-        } else {
-          vimGStateRef.current = "g_pending";
-        }
-        return;
-      }
-
-      // g_pending 中に g 以外のキーが来たらリセット
-      if (vimGStateRef.current === "g_pending") {
-        vimGStateRef.current = "idle";
-      }
-
-      // キーバインドからアクションを検索
-      const action = findAction(e, keyBindings);
-
-      if (action) {
-        e.preventDefault();
-
-        const newIndex = calculateNewIndex(
-          action,
-          selectedIndex,
-          results.length,
-          opts.pageStep,
-        );
-
-        setSelectedIndex(newIndex);
-      }
-    },
-    [
-      opts.disableOnComposing,
-      opts.enableVimBindings,
-      opts.pageStep,
+  const submit = useSubmitKey(
+    {
+      results,
+      selectedIndex: navigation.selectedIndex,
       isComposing,
-      keyBindings,
-      selectedIndex,
-      results.length,
-    ],
-  );
-
-  /**
-   * Enterキーのハンドラー
-   */
-  const handleEnterKey = useCallback(
-    (e: React.KeyboardEvent) => {
-      // IME入力中は無効化
-      if (opts.disableOnComposing && isComposing) {
-        return;
-      }
-
-      if (e.key === "Enter") {
-        e.preventDefault();
-        const selectedResult = results[selectedIndex];
-        if (selectedResult) {
-          onSelect(selectedResult);
-        }
-      }
+      onSelect,
+      onTab,
+      onBackspace,
     },
-    [opts.disableOnComposing, isComposing, results, selectedIndex, onSelect],
+    opts,
   );
 
-  /**
-   * Tabキーのハンドラー
-   */
-  const handleTabKey = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Tab") {
-        e.preventDefault();
-        // IME入力中は無効化
-        if (opts.disableOnComposing && isComposing) {
-          return;
-        }
-        onTab?.();
-      }
-    },
-    [opts.disableOnComposing, isComposing, onTab],
-  );
+  const escapeKey = useEscapeKey({ onEscape });
 
-  /**
-   * Backspaceキーのハンドラー
-   */
-  const handleBackspaceKey = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Backspace") {
-        onBackspace?.();
-      }
-    },
-    [onBackspace],
-  );
+  const {
+    handleNavigationKey,
+    setSelectedIndex,
+    resetSelectedIndex,
+    selectedIndex,
+    listRef,
+  } = navigation;
+  const { handleEnterKey, handleTabKey, handleBackspaceKey } = submit;
+  const { handleEscapeKey } = escapeKey;
 
-  /**
-   * Escapeキーのハンドラー
-   */
-  const handleEscapeKey = useCallback(
-    (e: React.KeyboardEvent) => {
-      if (e.key === "Escape") {
-        e.preventDefault();
-        onEscape?.();
-      }
-    },
-    [onEscape],
-  );
-
-  /**
-   * すべてのキーイベントを統合したハンドラー
-   */
   const handleKeyDownRaw = useCallback(
     (e: React.KeyboardEvent) => {
       handleNavigationKey(e);
+      handleEscapeKey(e);
       handleEnterKey(e);
       handleTabKey(e);
       handleBackspaceKey(e);
-      handleEscapeKey(e);
     },
     [
       handleNavigationKey,
+      handleEscapeKey,
       handleEnterKey,
       handleTabKey,
       handleBackspaceKey,
-      handleEscapeKey,
     ],
   );
 
-  // デバウンス処理
   const handleKeyDown = useMemo(() => {
     if (opts.keyDebounceMs > 0) {
       return debounce(handleKeyDownRaw, opts.keyDebounceMs);
