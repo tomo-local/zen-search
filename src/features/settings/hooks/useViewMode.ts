@@ -40,7 +40,9 @@ const hydrateViewMode = async () => {
 };
 
 storageService.subscribe(SyncStorageKey.ViewMode, (newViewMode) => {
-  updateSnapshot(isValidViewMode(newViewMode) ? newViewMode : getDefaultViewMode());
+  updateSnapshot(
+    isValidViewMode(newViewMode) ? newViewMode : getDefaultViewMode(),
+  );
 });
 
 void hydrateViewMode();

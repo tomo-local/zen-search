@@ -1,5 +1,3 @@
-export * from "./service";
-export * from "./types";
 export {
   getDefaultSearchEngines,
   getDefaultTheme,
@@ -8,3 +6,5 @@ export {
   isValidTheme,
   isValidViewMode,
 } from "./helper";
+export * from "./service";
+export * from "./types";

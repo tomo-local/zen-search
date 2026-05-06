@@ -47,7 +47,9 @@ const hydrateSearchEngines = async () => {
 };
 
 storageService.subscribe(SyncStorageKey.SearchEngines, (newEngines) => {
-  updateSnapshot(isValidSearchEngines(newEngines) ? newEngines : getDefaultSearchEngines());
+  updateSnapshot(
+    isValidSearchEngines(newEngines) ? newEngines : getDefaultSearchEngines(),
+  );
 });
 
 void hydrateSearchEngines();
