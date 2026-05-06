@@ -65,7 +65,7 @@ export default function useSearchKeyboard(
     params;
 
   const [selectedIndex, setSelectedIndex] = useState(0);
-  const [vimGState, setVimGState] = useState<"idle" | "g_pending">("idle");
+  const vimGStateRef = useRef<"idle" | "g_pending">("idle");
   const listRef = useRef<HTMLUListElement>(null);
 
   // キーバインドの統合
@@ -107,19 +107,19 @@ export default function useSearchKeyboard(
 
       // Vim風のgg（最初に移動）の処理
       if (opts.enableVimBindings && e.key === "g") {
-        if (vimGState === "g_pending") {
+        if (vimGStateRef.current === "g_pending") {
           e.preventDefault();
           setSelectedIndex(0);
-          setVimGState("idle");
+          vimGStateRef.current = "idle";
         } else {
-          setVimGState("g_pending");
+          vimGStateRef.current = "g_pending";
         }
         return;
       }
 
       // g_pending 中に g 以外のキーが来たらリセット
-      if (vimGState === "g_pending") {
-        setVimGState("idle");
+      if (vimGStateRef.current === "g_pending") {
+        vimGStateRef.current = "idle";
       }
 
       // キーバインドからアクションを検索
@@ -146,7 +146,6 @@ export default function useSearchKeyboard(
       keyBindings,
       selectedIndex,
       results.length,
-      vimGState,
     ],
   );
 
