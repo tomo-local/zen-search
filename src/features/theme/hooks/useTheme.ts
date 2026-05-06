@@ -14,6 +14,11 @@ export type ThemeState = ThemeSnapshot & {
   setTheme: (value: ThemeValue) => void;
 };
 
+/**
+ * useSyncExternalStore パターン用のモジュールレベル状態。
+ * コンポーネントの再マウントをまたいでサブスクリプション状態を保持するために
+ * 意図的にモジュールスコープに置く。
+ */
 const listeners = new Set<() => void>();
 
 const darkModeMediaQuery =
@@ -33,6 +38,7 @@ const buildSnapshot = (theme: ThemeValue): ThemeSnapshot => ({
   isDarkMode: theme === "system" ? isWindowDarkMode() : theme === "dark",
 });
 
+/** useSyncExternalStore パターン用のモジュールレベル状態（上記 listeners と同様）。 */
 let snapshot: ThemeSnapshot = buildSnapshot("system");
 
 export const initialState: ThemeState = {

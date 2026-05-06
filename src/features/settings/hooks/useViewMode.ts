@@ -5,6 +5,11 @@ import {
   type ViewModeValue,
 } from "@/services/storage";
 
+/**
+ * useSyncExternalStore パターン用のモジュールレベル状態。
+ * コンポーネントの再マウントをまたいでサブスクリプション状態を保持するために
+ * 意図的にモジュールスコープに置く。
+ */
 const listeners = new Set<() => void>();
 
 let snapshot: ViewModeValue = "popup";
