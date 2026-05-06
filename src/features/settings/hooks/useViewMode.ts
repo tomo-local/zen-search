@@ -1,9 +1,10 @@
 import { useCallback, useSyncExternalStore } from "react";
+import { runtimeService } from "@/services/runtime";
+import { isStorageChangedMessage } from "@/services/runtime/types";
 import {
   getDefaultViewMode,
   isValidViewMode,
   SyncStorageKey,
-  storageService,
   type ViewModeValue,
 } from "@/services/storage";
 
@@ -14,6 +15,7 @@ import {
  */
 const listeners = new Set<() => void>();
 
+/** useSyncExternalStore パターン用のモジュールレベル状態（上記 listeners と同様）。 */
 let snapshot: ViewModeValue = "popup";
 
 const notify = () => {
@@ -23,6 +25,7 @@ const notify = () => {
 };
 
 const updateSnapshot = (viewMode: ViewModeValue) => {
+  if (snapshot === viewMode) return;
   snapshot = viewMode;
   notify();
 };
@@ -36,18 +39,24 @@ const getSnapshot = () => snapshot;
 
 const hydrateViewMode = async () => {
   try {
-    const stored = await storageService.getViewMode();
-    updateSnapshot(stored ?? getDefaultViewMode());
+    const stored = await runtimeService.getViewMode();
+    updateSnapshot(stored);
   } catch (error) {
     console.error("Failed to hydrate viewMode", error);
     updateSnapshot(getDefaultViewMode());
   }
 };
 
-storageService.subscribe(SyncStorageKey.ViewMode, (newViewMode) => {
-  updateSnapshot(
-    isValidViewMode(newViewMode) ? newViewMode : getDefaultViewMode(),
-  );
+// バックグラウンドからの STORAGE_CHANGED 通知でスナップショットを更新
+chrome.runtime.onMessage.addListener((message: unknown) => {
+  if (
+    isStorageChangedMessage(message) &&
+    message.key === SyncStorageKey.ViewMode
+  ) {
+    updateSnapshot(
+      isValidViewMode(message.value) ? message.value : getDefaultViewMode(),
+    );
+  }
 });
 
 void hydrateViewMode();
@@ -57,7 +66,7 @@ export default function useViewMode() {
 
   const setViewMode = useCallback((value: ViewModeValue) => {
     updateSnapshot(value);
-    storageService.setViewMode(value).catch((error) => {
+    runtimeService.setViewMode(value).catch((error) => {
       console.error("Failed to persist viewMode", error);
     });
   }, []);

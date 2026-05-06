@@ -4,6 +4,11 @@ import type {
   Result,
 } from "@/services/result/types";
 import type {
+  SearchEngineValue,
+  ThemeValue,
+  ViewModeValue,
+} from "@/services/storage/types";
+import type {
   CreateTabRequest,
   RemoveTabRequest,
   UpdateTabRequest,
@@ -28,4 +33,16 @@ export interface RuntimeService {
    * Automatically reconnects if the connection is dropped.
    */
   connectPort: (name: string, onMessage?: (message: unknown) => void) => void;
+  /** Reads the persisted theme via the background. */
+  getTheme: () => Promise<ThemeValue>;
+  /** Persists the theme via the background. */
+  setTheme: (theme: ThemeValue) => Promise<void>;
+  /** Reads the persisted view mode via the background. */
+  getViewMode: () => Promise<ViewModeValue>;
+  /** Persists the view mode via the background. */
+  setViewMode: (viewMode: ViewModeValue) => Promise<void>;
+  /** Reads the persisted search engines via the background. */
+  getSearchEngines: () => Promise<SearchEngineValue[]>;
+  /** Persists the search engines via the background. */
+  setSearchEngines: (engines: SearchEngineValue[]) => Promise<void>;
 }

@@ -1,10 +1,11 @@
 import { useCallback, useSyncExternalStore } from "react";
+import { runtimeService } from "@/services/runtime";
+import { isStorageChangedMessage } from "@/services/runtime/types";
 import {
   getDefaultSearchEngines,
   isValidSearchEngines,
   type SearchEngineValue,
   SyncStorageKey,
-  storageService,
 } from "@/services/storage";
 
 /**
@@ -14,6 +15,7 @@ import {
  */
 const listeners = new Set<() => void>();
 
+/** useSyncExternalStore パターン用のモジュールレベル状態（上記 listeners と同様）。 */
 let snapshot: SearchEngineValue[] = [];
 
 const notify = () => {
@@ -43,7 +45,7 @@ const getSnapshot = () => snapshot;
 
 const hydrateSearchEngines = async () => {
   try {
-    const stored = await storageService.getSearchEngines();
+    const stored = await runtimeService.getSearchEngines();
     updateSnapshot(stored);
   } catch (error) {
     console.error("Failed to hydrate searchEngines", error);
@@ -51,10 +53,18 @@ const hydrateSearchEngines = async () => {
   }
 };
 
-storageService.subscribe(SyncStorageKey.SearchEngines, (newEngines) => {
-  updateSnapshot(
-    isValidSearchEngines(newEngines) ? newEngines : getDefaultSearchEngines(),
-  );
+// バックグラウンドからの STORAGE_CHANGED 通知でスナップショットを更新
+chrome.runtime.onMessage.addListener((message: unknown) => {
+  if (
+    isStorageChangedMessage(message) &&
+    message.key === SyncStorageKey.SearchEngines
+  ) {
+    updateSnapshot(
+      isValidSearchEngines(message.value)
+        ? message.value
+        : getDefaultSearchEngines(),
+    );
+  }
 });
 
 void hydrateSearchEngines();
@@ -74,7 +84,7 @@ export default function useSearchEngines() {
     if (engines.length === 0) return;
     const previous = snapshot;
     updateSnapshot(engines);
-    storageService.setSearchEngines(engines).catch((error) => {
+    runtimeService.setSearchEngines(engines).catch((error) => {
       console.error("Failed to persist searchEngines", error);
       updateSnapshot(previous);
     });

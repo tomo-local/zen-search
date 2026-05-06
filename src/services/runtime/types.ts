@@ -43,10 +43,39 @@ export enum MessageType {
   QUERY_RESULT = "QUERY_RESULT",
   SWITCH_VIEW_MODE = "SWITCH_VIEW_MODE",
   INVALIDATE_CACHE = "INVALIDATE_CACHE",
+  // Storage operations routed through background
+  GET_THEME = "GET_THEME",
+  SET_THEME = "SET_THEME",
+  GET_VIEW_MODE = "GET_VIEW_MODE",
+  SET_VIEW_MODE = "SET_VIEW_MODE",
+  GET_SEARCH_ENGINES = "GET_SEARCH_ENGINES",
+  SET_SEARCH_ENGINES = "SET_SEARCH_ENGINES",
+  // Background → UI notification when storage changes
+  STORAGE_CHANGED = "STORAGE_CHANGED",
 }
 
 export type InvalidateCacheKind = "Tab" | "Bookmark" | "History";
 
 export interface SwitchViewModeRequest {
   type: MessageType.SWITCH_VIEW_MODE;
+}
+
+/** Background から UI へのストレージ変更通知メッセージ */
+export interface StorageChangedMessage {
+  type: MessageType.STORAGE_CHANGED;
+  key: string;
+  value: unknown;
+}
+
+/**
+ * メッセージが STORAGE_CHANGED メッセージかどうかを確認する型ガード関数。
+ * @param message - 検証するメッセージ
+ * @returns STORAGE_CHANGED メッセージの場合は true
+ */
+export function isStorageChangedMessage(
+  message: unknown,
+): message is StorageChangedMessage {
+  if (typeof message !== "object" || message === null) return false;
+  const m = message as { type?: unknown; key?: unknown };
+  return m.type === MessageType.STORAGE_CHANGED && typeof m.key === "string";
 }

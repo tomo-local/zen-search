@@ -19,15 +19,17 @@ let cachedViewMode: ViewModeValue = "popup";
 let sidePanelPort: chrome.runtime.Port | null = null;
 
 /**
- * ポップアップ・サイドパネルへキャッシュ無効化メッセージを送信する。
+ * ポップアップ・サイドパネルへメッセージをブロードキャストする。
  * 拡張機能ページが開いていない場合は無視する。
  */
+const broadcast = (message: object) => {
+  chrome.runtime.sendMessage(message).catch(() => {
+    // ポップアップ・サイドパネルが開いていない場合は正常系
+  });
+};
+
 const broadcastInvalidateCache = (kind: InvalidateCacheKind) => {
-  chrome.runtime
-    .sendMessage({ type: MessageType.INVALIDATE_CACHE, kind })
-    .catch(() => {
-      // ポップアップ・サイドパネルが開いていない場合は正常系
-    });
+  broadcast({ type: MessageType.INVALIDATE_CACHE, kind });
 };
 
 export default defineBackground(() => {
@@ -65,6 +67,14 @@ export default defineBackground(() => {
   chrome.tabs.onRemoved.addListener(() => broadcastInvalidateCache("Tab"));
   chrome.tabs.onUpdated.addListener((_id, info) => {
     if (info.status === "complete") broadcastInvalidateCache("Tab");
+  });
+
+  // ストレージ変更を UI へ通知する（UI 側は STORAGE_CHANGED を受信して state を更新する）
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName !== "sync") return;
+    for (const [key, { newValue }] of Object.entries(changes)) {
+      broadcast({ type: MessageType.STORAGE_CHANGED, key, value: newValue });
+    }
   });
 
   // ブックマークの変更をキャッシュ無効化に反映する

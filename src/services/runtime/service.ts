@@ -4,6 +4,11 @@ import type {
   Result,
 } from "@/services/result/types";
 import type {
+  SearchEngineValue,
+  ThemeValue,
+  ViewModeValue,
+} from "@/services/storage/types";
+import type {
   CreateTabRequest,
   RemoveTabRequest,
   UpdateTabRequest,
@@ -129,6 +134,99 @@ const closeContent = (): void => {
   runtimeServiceDependencies.contentService.close();
 };
 
+const getTheme = async (): Promise<ThemeValue> => {
+  try {
+    const raw: unknown = await chrome.runtime.sendMessage({
+      type: MessageType.GET_THEME,
+    });
+    if (!isRuntimeResponse<ThemeValue>(raw)) {
+      throw new RuntimeServiceError("Unexpected response shape from GET_THEME");
+    }
+    return raw.result;
+  } catch (error) {
+    if (error instanceof RuntimeServiceError) throw error;
+    logger.error("Failed to get theme via runtime:", error);
+    throw new RuntimeServiceError("Failed to get theme", toError(error));
+  }
+};
+
+const setTheme = async (theme: ThemeValue): Promise<void> => {
+  try {
+    await chrome.runtime.sendMessage({ type: MessageType.SET_THEME, theme });
+  } catch (error) {
+    logger.error("Failed to set theme via runtime:", error);
+    throw new RuntimeServiceError("Failed to set theme", toError(error));
+  }
+};
+
+const getViewMode = async (): Promise<ViewModeValue> => {
+  try {
+    const raw: unknown = await chrome.runtime.sendMessage({
+      type: MessageType.GET_VIEW_MODE,
+    });
+    if (!isRuntimeResponse<ViewModeValue>(raw)) {
+      throw new RuntimeServiceError(
+        "Unexpected response shape from GET_VIEW_MODE",
+      );
+    }
+    return raw.result;
+  } catch (error) {
+    if (error instanceof RuntimeServiceError) throw error;
+    logger.error("Failed to get viewMode via runtime:", error);
+    throw new RuntimeServiceError("Failed to get viewMode", toError(error));
+  }
+};
+
+const setViewMode = async (viewMode: ViewModeValue): Promise<void> => {
+  try {
+    await chrome.runtime.sendMessage({
+      type: MessageType.SET_VIEW_MODE,
+      viewMode,
+    });
+  } catch (error) {
+    logger.error("Failed to set viewMode via runtime:", error);
+    throw new RuntimeServiceError("Failed to set viewMode", toError(error));
+  }
+};
+
+const getSearchEngines = async (): Promise<SearchEngineValue[]> => {
+  try {
+    const raw: unknown = await chrome.runtime.sendMessage({
+      type: MessageType.GET_SEARCH_ENGINES,
+    });
+    if (!isRuntimeResponse<SearchEngineValue[]>(raw)) {
+      throw new RuntimeServiceError(
+        "Unexpected response shape from GET_SEARCH_ENGINES",
+      );
+    }
+    return raw.result;
+  } catch (error) {
+    if (error instanceof RuntimeServiceError) throw error;
+    logger.error("Failed to get searchEngines via runtime:", error);
+    throw new RuntimeServiceError(
+      "Failed to get searchEngines",
+      toError(error),
+    );
+  }
+};
+
+const setSearchEngines = async (
+  engines: SearchEngineValue[],
+): Promise<void> => {
+  try {
+    await chrome.runtime.sendMessage({
+      type: MessageType.SET_SEARCH_ENGINES,
+      engines,
+    });
+  } catch (error) {
+    logger.error("Failed to set searchEngines via runtime:", error);
+    throw new RuntimeServiceError(
+      "Failed to set searchEngines",
+      toError(error),
+    );
+  }
+};
+
 const createRuntimeService = (): RuntimeService => ({
   createTab,
   updateTab,
@@ -137,6 +235,12 @@ const createRuntimeService = (): RuntimeService => ({
   openContent,
   closeContent,
   connectPort,
+  getTheme,
+  setTheme,
+  getViewMode,
+  setViewMode,
+  getSearchEngines,
+  setSearchEngines,
 });
 
 export const runtimeService = createRuntimeService();
