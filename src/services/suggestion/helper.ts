@@ -75,14 +75,15 @@ export const extractYahooJapanSuggestions = (data: unknown): string[] => {
   }
   const hits = (result as { Hit?: unknown }).Hit;
   if (!Array.isArray(hits)) return [];
-  return hits.flatMap((hit) =>
-    typeof hit === "object" &&
-    hit !== null &&
-    "Key" in hit &&
-    typeof (hit as { Key?: unknown }).Key === "string"
-      ? [(hit as { Key: string }).Key]
-      : [],
-  );
+  return hits
+    .filter(
+      (hit): hit is { Key: string } =>
+        typeof hit === "object" &&
+        hit !== null &&
+        "Key" in hit &&
+        typeof (hit as { Key?: unknown }).Key === "string",
+    )
+    .map((hit) => hit.Key);
 };
 
 /**
