@@ -106,7 +106,13 @@ export default function useSearchKeyboard(
       }
 
       // Vim風のgg（最初に移動）の処理
-      if (opts.enableVimBindings && e.key === "g") {
+      if (
+        opts.enableVimBindings &&
+        e.key === "g" &&
+        !e.ctrlKey &&
+        !e.altKey &&
+        !e.metaKey
+      ) {
         if (vimGStateRef.current === "g_pending") {
           e.preventDefault();
           setSelectedIndex(0);
