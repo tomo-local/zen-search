@@ -4,7 +4,28 @@
 
 import type { Kind } from "@/services/result";
 import type { SearchEngineValue } from "@/services/storage/types";
+import {
+  type InvalidateCacheKind,
+  MessageType,
+} from "@/services/runtime/types";
 import type { CacheEntry } from "./types";
+
+/**
+ * メッセージが INVALIDATE_CACHE メッセージかどうかを確認する型ガード関数。
+ * chrome.runtime.onMessage のコールバック引数を安全にナローイングするために使用する。
+ */
+export function isInvalidateCacheMessage(
+  message: unknown,
+): message is { type: MessageType.INVALIDATE_CACHE; kind: InvalidateCacheKind } {
+  return (
+    typeof message === "object" &&
+    message !== null &&
+    "type" in message &&
+    (message as { type: unknown }).type === MessageType.INVALIDATE_CACHE &&
+    "kind" in message &&
+    typeof (message as { kind: unknown }).kind === "string"
+  );
+}
 
 /**
  * キャッシュキーを生成

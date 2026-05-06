@@ -6,10 +6,6 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import type { Kind, Result } from "@/services/result";
 import { runtimeService } from "@/services/runtime";
 import {
-  type InvalidateCacheKind,
-  MessageType,
-} from "@/services/runtime/types";
-import {
   DEFAULT_MAX_COUNT,
   DEFAULT_OPTIONS,
   ERROR_CODES,
@@ -19,6 +15,7 @@ import {
 import {
   generateCacheKey,
   isCacheValid,
+  isInvalidateCacheMessage,
   withRetry,
   withTimeout,
 } from "./helper";
@@ -222,16 +219,8 @@ export default function useSearchResults(
   // バックグラウンドからの INVALIDATE_CACHE メッセージを受信してキャッシュをクリア
   useEffect(() => {
     const handleMessage = (message: unknown) => {
-      if (
-        typeof message !== "object" ||
-        message === null ||
-        !("type" in message) ||
-        (message as { type: unknown }).type !== MessageType.INVALIDATE_CACHE
-      ) {
-        return;
-      }
-      const kind = (message as { kind?: InvalidateCacheKind }).kind;
-      if (!kind || !params.categories.includes(kind as Kind)) return;
+      if (!isInvalidateCacheMessage(message)) return;
+      if (!params.categories.includes(message.kind as Kind)) return;
 
       clearCache();
       executeSearch();
