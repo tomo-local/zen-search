@@ -1,25 +1,34 @@
 import { defineConfig } from "wxt";
+import tailwindcss from "@tailwindcss/vite";
 
 // See https://wxt.dev/api/config.html
 export default defineConfig({
-  runner: {
+  webExt: {
     disabled: true,
   },
-  modules: ["@wxt-dev/module-react"],
+  browser: "chrome",
+  modules: ["@wxt-dev/module-react", "@wxt-dev/auto-icons", "@wxt-dev/i18n/module"],
+  vite: () => ({
+    plugins: [tailwindcss()],
+  }),
   srcDir: "src",
   outDir: "dist",
   manifest: {
     name: "Zen Search",
+    default_locale: "en",
+    current_locale: "en",
     description: "Search your bookmarks and history",
-    version: "1.2.0",
-    icons: {
-      16: "icon/16.png",
-      32: "icon/32.png",
-      48: "icon/48.png",
-      96: "icon/96.png",
-      128: "icon/128.png",
-    },
-    permissions: ["tabs", "history", "activeTab", "bookmarks", "storage"],
+    version: "1.8.0",
+    permissions: ["tabs", "history", "activeTab", "bookmarks", "storage", "sidePanel"],
+    host_permissions: [
+      "https://www.google.com/complete/*",
+      "https://api.bing.com/*",
+      "https://ac.duckduckgo.com/*",
+      "https://search.brave.com/api/*",
+      "https://ac.ecosia.org/*",
+      "https://search.yahoo.co.jp/sugg/*",
+    ],
+    minimum_chrome_version: "116",
     commands: {
       OPEN_POPUP: {
         suggested_key: {

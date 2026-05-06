@@ -3,39 +3,43 @@
  * 責任: 各種コンテンツ（ポップアップ、タブ、ランタイム）の開閉を担当
  */
 
-// 型定義
-export interface ContentService {
-  open: () => Promise<void>;
-  close: () => Promise<void>;
-  openTabs: (action: Promise<void>) => Promise<void>;
-}
+import type { ContentService } from "./interface";
+import { logger } from "./internal";
+import type * as Type from "./types";
 
 // サービス実装
-const open = async (): Promise<void> => {
+const open = async ({
+  windowId,
+}: Type.OpenRequest): Promise<Type.OpenResponse> => {
   try {
-    await chrome.action.openPopup();
+    await chrome.action.openPopup({ windowId });
+    return { success: true };
   } catch (error) {
-    console.error(`Failed to open Content:`, error);
-    throw new Error("コンテンツの表示に失敗しました");
+    logger.error("Failed to open content:", error, { payload: { windowId } });
+    return { success: false };
   }
 };
 
-const openTabs = async (action: Promise<void>): Promise<void> => {
-  chrome.tabs.query({ active: true, currentWindow: true }, async (tabs) => {
-    const tabId = tabs[0].id;
-    if (tabId) {
-      await action;
-    }
-  });
+const close = (): void => {
+  window?.close();
+};
+
+const openTabs = async (
+  action: () => Promise<Type.OpenResponse>,
+): Promise<void> => {
+  const tabs = await chrome.tabs.query({ active: true, currentWindow: true });
+  if (!tabs[0]?.id) return;
+  await action();
 };
 
 // サービスオブジェクトのエクスポート
-export const contentService: ContentService = {
+const createContentService = (): ContentService => ({
   open,
-  // MEMO: openを2回実行するとcloseするため、openをそのまま利用
-  close: open,
+  close,
   openTabs,
-};
+});
+
+export const contentService = createContentService();
 
 // デフォルトエクスポート
 export default contentService;

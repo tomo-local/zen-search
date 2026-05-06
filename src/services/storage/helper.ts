@@ -2,7 +2,13 @@
  * Storage Helper - Chrome storage関連のヘルパー関数
  */
 
-import type { SyncStorage, SyncStorageKey, ThemeValue } from "./types";
+import type {
+  SearchEngineValue,
+  SyncStorage,
+  SyncStorageKey,
+  ThemeValue,
+  ViewModeValue,
+} from "./types";
 
 /**
  * Promise化されたchrome.storage.sync.get
@@ -51,9 +57,48 @@ export const isValidTheme = (value: unknown): value is ThemeValue => {
 };
 
 /**
- * ウィンドウのダークモード設定を取得
+ * デフォルト表示モード値を取得
  */
-export const isWindowDarkMode = (): boolean => {
-  const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
-  return mediaQuery.matches;
+export const getDefaultViewMode = (): ViewModeValue => "popup";
+
+/**
+ * 表示モード値のバリデーション
+ */
+export const isValidViewMode = (value: unknown): value is ViewModeValue => {
+  return ["popup", "sidepanel"].includes(value as string);
+};
+
+const VALID_SEARCH_ENGINES: SearchEngineValue[] = [
+  "google",
+  "bing",
+  "duckduckgo",
+  "brave",
+  "ecosia",
+  "yahoo_japan",
+  "perplexity",
+];
+
+/**
+ * デフォルト有効検索エンジン一覧を取得
+ */
+export const getDefaultSearchEngines = (): SearchEngineValue[] => ["google"];
+
+/**
+ * 検索エンジン値のバリデーション（単体）
+ */
+export const isValidSearchEngine = (
+  value: unknown,
+): value is SearchEngineValue => {
+  return VALID_SEARCH_ENGINES.includes(value as SearchEngineValue);
+};
+
+/**
+ * 検索エンジン配列のバリデーション
+ */
+export const isValidSearchEngines = (
+  value: unknown,
+): value is SearchEngineValue[] => {
+  return (
+    Array.isArray(value) && value.length > 0 && value.every(isValidSearchEngine)
+  );
 };

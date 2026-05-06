@@ -2,25 +2,18 @@
  * Bookmark Service Types - ブックマーク関連の型定義
  */
 
-import type { ResultType } from "@/types/result";
-
 export interface Bookmark {
-  type: ResultType.Bookmark;
   id: string;
+  type: "Bookmark";
   title: string;
   url: string;
-  data: BookMarkData;
+  data: chrome.bookmarks.BookmarkTreeNode & {
+    favIconUrl?: string;
+  };
 }
 
-export type BookMarkData = {
-  unmodifiable?: "managed" | undefined;
-  dateAdded?: number | undefined;
-  dateGroupModified?: number | undefined;
-  parentId?: string | undefined;
-};
-
 export interface QueryBookmarksRequest {
-  query: string;
+  query?: string;
   option?: QueryOption;
 }
 

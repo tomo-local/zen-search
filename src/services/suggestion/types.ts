@@ -1,24 +1,44 @@
 /**
- * Suggestion Service Types - Google検索候補関連の型定義
+ * Suggestion Service Types - 検索候補関連の型定義
  */
 
-import type { ResultType } from "@/types/result";
+import type { SearchEngineValue } from "@/services/storage/types";
+
+type SearchKind =
+  | "Google"
+  | "Bing"
+  | "DuckDuckGo"
+  | "Brave"
+  | "Ecosia"
+  | "Yahoo Japan"
+  | "Perplexity";
 
 export interface Suggestion {
   id: string;
-  type: ResultType.Google;
+  type: "Suggestion";
   title: string;
   url: string;
-  data: SuggestionData;
-}
-
-export interface SuggestionData {
-  originalQuery: string;
+  data: {
+    type: SearchKind;
+    suggestion: string;
+    title: string;
+    url: string;
+    query: string;
+  };
 }
 
 export interface QuerySuggestionsRequest {
   query: string;
   option?: QueryOption;
+  searchEngine?: SearchEngineValue;
+  signal?: AbortSignal;
+}
+
+export interface MultiEngineQuerySuggestionsRequest {
+  query: string;
+  option?: QueryOption;
+  searchEngines: SearchEngineValue[];
+  signal?: AbortSignal;
 }
 
 export interface QueryOption {

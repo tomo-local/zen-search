@@ -1,34 +1,45 @@
 doc:
   - changed-files:
-    - any-glob-to-any-file: "docs/**"
+      - any-glob-to-any-file: "docs/**"
 popup:
   - changed-files:
-    - any-glob-to-any-file: "src/entrypoints/popup/**"
-content:
-  - changed-files:
-    - any-glob-to-any-file: "src/entrypoints/content/**"
+      - any-glob-to-any-file:
+          - "src/entrypoints/popup/**"
+          - "src/entrypoints/sidepanel/**"
 components:
   - changed-files:
-    - any-glob-to-any-file:
-      - "src/components/**"
-      - "src/context/**"
-backend:
-  - changed-files:
-    - any-glob-to-any-file:
-      - "src/functions/**"
-      - "src/entrypoints/background/**"
-service:
-  - changed-files:
-    - any-glob-to-any-file:
-      - "src/services/**"
+      - any-glob-to-any-file:
+          - "src/features/*/components/**"
+          - "src/shared/components/**"
 hooks:
   - changed-files:
-    - any-glob-to-any-file: "src/hooks/**"
+      - any-glob-to-any-file:
+          - "src/features/*/hooks/**"
+          - "src/shared/hooks/**"
+backend:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/entrypoints/background/**"
+service:
+  - changed-files:
+      - any-glob-to-any-file:
+          - "src/services/**"
 utilities:
   - changed-files:
-    - any-glob-to-any-file: "src/utils/**"
+      - any-glob-to-any-file:
+          - "src/utils/**"
+          - "src/lib/**"
+i18n:
+  - changed-files:
+      - any-glob-to-any-file: "src/locales/**"
+scripts:
+  - changed-files:
+      - any-glob-to-any-file: "scripts/**"
 ci:
   - changed-files:
-    - any-glob-to-any-file:
-      - ".github/workflows/**"
-      - ".gemini/**"
+      - any-glob-to-any-file:
+          - ".github/workflows/**"
+          - ".gemini/**"
+website:
+  - changed-files:
+      - any-glob-to-any-file: "website/**"

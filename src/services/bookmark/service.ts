@@ -3,34 +3,38 @@
  * 責任: ブックマークの検索、作成、更新、削除を担当
  */
 
-import { convertBookmarkToResult } from "./converter";
-import { filterValidBookmarks, limitResults } from "./helper";
+import { convertBookmark } from "./converter";
+import { filterValidBookmarks } from "./helper";
+import type { BookmarkService } from "./interface";
+import { BookmarkServiceError, logger, toError } from "./internal";
 import type * as Type from "./types";
 
-// 型定義
-export interface BookmarkService {
-  search: (request: Type.QueryBookmarksRequest) => Promise<Type.Bookmark[]>;
-  getRecent: (
-    request: Type.GetRecentBookmarksRequest,
-  ) => Promise<Type.Bookmark[]>;
-}
-
-// サービス実装
-const searchBookmarks = async ({
+const queryBookmarks = async ({
   query,
   option,
 }: Type.QueryBookmarksRequest): Promise<Type.Bookmark[]> => {
   try {
-    const response = await chrome.bookmarks.search(query);
+    const count = option?.count;
+    let nodes: chrome.bookmarks.BookmarkTreeNode[];
 
-    const bookmarks = filterValidBookmarks(response).map((bookmark) =>
-      convertBookmarkToResult(bookmark),
-    );
+    if (query) {
+      nodes = await chrome.bookmarks.search({ query });
+    } else {
+      const tree = await chrome.bookmarks.getTree();
+      nodes = filterValidBookmarks(tree);
+    }
 
-    return limitResults(option?.count)(bookmarks);
+    const bookmarks = nodes
+      .filter((n) => !!n.url)
+      .slice(0, count)
+      .map(convertBookmark);
+
+    return bookmarks;
   } catch (error) {
-    console.error("Failed to query bookmarks:", error);
-    throw new Error("ブックマークの検索に失敗しました");
+    logger.error("Failed to query bookmarks:", error, {
+      payload: { query, option },
+    });
+    throw new BookmarkServiceError("Failed to query bookmarks", toError(error));
   }
 };
 
@@ -41,24 +45,23 @@ const getRecentBookmarks = async ({
     const count = option?.count || 10;
 
     const response = await chrome.bookmarks.getRecent(count);
-
-    const bookmarks = filterValidBookmarks(response).map((bookmark) =>
-      convertBookmarkToResult(bookmark),
-    );
+    const bookmarks = filterValidBookmarks(response).map(convertBookmark);
 
     return bookmarks;
   } catch (error) {
-    console.error("Failed to get recent bookmarks:", error);
-    throw new Error("最近のブックマークの取得に失敗しました");
+    logger.error("Failed to get recent bookmarks:", error, {
+      payload: { option },
+    });
+    throw new BookmarkServiceError(
+      "Failed to get recent bookmarks",
+      toError(error),
+    );
   }
 };
 
-// サービスオブジェクトのエクスポート
-export const createBookmarkService = (): BookmarkService => ({
-  search: searchBookmarks,
+const createBookmarkService = (): BookmarkService => ({
+  query: queryBookmarks,
   getRecent: getRecentBookmarks,
 });
 
 export const bookmarkService = createBookmarkService();
-
-export { searchBookmarks, getRecentBookmarks };

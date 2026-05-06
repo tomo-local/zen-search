@@ -1,0 +1,15 @@
+export interface {{.Component}}Props {
+  title: string;
+  isActive: boolean;
+  onClick: () => void;
+}
+
+const {{.Component}}: React.FC<{{.Component}}Props> = ({ title, isActive, onClick }) => {
+  return (
+    <button type="button" className={`component ${isActive ? 'active' : ''}`} onClick={onClick}>
+      <h1>{title}</h1>
+    </button>
+  );
+};
+
+export default {{.Component}};

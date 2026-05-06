@@ -1,18 +1,12 @@
-import type { ResultType } from "@/types/result";
-
 export interface History {
-  type: ResultType.History;
   id: string;
+  type: "History";
   title: string;
   url: string;
-  data: HistoryData;
+  data: chrome.history.HistoryItem & {
+    favIconUrl?: string;
+  };
 }
-
-export type HistoryData = {
-  lastVisitTime?: number;
-  typedCount?: number;
-  visitCount?: number;
-};
 
 export interface SearchHistoryRequest {
   query: string;

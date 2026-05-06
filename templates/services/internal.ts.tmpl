@@ -1,0 +1,12 @@
+import { ServiceError, toError } from "../core/error";
+import { ServiceLogger } from "../core/logger";
+
+/** Error class for {{.ServiceNamePascal}}Service operations. */
+export class {{.ServiceNamePascal}}ServiceError extends ServiceError {
+  readonly code = "{{.ServiceNameUpper}}_SERVICE_ERROR";
+}
+
+export { toError };
+
+/** Logger instance for use within {{.ServiceNamePascal}}Service. */
+export const logger = new ServiceLogger("{{.ServiceNamePascal}}Service");

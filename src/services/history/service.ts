@@ -4,14 +4,12 @@
  */
 
 import { DEFAULT_COUNT } from "./constant";
-import { convertMultipleItemsToHistory } from "./converter";
+import { convertItemToHistory } from "./converter";
+import type { HistoryService } from "./interface";
+import { HistoryServiceError, logger, toError } from "./internal";
 import type * as Type from "./types";
 
-export interface HistoryService {
-  search(request: Type.SearchHistoryRequest): Promise<Type.History[]>;
-}
-
-const searchHistory = async ({
+const queryHistory = async ({
   query,
   startTime,
   endTime,
@@ -25,17 +23,17 @@ const searchHistory = async ({
       maxResults: count,
     });
 
-    return convertMultipleItemsToHistory(response);
+    return response.map((item) => convertItemToHistory(item));
   } catch (error) {
-    console.error("Failed to search history:", error);
-    throw new Error("履歴の検索に失敗しました");
+    logger.error("Failed to query history:", error, {
+      payload: { query, count },
+    });
+    throw new HistoryServiceError("Failed to query history", toError(error));
   }
 };
 
-export const createHistoryService = (): HistoryService => ({
-  search: searchHistory,
+const createHistoryService = (): HistoryService => ({
+  query: queryHistory,
 });
 
 export const historyService = createHistoryService();
-
-export { searchHistory };

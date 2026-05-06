@@ -1,29 +1,46 @@
 # Zen Search
 
-Zen Search is a lightweight and intuitive browser extension designed to enhance your search experience. With its modern UI and powerful shortcuts, it helps you search faster and more efficiently.
+[日本語版はこちら](docs/README-ja.md)
+
+Zen Search is a lightweight and intuitive Chrome/Firefox extension built with [WXT](https://wxt.dev/) + React 19 + TypeScript + Tailwind CSS v4. It opens a search popup (`Cmd+T` / `Ctrl+T`) that lets you search tabs, bookmarks, history, and browser suggestions — all from one place.
 
 ## Features
 
-- **Customizable Search Engines**: Switch between your favorite search engines with ease.
+- **Unified Search**: Search across tabs, bookmarks, history, and browser suggestions in a single popup.
 - **Keyboard Shortcuts**: Navigate results and perform actions using arrow keys, Enter, and more.
 - **Lightweight and Fast**: Minimal resource usage ensures smooth performance.
-- **Modern Design**: Built with Tailwind CSS for a sleek and responsive interface.
+- **Modern Design**: Built with Tailwind CSS v4 for a sleek and responsive interface.
 
-## Directory Structure
+## Architecture
 
-Here's an overview of the project's structure:
+### Directory Structure
 
 ```
 src/
-  assets/         # Global CSS and assets like images
-  components/     # Reusable UI components
-  context/        # React context providers (e.g., ThemeProvider)
-  entrypoints/    # Main entry points (popup, background, content)
-  hooks/          # Custom React hooks for state management and actions
-  public/         # Static assets (icons, images)
-  services/       # Business logic and API services
-  types/          # TypeScript type definitions
-  utils/          # Utility functions and helpers
+  entrypoints/    # Extension entry points
+    popup/        # Search UI (main.tsx bootstraps React, App.tsx wires hooks)
+    background/   # Service worker (command & message routing)
+  features/       # Feature-scoped components and hooks by domain
+    search/       # Search state, results, keyboard navigation, shortcuts
+    theme/        # Theme management (useTheme, ThemeProvider)
+    settings/     # Settings (view mode, search engine selection)
+  services/       # Service layer — see docs/services.md for layer design
+    result/       # Aggregates results in parallel, fuses with Fuse.js
+    tab/          # Wraps chrome.tabs API
+    bookmark/     # Wraps chrome.bookmarks API
+    history/      # Wraps chrome.history API
+    suggestion/   # Wraps external search suggestion APIs
+    action/       # Calculator action via mathjs (pure domain logic)
+    storage/      # Wraps chrome.storage.sync
+    content/      # Opens/closes the popup via chrome.action.openPopup
+    runtime/      # Typed IPC bridge between UI and background
+  shared/         # Cross-feature utilities and UI primitives
+    components/   # Reusable UI primitives (Layout, ButtonItem, SquareIcon)
+    hooks/        # Shared hooks (useTranslation)
+    utils/        # Pure utility functions (algorithm helpers)
+    lib/          # Library wrappers (i18n)
+  locales/        # Locale files (en.json, ja.json)
+  assets/         # Global styles
 ```
 
 ## Installation
@@ -46,31 +63,9 @@ src/
 
 4. Load the extension in your browser and enjoy Zen Search!
 
-## TODO for Next Release
+## Roadmap
 
-- [x] Add support for dark mode.
-- [ ] Implement multi-language support for the UI.
-- [ ] Enhance search result filtering options.
-- [ ] Optimize performance for large datasets.
-- [ ] Add unit tests for critical components.
-- [ ] Add new Action types:
-  - [ ] Close a window.
-  - [ ] Open a window.
-  - [ ] Open a tab.
-  - [ ] Reload a tab.
-  - [ ] Duplicate a tab.
-  - [ ] Pin or unpin a tab.
-  - [ ] Create a new tab group.
-  - [ ] Add tabs to a group.
-  - [ ] Remove tabs from a group.
-  - [ ] Rename a tab group.
-  - [ ] Close a tab group.
-- [ ] Enable deleting a tab with Command + Backspace when selected.
-- [ ] Add support for multiple search engines (Google, Bing, DuckDuckGo, etc.).
-- [ ] Implement a settings page to configure:
-  - [ ] Default search engine.
-  - [ ] Custom actions.
-- [ ] Allow users to define and add custom actions.
+TBD
 
 ## License
 

@@ -1,56 +1,45 @@
 import type {
-  Bookmark,
-  QueryBookmarksRequest,
-} from "@/services/bookmark/types";
-import { contentService } from "@/services/content";
-import type { History, SearchHistoryRequest } from "@/services/history/types";
+  Kind,
+  QueryResultsRequest,
+  Result,
+} from "@/services/result/types";
+import type {
+  SearchEngineValue,
+  ThemeValue,
+  ViewModeValue,
+} from "@/services/storage/types";
 import type {
   CreateTabRequest,
-  QueryTabsRequest,
   RemoveTabRequest,
-  Tab,
   UpdateTabRequest,
 } from "@/services/tab/types";
-import { MessageType } from "@/types/result";
-import { RuntimeServiceError } from "./error";
-import type { RuntimeResponse } from "./types";
+import { KEEPALIVE_INTERVAL_MS } from "./constants";
+import runtimeServiceDependencies from "./container";
+import type { RuntimeService } from "./interface";
+import { logger, RuntimeServiceError, toError } from "./internal";
+import { isRuntimeResponse, MessageType } from "./types";
 
-export interface RuntimeService {
-  queryTabs: (request: QueryTabsRequest) => Promise<Tab[]>;
-  createTab: (request: CreateTabRequest) => Promise<void>;
-  updateTab: (request: UpdateTabRequest) => Promise<void>;
-  removeTab: (request: RemoveTabRequest) => Promise<void>;
-  searchHistory: (request: SearchHistoryRequest) => Promise<History[]>;
-  searchBookmarks: (request: QueryBookmarksRequest) => Promise<Bookmark[]>;
-  openContent: () => Promise<void>;
-  closeContent: () => Promise<void>;
-}
+function connectPort(
+  name: string,
+  onMessage?: (message: unknown) => void,
+  attemptCount = 0,
+): void {
+  const port = chrome.runtime.connect({ name });
+  const interval = setInterval(
+    () => port.postMessage({ type: "PING" }),
+    KEEPALIVE_INTERVAL_MS,
+  );
 
-// サービス実装
-const queryTabs = async ({
-  query,
-  option,
-}: QueryTabsRequest): Promise<Tab[]> => {
-  try {
-    const response = (await chrome.runtime.sendMessage({
-      type: MessageType.QUERY_TAB,
-      query,
-      option,
-    })) as RuntimeResponse<Tab[]>;
-
-    return response.result;
-  } catch (error) {
-    if (error instanceof RuntimeServiceError) {
-      throw error;
-    }
-
-    console.error("Failed to query tabs via runtime:", error);
-    throw new RuntimeServiceError(
-      "タブの検索に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
+  if (onMessage) {
+    port.onMessage.addListener(onMessage);
   }
-};
+
+  port.onDisconnect.addListener(() => {
+    clearInterval(interval);
+    const delay = Math.min(1000 * 2 ** attemptCount, 30000);
+    setTimeout(() => connectPort(name, onMessage, attemptCount + 1), delay);
+  });
+}
 
 const createTab = async ({ url }: CreateTabRequest): Promise<void> => {
   try {
@@ -63,11 +52,8 @@ const createTab = async ({ url }: CreateTabRequest): Promise<void> => {
       throw error;
     }
 
-    console.error("Failed to create tab via runtime:", error);
-    throw new RuntimeServiceError(
-      "タブの作成に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
+    logger.error("Failed to create tab via runtime:", error);
+    throw new RuntimeServiceError("Failed to create tab", toError(error));
   }
 };
 
@@ -86,11 +72,8 @@ const updateTab = async ({
       throw error;
     }
 
-    console.error("Failed to update tab via runtime:", error);
-    throw new RuntimeServiceError(
-      "タブの更新に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
+    logger.error("Failed to update tab via runtime:", error);
+    throw new RuntimeServiceError("Failed to update tab", toError(error));
   }
 };
 
@@ -105,57 +88,34 @@ const removeTab = async ({ tabId }: RemoveTabRequest): Promise<void> => {
       throw error;
     }
 
-    console.error("Failed to remove tab via runtime:", error);
-    throw new RuntimeServiceError(
-      "タブの削除に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
+    logger.error("Failed to remove tab via runtime:", error);
+    throw new RuntimeServiceError("Failed to remove tab", toError(error));
   }
 };
 
-const searchHistory = async ({
-  query,
-}: SearchHistoryRequest): Promise<History[]> => {
+const queryResults = async ({
+  filters,
+}: QueryResultsRequest): Promise<Result<Kind>[]> => {
   try {
-    const response = (await chrome.runtime.sendMessage({
-      type: MessageType.QUERY_HISTORY,
-      query,
-    })) as RuntimeResponse<History[]>;
+    const raw: unknown = await chrome.runtime.sendMessage({
+      type: MessageType.QUERY_RESULT,
+      filters,
+    });
 
-    return response.result;
+    if (!isRuntimeResponse<Result<Kind>[]>(raw)) {
+      throw new RuntimeServiceError(
+        "Unexpected response shape from QUERY_RESULT",
+      );
+    }
+
+    return raw.result;
   } catch (error) {
     if (error instanceof RuntimeServiceError) {
       throw error;
     }
 
-    console.error("Failed to search history via runtime:", error);
-    throw new RuntimeServiceError(
-      "履歴の検索に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
-  }
-};
-
-const searchBookmarks = async ({
-  query,
-}: QueryBookmarksRequest): Promise<Bookmark[]> => {
-  try {
-    const response = (await chrome.runtime.sendMessage({
-      type: MessageType.QUERY_BOOKMARK,
-      query,
-    })) as RuntimeResponse<Bookmark[]>;
-
-    return response.result;
-  } catch (error) {
-    if (error instanceof RuntimeServiceError) {
-      throw error;
-    }
-
-    console.error("Failed to search bookmarks via runtime:", error);
-    throw new RuntimeServiceError(
-      "ブックマークの検索に失敗しました",
-      error instanceof Error ? error : new Error(String(error)),
-    );
+    logger.error("Failed to query results via runtime:", error);
+    throw new RuntimeServiceError("Failed to query results", toError(error));
   }
 };
 
@@ -163,35 +123,124 @@ const openContent = async (): Promise<void> => {
   try {
     await chrome.runtime.sendMessage({ type: MessageType.OPEN_POPUP });
   } catch (error) {
-    console.error(`Failed to open Content:`, error);
+    logger.error("Failed to open content:", error);
     // WARN: 処理が失敗した場合はPopup のサービスを表示する
     // Contentが表示できない場合はにPopupを表示する
-    contentService.open();
+    runtimeServiceDependencies.contentService.open({});
   }
 };
 
-const closeContent = async (): Promise<void> => {
+const closeContent = (): void => {
+  runtimeServiceDependencies.contentService.close();
+};
+
+const getTheme = async (): Promise<ThemeValue> => {
   try {
-    await chrome.runtime.sendMessage({ type: MessageType.CLOSE_POPUP });
+    const raw: unknown = await chrome.runtime.sendMessage({
+      type: MessageType.GET_THEME,
+    });
+    if (!isRuntimeResponse<ThemeValue>(raw)) {
+      throw new RuntimeServiceError("Unexpected response shape from GET_THEME");
+    }
+    return raw.result;
   } catch (error) {
-    console.error(`Failed to close Content:`, error);
-    // WARN: 処理が失敗した場合は Popup のサービスを表示する
-    // Contentが表示できない場合はにPopupを表示する
-    contentService.close();
+    if (error instanceof RuntimeServiceError) throw error;
+    logger.error("Failed to get theme via runtime:", error);
+    throw new RuntimeServiceError("Failed to get theme", toError(error));
   }
 };
 
-export const createRuntimeService = (): RuntimeService => ({
-  queryTabs,
+const setTheme = async (theme: ThemeValue): Promise<void> => {
+  try {
+    await chrome.runtime.sendMessage({ type: MessageType.SET_THEME, theme });
+  } catch (error) {
+    logger.error("Failed to set theme via runtime:", error);
+    throw new RuntimeServiceError("Failed to set theme", toError(error));
+  }
+};
+
+const getViewMode = async (): Promise<ViewModeValue> => {
+  try {
+    const raw: unknown = await chrome.runtime.sendMessage({
+      type: MessageType.GET_VIEW_MODE,
+    });
+    if (!isRuntimeResponse<ViewModeValue>(raw)) {
+      throw new RuntimeServiceError(
+        "Unexpected response shape from GET_VIEW_MODE",
+      );
+    }
+    return raw.result;
+  } catch (error) {
+    if (error instanceof RuntimeServiceError) throw error;
+    logger.error("Failed to get viewMode via runtime:", error);
+    throw new RuntimeServiceError("Failed to get viewMode", toError(error));
+  }
+};
+
+const setViewMode = async (viewMode: ViewModeValue): Promise<void> => {
+  try {
+    await chrome.runtime.sendMessage({
+      type: MessageType.SET_VIEW_MODE,
+      viewMode,
+    });
+  } catch (error) {
+    logger.error("Failed to set viewMode via runtime:", error);
+    throw new RuntimeServiceError("Failed to set viewMode", toError(error));
+  }
+};
+
+const getSearchEngines = async (): Promise<SearchEngineValue[]> => {
+  try {
+    const raw: unknown = await chrome.runtime.sendMessage({
+      type: MessageType.GET_SEARCH_ENGINES,
+    });
+    if (!isRuntimeResponse<SearchEngineValue[]>(raw)) {
+      throw new RuntimeServiceError(
+        "Unexpected response shape from GET_SEARCH_ENGINES",
+      );
+    }
+    return raw.result;
+  } catch (error) {
+    if (error instanceof RuntimeServiceError) throw error;
+    logger.error("Failed to get searchEngines via runtime:", error);
+    throw new RuntimeServiceError(
+      "Failed to get searchEngines",
+      toError(error),
+    );
+  }
+};
+
+const setSearchEngines = async (
+  engines: SearchEngineValue[],
+): Promise<void> => {
+  try {
+    await chrome.runtime.sendMessage({
+      type: MessageType.SET_SEARCH_ENGINES,
+      engines,
+    });
+  } catch (error) {
+    logger.error("Failed to set searchEngines via runtime:", error);
+    throw new RuntimeServiceError(
+      "Failed to set searchEngines",
+      toError(error),
+    );
+  }
+};
+
+const createRuntimeService = (): RuntimeService => ({
   createTab,
   updateTab,
   removeTab,
-  searchHistory,
-  searchBookmarks,
+  queryResults,
   openContent,
   closeContent,
+  connectPort,
+  getTheme,
+  setTheme,
+  getViewMode,
+  setViewMode,
+  getSearchEngines,
+  setSearchEngines,
 });
 
 export const runtimeService = createRuntimeService();
-
-export { queryTabs };

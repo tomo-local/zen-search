@@ -1,0 +1,72 @@
+name: Release
+
+on:
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
+    paths:
+      - "wxt.config.ts"
+  workflow_dispatch:
+
+jobs:
+  create-release:
+    # マージされた かつ release/ ブランチからのPRの場合のみ実行
+    if: |
+      (github.event.pull_request.merged == true && startsWith(github.event.pull_request.head.ref, 'release/')) ||
+      github.event_name == 'workflow_dispatch'
+
+    name: Create Release Note
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      actions: read
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "18"
+
+      - name: Configure Git
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Create Release
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require('fs');
+
+            console.log(`🚀 リリース作成開始だ〜！実行方法: ${context.eventName}`);
+
+            const configPath = 'wxt.config.ts';
+            const configContent = fs.readFileSync(configPath, 'utf8');
+            const versionMatch = configContent.match(/version:\s*"([^"]+)"/);
+
+            if (!versionMatch) {
+              throw new Error('wxt.config.tsからバージョンが取得できないよ〜 😢');
+            }
+
+            const currentVersion = versionMatch[1];
+            const newTagName = `v${currentVersion}`;
+
+            const { data: release } = await github.rest.repos.createRelease({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              tag_name: newTagName,
+              name: newTagName,
+              draft: false,
+              prerelease: false,
+              generate_release_notes: true
+            });
+
+            console.log(`🎉 リリース ${newTagName} 作成完了！`);
+            console.log(`📋 リリースURL: ${release.html_url}`);
+            console.log(`✅ やったね〜！🚀✨`);

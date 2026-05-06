@@ -27,3 +27,15 @@ dist
 *.njsproj
 *.sln
 *.sw?
+
+.env
+.env.*
+
+# Local bin
+~/bin/*
+
+# Analysis outputs (local only)
+.analysis/
+
+# Local planning documents
+.plan/

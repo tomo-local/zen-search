@@ -4,15 +4,25 @@
 
 export enum SyncStorageKey {
   Theme = "theme",
-  Language = "language",
+  ViewMode = "viewMode",
+  SearchEngines = "searchEngines",
 }
 
 export type ThemeValue = "light" | "dark" | "system";
-export type LanguageValue = "en" | "js";
+export type ViewModeValue = "popup" | "sidepanel";
+export type SearchEngineValue =
+  | "google"
+  | "bing"
+  | "duckduckgo"
+  | "brave"
+  | "ecosia"
+  | "yahoo_japan"
+  | "perplexity";
 
 export interface SyncStorage {
   [SyncStorageKey.Theme]: ThemeValue;
-  [SyncStorageKey.Language]: LanguageValue;
+  [SyncStorageKey.ViewMode]: ViewModeValue;
+  [SyncStorageKey.SearchEngines]: SearchEngineValue[];
 }
 
 // リクエスト型定義
@@ -27,8 +37,4 @@ export interface SetStorageRequest<K extends SyncStorageKey> {
 
 export interface SetThemeRequest {
   theme: ThemeValue;
-}
-
-export interface SetLanguageRequest {
-  language: LanguageValue;
 }

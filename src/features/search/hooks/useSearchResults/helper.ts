@@ -1,0 +1,115 @@
+/**
+ * useSearchResults関連のユーティリティ関数
+ */
+
+import type { Kind } from "@/services/result";
+import {
+  type InvalidateCacheKind,
+  MessageType,
+} from "@/services/runtime/types";
+import type { SearchEngineValue } from "@/services/storage/types";
+import type { CacheEntry } from "./types";
+
+/**
+ * メッセージが INVALIDATE_CACHE メッセージかどうかを確認する型ガード関数。
+ * chrome.runtime.onMessage のコールバック引数を安全にナローイングするために使用する。
+ * @param message - 検証するメッセージ
+ * @returns INVALIDATE_CACHE メッセージの場合は true
+ */
+export function isInvalidateCacheMessage(message: unknown): message is {
+  type: MessageType.INVALIDATE_CACHE;
+  kind: InvalidateCacheKind;
+} {
+  if (typeof message !== "object" || message === null) return false;
+  const m = message as { type?: unknown; kind?: unknown };
+  return (
+    m.type === MessageType.INVALIDATE_CACHE &&
+    (m.kind === "Tab" || m.kind === "Bookmark" || m.kind === "History")
+  );
+}
+
+/**
+ * キャッシュキーを生成
+ * @param query - 検索クエリ
+ * @param categories - カテゴリ配列
+ * @returns キャッシュキー
+ */
+export function generateCacheKey(
+  query: string | undefined,
+  categories: Kind[],
+  searchEngines?: SearchEngineValue[],
+): string {
+  const q = query || "";
+  const c = [...categories].sort().join(",");
+  const e = searchEngines ? [...searchEngines].sort().join(",") : "";
+  return `${q}::${c}::${e}`;
+}
+
+/**
+ * キャッシュが有効かチェック
+ * @param entry - キャッシュエントリ
+ * @param expireMs - 有効期限（ミリ秒）
+ * @returns 有効ならtrue
+ */
+export function isCacheValid<T>(
+  entry: CacheEntry<T> | null,
+  expireMs: number,
+): boolean {
+  if (!entry) return false;
+  const now = Date.now();
+  return now - entry.timestamp < expireMs;
+}
+
+/**
+ * 遅延処理
+ * @param ms - 遅延時間（ミリ秒）
+ */
+export function delay(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/**
+ * タイムアウト付きPromise
+ * @param promise - 実行するPromise
+ * @param timeoutMs - タイムアウト時間（ミリ秒）
+ * @returns タイムアウト付きPromise
+ */
+export function withTimeout<T>(
+  promise: Promise<T>,
+  timeoutMs: number,
+): Promise<T> {
+  return Promise.race([
+    promise,
+    new Promise<T>((_, reject) =>
+      setTimeout(() => reject(new Error("TIMEOUT")), timeoutMs),
+    ),
+  ]);
+}
+
+/**
+ * リトライ付き実行
+ * @param fn - 実行する関数
+ * @param maxRetries - 最大リトライ回数
+ * @param delayMs - リトライ間の待機時間（ミリ秒）
+ * @returns 実行結果
+ */
+export async function withRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries: number,
+  delayMs: number,
+): Promise<T> {
+  let lastError: unknown;
+
+  for (let i = 0; i <= maxRetries; i++) {
+    try {
+      return await fn();
+    } catch (error) {
+      lastError = error;
+      if (i < maxRetries) {
+        await delay(delayMs);
+      }
+    }
+  }
+
+  throw lastError;
+}

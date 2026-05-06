@@ -27,3 +27,7 @@ export const calculate = (
     };
   }
 };
+
+export const generateUrl = (expression: string): string => {
+  return `https://www.google.com/search?q=${encodeURIComponent(expression)}`;
+};

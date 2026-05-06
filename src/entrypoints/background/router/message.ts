@@ -1,34 +1,32 @@
-import {
-  bookmarkService,
-  type QueryBookmarksRequest,
-} from "@/services/bookmark";
 import { contentService } from "@/services/content";
-import {
-  get30DaysAgo,
-  getNow,
-  historyService,
-  type SearchHistoryRequest,
-} from "@/services/history";
+import { type QueryResultsRequest, resultService } from "@/services/result";
+import { MessageType } from "@/services/runtime/types";
+import { storageService } from "@/services/storage";
 import {
   type CreateTabRequest,
-  type QueryTabsRequest,
   type RemoveTabRequest,
   tabService,
   type UpdateTabRequest,
 } from "@/services/tab";
 
-import { MessageType } from "@/types/result";
-
 const {
   OPEN_POPUP,
-  CLOSE_POPUP,
-  QUERY_TAB,
   CREATE_TAB,
   UPDATE_TAB,
   REMOVE_TAB,
-  QUERY_HISTORY,
-  QUERY_BOOKMARK,
+  GET_THEME,
+  SET_THEME,
+  GET_VIEW_MODE,
+  SET_VIEW_MODE,
+  GET_SEARCH_ENGINES,
+  SET_SEARCH_ENGINES,
+  QUERY_RESULT,
+  SWITCH_VIEW_MODE,
 } = MessageType;
+
+// 送信元コンテキスト（popup / sidepanel）ごとに AbortController を管理する。
+// これにより、複数コンテキストが同時に開いていても互いにキャンセルしない。
+const queryResultControllers = new Map<string, AbortController>();
 
 function sendResponse(
   type: string,
@@ -38,85 +36,237 @@ function sendResponse(
   response({ type, result });
 }
 
-type Message =
-  | { type: "OPEN_POPUP" }
-  | { type: "CLOSE_POPUP" }
-  | QueryTabsRequest
-  | CreateTabRequest
-  | UpdateTabRequest
-  | RemoveTabRequest
-  | SearchHistoryRequest
-  | QueryBookmarksRequest;
+type RouterMessage =
+  | { type: MessageType.OPEN_POPUP }
+  | { type: MessageType.SWITCH_VIEW_MODE }
+  | ({ type: MessageType.CREATE_TAB } & CreateTabRequest)
+  | ({ type: MessageType.UPDATE_TAB } & UpdateTabRequest)
+  | ({ type: MessageType.REMOVE_TAB } & RemoveTabRequest)
+  | ({ type: MessageType.QUERY_RESULT } & QueryResultsRequest)
+  | { type: MessageType.GET_THEME }
+  | { type: MessageType.SET_THEME; theme: string }
+  | { type: MessageType.GET_VIEW_MODE }
+  | { type: MessageType.SET_VIEW_MODE; viewMode: string }
+  | { type: MessageType.GET_SEARCH_ENGINES }
+  | { type: MessageType.SET_SEARCH_ENGINES; engines: string[] };
 
+function isRouterMessage(msg: unknown): msg is RouterMessage {
+  if (typeof msg !== "object" || msg === null || !("type" in msg)) return false;
+  const { type } = msg as { type: unknown };
+  switch (type) {
+    case MessageType.OPEN_POPUP:
+    case MessageType.SWITCH_VIEW_MODE:
+    case MessageType.GET_THEME:
+    case MessageType.GET_VIEW_MODE:
+    case MessageType.GET_SEARCH_ENGINES:
+      return true;
+    case MessageType.SET_THEME:
+      return (
+        "theme" in msg && typeof (msg as { theme: unknown }).theme === "string"
+      );
+    case MessageType.SET_VIEW_MODE:
+      return (
+        "viewMode" in msg &&
+        typeof (msg as { viewMode: unknown }).viewMode === "string"
+      );
+    case MessageType.SET_SEARCH_ENGINES:
+      return (
+        "engines" in msg && Array.isArray((msg as { engines: unknown }).engines)
+      );
+    case MessageType.CREATE_TAB:
+      return "url" in msg && typeof (msg as { url: unknown }).url === "string";
+    case MessageType.UPDATE_TAB:
+      return (
+        "tabId" in msg &&
+        typeof (msg as { tabId: unknown }).tabId === "number" &&
+        "windowId" in msg &&
+        typeof (msg as { windowId: unknown }).windowId === "number"
+      );
+    case MessageType.REMOVE_TAB:
+      return (
+        "tabId" in msg && typeof (msg as { tabId: unknown }).tabId === "number"
+      );
+    case MessageType.QUERY_RESULT:
+      return (
+        "filters" in msg &&
+        typeof (msg as { filters: unknown }).filters === "object" &&
+        (msg as { filters: unknown }).filters !== null
+      );
+    default:
+      return false;
+  }
+}
+
+/**
+ * 受信したメッセージを解析し、適切なサービスへルーティングします。
+ *
+ * @param message 受信したメッセージオブジェクト
+ * @param sender メッセージの送信元情報
+ * @param response レスポンスを返却するためのコールバック関数
+ * @returns メッセージが正常に処理された場合は true、それ以外は false
+ */
 export function routeMessage(
-  message: { type: MessageType } & Message,
-  _sender: chrome.runtime.MessageSender,
+  message: unknown,
+  sender: chrome.runtime.MessageSender,
   response: (res?: object) => void,
 ): boolean {
+  if (!isRouterMessage(message)) return false;
+
   switch (message.type) {
     case OPEN_POPUP:
-    case CLOSE_POPUP:
-      contentService.openTabs(contentService.open());
+      contentService.openTabs(() => contentService.open({}));
       return true;
 
-    case QUERY_TAB: {
-      const { query, option } = message as QueryTabsRequest;
-      tabService.query({ query, option }).then((tabs) => {
-        sendResponse(QUERY_TAB, tabs, response);
-      });
-      return true;
-    }
     case CREATE_TAB: {
-      const { url } = message as CreateTabRequest;
-      tabService.create({ url }).then(() => {
-        sendResponse(CREATE_TAB, true, response);
-      });
+      const { url } = message;
+      tabService
+        .create({ url })
+        .then(() => {
+          sendResponse(CREATE_TAB, true, response);
+        })
+        .catch((error) => {
+          console.error("Error handling CREATE_TAB:", error);
+          sendResponse(CREATE_TAB, false, response);
+        });
       return true;
     }
     case UPDATE_TAB: {
-      const { tabId, windowId } = message as UpdateTabRequest;
-      tabService.update({ tabId, windowId }).then(() => {
-        sendResponse(UPDATE_TAB, true, response);
-      });
+      const { tabId, windowId } = message;
+      tabService
+        .update({ tabId, windowId })
+        .then(() => {
+          sendResponse(UPDATE_TAB, true, response);
+        })
+        .catch((error) => {
+          console.error("Error handling UPDATE_TAB:", error);
+          sendResponse(UPDATE_TAB, false, response);
+        });
       return true;
     }
     case REMOVE_TAB: {
-      const { tabId } = message as RemoveTabRequest;
-      tabService.remove({ tabId }).then(() => {
-        sendResponse(REMOVE_TAB, true, response);
-      });
-      return true;
-    }
-    case QUERY_HISTORY: {
-      const { query } = message as SearchHistoryRequest;
-      const end = getNow();
-      const start = get30DaysAgo(end);
-
-      historyService
-        .search({ query, startTime: start.getTime(), endTime: end.getTime() })
-        .then((history) => {
-          sendResponse(QUERY_HISTORY, history, response);
+      const { tabId } = message;
+      tabService
+        .remove({ tabId })
+        .then(() => {
+          sendResponse(REMOVE_TAB, true, response);
+        })
+        .catch((error) => {
+          console.error("Error handling REMOVE_TAB:", error);
+          sendResponse(REMOVE_TAB, false, response);
         });
       return true;
     }
-    case QUERY_BOOKMARK: {
-      const { query, option } = message as QueryBookmarksRequest;
 
-      // queryが空の場合、最近のブックマークを取得
-      if (!query) {
-        bookmarkService.getRecent({ option }).then((bookmarks) => {
-          sendResponse(QUERY_BOOKMARK, bookmarks, response);
+    case QUERY_RESULT: {
+      // 送信元ごとに前回のリクエストをキャンセルして新しいコントローラーを作成
+      const senderKey = sender.documentId ?? sender.url ?? "unknown";
+      queryResultControllers.get(senderKey)?.abort();
+      const controller = new AbortController();
+      queryResultControllers.set(senderKey, controller);
+      const { signal } = controller;
+
+      const { filters } = message;
+      resultService
+        .query({ filters, signal })
+        .then((results) => {
+          sendResponse(QUERY_RESULT, results, response);
+          queryResultControllers.delete(senderKey);
+        })
+        .catch((error) => {
+          if (!signal.aborted) {
+            console.error("Error handling QUERY_RESULT:", error);
+          }
+          sendResponse(QUERY_RESULT, [], response);
+          queryResultControllers.delete(senderKey);
         });
-        return true;
-      }
-      bookmarkService.search({ query, option }).then((bookmarks) => {
-        sendResponse(QUERY_BOOKMARK, bookmarks, response);
-      });
       return true;
     }
 
-    default:
-      // 未対応メッセージ
+    case SWITCH_VIEW_MODE: {
+      // ユーザージェスチャートークンが有効なうちに同期的に呼ぶ
+      chrome.action.openPopup().catch(console.error);
+      sendResponse(SWITCH_VIEW_MODE, true, response);
+      return true;
+    }
+
+    case GET_THEME: {
+      storageService
+        .getTheme()
+        .then((theme) => sendResponse(GET_THEME, theme, response))
+        .catch((error) => {
+          console.error("Error handling GET_THEME:", error);
+          sendResponse(GET_THEME, "system", response);
+        });
+      return true;
+    }
+
+    case SET_THEME: {
+      const { theme } = message;
+      storageService
+        .setTheme({
+          theme: theme as import("@/services/storage/types").ThemeValue,
+        })
+        .then(() => sendResponse(SET_THEME, true, response))
+        .catch((error) => {
+          console.error("Error handling SET_THEME:", error);
+          sendResponse(SET_THEME, false, response);
+        });
+      return true;
+    }
+
+    case GET_VIEW_MODE: {
+      storageService
+        .getViewMode()
+        .then((viewMode) => sendResponse(GET_VIEW_MODE, viewMode, response))
+        .catch((error) => {
+          console.error("Error handling GET_VIEW_MODE:", error);
+          sendResponse(GET_VIEW_MODE, "popup", response);
+        });
+      return true;
+    }
+
+    case SET_VIEW_MODE: {
+      const { viewMode } = message;
+      storageService
+        .setViewMode(
+          viewMode as import("@/services/storage/types").ViewModeValue,
+        )
+        .then(() => sendResponse(SET_VIEW_MODE, true, response))
+        .catch((error) => {
+          console.error("Error handling SET_VIEW_MODE:", error);
+          sendResponse(SET_VIEW_MODE, false, response);
+        });
+      return true;
+    }
+
+    case GET_SEARCH_ENGINES: {
+      storageService
+        .getSearchEngines()
+        .then((engines) => sendResponse(GET_SEARCH_ENGINES, engines, response))
+        .catch((error) => {
+          console.error("Error handling GET_SEARCH_ENGINES:", error);
+          sendResponse(GET_SEARCH_ENGINES, ["google"], response);
+        });
+      return true;
+    }
+
+    case SET_SEARCH_ENGINES: {
+      const { engines } = message;
+      storageService
+        .setSearchEngines(
+          engines as import("@/services/storage/types").SearchEngineValue[],
+        )
+        .then(() => sendResponse(SET_SEARCH_ENGINES, true, response))
+        .catch((error) => {
+          console.error("Error handling SET_SEARCH_ENGINES:", error);
+          sendResponse(SET_SEARCH_ENGINES, false, response);
+        });
+      return true;
+    }
+
+    default: {
+      const _exhaustive: never = message;
       return false;
+    }
   }
 }

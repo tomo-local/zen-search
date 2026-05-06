@@ -2,22 +2,20 @@
  * Bookmark Converter - chrome.bookmarks.BookmarkTreeNodeをBookmark型に変換
  */
 
-import { ResultType } from "@/types/result";
+import { getFaviconUrl } from "./helper";
 import type { Bookmark } from "./types";
 
-export function convertBookmarkToResult(
+export function convertBookmark(
   bookmark: chrome.bookmarks.BookmarkTreeNode,
 ): Bookmark {
   return {
-    type: ResultType.Bookmark,
-    id: bookmark.id,
+    id: crypto.randomUUID(),
+    type: "Bookmark",
     title: bookmark.title || "",
     url: bookmark.url || "",
     data: {
-      parentId: bookmark?.parentId || "",
-      dateAdded: bookmark?.dateAdded,
-      dateGroupModified: bookmark?.dateGroupModified,
-      unmodifiable: bookmark?.unmodifiable,
+      ...bookmark,
+      favIconUrl: bookmark.url ? getFaviconUrl(bookmark.url) : undefined,
     },
   };
 }

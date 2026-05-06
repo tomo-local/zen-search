@@ -1,12 +1,107 @@
+import {
+  type InvalidateCacheKind,
+  MessageType,
+} from "@/services/runtime/types";
+import {
+  getDefaultViewMode,
+  isValidViewMode,
+  storageService,
+} from "@/services/storage";
+import { SyncStorageKey, type ViewModeValue } from "@/services/storage/types";
 import { routeCommand, routeMessage } from "./router";
 
+// chrome.sidePanel.open() はユーザージェスチャートークンが必要なため、
+// await の前に呼び出せるよう viewMode をキャッシュしておく
+let cachedViewMode: ViewModeValue = "popup";
+
+// サイドパネルの開閉状態をポート接続で追跡する
+// ポートが存在する = サイドパネルが開いている
+let sidePanelPort: chrome.runtime.Port | null = null;
+
+/**
+ * ポップアップ・サイドパネルへメッセージをブロードキャストする。
+ * 拡張機能ページが開いていない場合は無視する。
+ */
+const broadcast = (message: object) => {
+  chrome.runtime.sendMessage(message).catch(() => {
+    // ポップアップ・サイドパネルが開いていない場合は正常系
+  });
+};
+
+const broadcastInvalidateCache = (kind: InvalidateCacheKind) => {
+  broadcast({ type: MessageType.INVALIDATE_CACHE, kind });
+};
+
 export default defineBackground(() => {
+  const updateViewMode = (viewMode: ViewModeValue) => {
+    cachedViewMode = viewMode;
+    chrome.sidePanel
+      .setPanelBehavior({ openPanelOnActionClick: viewMode === "sidepanel" })
+      .catch(console.error);
+  };
+
+  // サイドパネルの初期化
+  // getViewMode() は内部でエラーをキャッチしデフォルト値を返すため .catch() は不要
+  storageService.getViewMode().then(updateViewMode);
+
+  // viewMode変更時にキャッシュとサイドパネルの動作を更新
+  storageService.subscribe(SyncStorageKey.ViewMode, (viewMode) => {
+    updateViewMode(isValidViewMode(viewMode) ? viewMode : getDefaultViewMode());
+  });
+
+  // ポート接続の処理:
+  // - "sidepanel": サイドパネルの開閉状態を追跡する
+  // - "keepalive": ポップアップからの SW 生存維持用（接続を受け入れるだけでよい）
+  // いずれのポートも接続が続く限り MV3 Service Worker を生存させる
+  chrome.runtime.onConnect.addListener((port) => {
+    if (port.name === "sidepanel") {
+      sidePanelPort = port;
+      port.onDisconnect.addListener(() => {
+        sidePanelPort = null;
+      });
+    }
+  });
+
+  // タブの変更をキャッシュ無効化に反映する
+  chrome.tabs.onCreated.addListener(() => broadcastInvalidateCache("Tab"));
+  chrome.tabs.onRemoved.addListener(() => broadcastInvalidateCache("Tab"));
+  chrome.tabs.onUpdated.addListener((_id, info) => {
+    if (info.status === "complete") broadcastInvalidateCache("Tab");
+  });
+
+  // ストレージ変更を UI へ通知する（UI 側は STORAGE_CHANGED を受信して state を更新する）
+  chrome.storage.onChanged.addListener((changes, areaName) => {
+    if (areaName !== "sync") return;
+    for (const [key, { newValue }] of Object.entries(changes)) {
+      broadcast({ type: MessageType.STORAGE_CHANGED, key, value: newValue });
+    }
+  });
+
+  // ブックマークの変更をキャッシュ無効化に反映する
+  chrome.bookmarks.onCreated.addListener(() =>
+    broadcastInvalidateCache("Bookmark"),
+  );
+  chrome.bookmarks.onRemoved.addListener(() =>
+    broadcastInvalidateCache("Bookmark"),
+  );
+  chrome.bookmarks.onChanged.addListener(() =>
+    broadcastInvalidateCache("Bookmark"),
+  );
+
+  // 履歴の変更をキャッシュ無効化に反映する
+  chrome.history.onVisited.addListener(() =>
+    broadcastInvalidateCache("History"),
+  );
+  chrome.history.onVisitRemoved.addListener(() =>
+    broadcastInvalidateCache("History"),
+  );
+
   /**
    * @description コマンドのルーティング
    */
-  chrome.commands.onCommand.addListener((command, tab) =>
-    routeCommand(command, tab),
-  );
+  chrome.commands.onCommand.addListener((command, tab) => {
+    routeCommand(command, tab, cachedViewMode, sidePanelPort);
+  });
 
   /**
    * @description メッセージのルーティング

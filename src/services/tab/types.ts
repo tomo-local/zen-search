@@ -1,23 +1,13 @@
-import type { ResultType } from "@/types/result";
-
 export interface Tab {
-  type: ResultType.Tab;
   id: string;
+  type: "Tab";
   title: string;
   url: string;
-  data: TabData;
-}
-
-export interface TabData {
-  icon?: string;
-  active: boolean;
-  lastAccessed: number;
-  windowId: number;
-  currentWindow: boolean;
+  data: chrome.tabs.Tab & { id: number; lastAccessed: number };
 }
 
 export interface QueryTabsRequest {
-  query: string;
+  query?: string;
   option?: QueryOption;
 }
 
