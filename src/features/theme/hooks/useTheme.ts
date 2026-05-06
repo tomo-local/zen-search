@@ -47,7 +47,9 @@ const notify = () => {
 };
 
 const updateSnapshot = (theme: ThemeValue) => {
-  snapshot = buildSnapshot(theme);
+  const next = buildSnapshot(theme);
+  if (snapshot.theme === next.theme && snapshot.isDarkMode === next.isDarkMode) return;
+  snapshot = next;
   notify();
 };
 
