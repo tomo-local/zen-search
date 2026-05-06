@@ -1,6 +1,52 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": [
-    "config:recommended"
+  "extends": ["config:recommended"],
+  "schedule": ["before 9am on monday"],
+  "timezone": "Asia/Tokyo",
+  "packageRules": [
+    {
+      "description": "メジャーバージョンは自動マージしない",
+      "matchUpdateTypes": ["major"],
+      "automerge": false
+    },
+    {
+      "description": "devDependencies のパッチ・マイナーは CI 通過で自動マージ",
+      "matchDepTypes": ["devDependencies"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "squash"
+    },
+    {
+      "description": "Storybook 関連をまとめて1PR",
+      "matchPackagePatterns": ["^@storybook/", "^@chromatic-com/storybook"],
+      "groupName": "storybook"
+    },
+    {
+      "description": "WXT エコシステムをまとめて1PR",
+      "matchPackagePatterns": ["^wxt$", "^@wxt-dev/"],
+      "groupName": "wxt"
+    },
+    {
+      "description": "React エコシステムをまとめて1PR",
+      "matchPackageNames": [
+        "react",
+        "react-dom",
+        "@types/react",
+        "@types/react-dom"
+      ],
+      "groupName": "react"
+    },
+    {
+      "description": "Tailwind CSS をまとめて1PR",
+      "matchPackagePatterns": ["^tailwindcss$", "^@tailwindcss/"],
+      "groupName": "tailwind"
+    },
+    {
+      "description": "GitHub Actions は CI 通過で自動マージ（パッチ・マイナー）",
+      "matchManagers": ["github-actions"],
+      "matchUpdateTypes": ["patch", "minor"],
+      "automerge": true,
+      "automergeType": "squash"
+    }
   ]
 }
