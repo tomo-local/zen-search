@@ -32,10 +32,10 @@ const getSnapshot = () => snapshot;
 const hydrateViewMode = async () => {
   try {
     const stored = await storageService.getViewMode();
-    updateSnapshot(stored ?? "popup");
+    updateSnapshot(stored ?? getDefaultViewMode());
   } catch (error) {
     console.error("Failed to hydrate viewMode", error);
-    updateSnapshot("popup");
+    updateSnapshot(getDefaultViewMode());
   }
 };
 
