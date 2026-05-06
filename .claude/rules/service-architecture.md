@@ -41,11 +41,11 @@ When touching `useTheme`, `useViewMode`, or `popup/main.tsx`, do not add further
 
 Services in `src/services/` fall into three layers:
 
-| Layer | Services | Characteristics |
-| --- | --- | --- |
-| **Application** | `result`, `action` (future) | Orchestrate multiple services; no direct Chrome API calls |
-| **Infrastructure** | `tab`, `bookmark`, `history`, `suggestion`, `storage`, `content`, `runtime` | Wrap Chrome APIs or external systems; no business logic |
-| **Domain** | `action` (current) | Pure logic; no Chrome API or network dependency |
+| Layer              | Services                                                                    | Characteristics                                           |
+| ------------------ | --------------------------------------------------------------------------- | --------------------------------------------------------- |
+| **Application**    | `result`, `action` (future)                                                 | Orchestrate multiple services; no direct Chrome API calls |
+| **Infrastructure** | `tab`, `bookmark`, `history`, `suggestion`, `storage`, `content`, `runtime` | Wrap Chrome APIs or external systems; no business logic   |
+| **Domain**         | `action` (current)                                                          | Pure logic; no Chrome API or network dependency           |
 
 `action` is currently a Domain service (pure mathjs logic). As more action types are added, it will evolve into an Application service with sub-handlers, similar to `result`.
 
@@ -54,6 +54,8 @@ Services in `src/services/` fall into three layers:
 Each service in `src/services/` has a single, well-defined responsibility. Follow the patterns below when implementing or extending services.
 
 ### result
+
+**Interface:** `src/services/result/interface.ts`
 
 **Role:** Application orchestrator. Aggregates results from all source services in parallel and applies fuzzy search.
 
@@ -65,6 +67,8 @@ Each service in `src/services/` has a single, well-defined responsibility. Follo
 
 ### tab
 
+**Interface:** `src/services/tab/interface.ts`
+
 **Role:** Manage browser tabs (query, create, activate, remove).
 
 - Wraps `chrome.tabs` and `chrome.windows` APIs
@@ -73,6 +77,8 @@ Each service in `src/services/` has a single, well-defined responsibility. Follo
 - Converts `chrome.tabs.Tab` → `Tab` via `converter.ts`
 
 ### bookmark
+
+**Interface:** `src/services/bookmark/interface.ts`
 
 **Role:** Search and retrieve browser bookmarks.
 
@@ -83,6 +89,8 @@ Each service in `src/services/` has a single, well-defined responsibility. Follo
 
 ### history
 
+**Interface:** `src/services/history/interface.ts`
+
 **Role:** Search browser history.
 
 - Wraps `chrome.history.search`
@@ -92,6 +100,8 @@ Each service in `src/services/` has a single, well-defined responsibility. Follo
 
 ### suggestion
 
+**Interface:** `src/services/suggestion/interface.ts`
+
 **Role:** Fetch search suggestions from Google Suggest API.
 
 - Calls `https://www.google.com/complete/search?client=chrome&q={query}`
@@ -100,6 +110,8 @@ Each service in `src/services/` has a single, well-defined responsibility. Follo
 - Returns empty array if query is blank; falls back to original query on fetch failure
 
 ### action
+
+**Interface:** `src/services/action/interface.ts`
 
 **Role:** Detect and evaluate actions. Currently handles only mathematical expressions, but is designed to grow into an orchestrator (similar to `result`) as more action types are added.
 
@@ -111,6 +123,8 @@ Each service in `src/services/` has a single, well-defined responsibility. Follo
 
 ### content
 
+**Interface:** `src/services/content/interface.ts`
+
 **Role:** Open and close the extension popup or sidepanel.
 
 - Calls `chrome.action.openPopup()` to open the popup
@@ -118,6 +132,8 @@ Each service in `src/services/` has a single, well-defined responsibility. Follo
 - `chrome.action.openPopup()` **must be called synchronously** (before any `await`) to preserve the user gesture token
 
 ### storage
+
+**Interface:** `src/services/storage/interface.ts`
 
 **Role:** Persist user preferences to `chrome.storage.sync`.
 
@@ -127,6 +143,8 @@ Each service in `src/services/` has a single, well-defined responsibility. Follo
 - To add a new key: add to `SyncStorageKey` enum and `SyncStorage` interface in `types.ts`
 
 ### runtime
+
+**Interface:** `src/services/runtime/interface.ts`
 
 **Role:** IPC bridge between popup/sidepanel and the background service worker.
 
