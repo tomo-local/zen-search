@@ -16,7 +16,14 @@ const notify = () => {
 };
 
 const updateSnapshot = (engines: SearchEngineValue[]) => {
-  snapshot = engines;
+  if (
+    snapshot === engines ||
+    (snapshot.length === engines.length &&
+      snapshot.every((e, i) => e === engines[i]))
+  ) {
+    return;
+  }
+  snapshot = [...engines];
   notify();
 };
 
