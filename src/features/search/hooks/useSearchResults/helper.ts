@@ -13,20 +13,18 @@ import type { CacheEntry } from "./types";
 /**
  * メッセージが INVALIDATE_CACHE メッセージかどうかを確認する型ガード関数。
  * chrome.runtime.onMessage のコールバック引数を安全にナローイングするために使用する。
+ * @param message - 検証するメッセージ
+ * @returns INVALIDATE_CACHE メッセージの場合は true
  */
-export function isInvalidateCacheMessage(
-  message: unknown,
-): message is {
+export function isInvalidateCacheMessage(message: unknown): message is {
   type: MessageType.INVALIDATE_CACHE;
   kind: InvalidateCacheKind;
 } {
+  if (typeof message !== "object" || message === null) return false;
+  const m = message as { type?: unknown; kind?: unknown };
   return (
-    typeof message === "object" &&
-    message !== null &&
-    "type" in message &&
-    (message as { type: unknown }).type === MessageType.INVALIDATE_CACHE &&
-    "kind" in message &&
-    typeof (message as { kind: unknown }).kind === "string"
+    m.type === MessageType.INVALIDATE_CACHE &&
+    (m.kind === "Tab" || m.kind === "Bookmark" || m.kind === "History")
   );
 }
 

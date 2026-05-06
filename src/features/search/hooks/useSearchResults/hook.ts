@@ -220,7 +220,7 @@ export default function useSearchResults(
   useEffect(() => {
     const handleMessage = (message: unknown) => {
       if (!isInvalidateCacheMessage(message)) return;
-      if (!params.categories.includes(message.kind as Kind)) return;
+      if (!params.categories.includes(message.kind)) return;
 
       clearCache();
       executeSearch();
