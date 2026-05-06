@@ -3,11 +3,11 @@
  */
 
 import type { Kind } from "@/services/result";
-import type { SearchEngineValue } from "@/services/storage/types";
 import {
   type InvalidateCacheKind,
   MessageType,
 } from "@/services/runtime/types";
+import type { SearchEngineValue } from "@/services/storage/types";
 import type { CacheEntry } from "./types";
 
 /**
@@ -16,7 +16,10 @@ import type { CacheEntry } from "./types";
  */
 export function isInvalidateCacheMessage(
   message: unknown,
-): message is { type: MessageType.INVALIDATE_CACHE; kind: InvalidateCacheKind } {
+): message is {
+  type: MessageType.INVALIDATE_CACHE;
+  kind: InvalidateCacheKind;
+} {
   return (
     typeof message === "object" &&
     message !== null &&
