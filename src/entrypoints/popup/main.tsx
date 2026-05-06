@@ -1,6 +1,5 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { contentService } from "@/services/content";
 import { runtimeService } from "@/services/runtime";
 import App from "./App";
 
@@ -9,7 +8,7 @@ const rootElement =
 
 chrome.runtime.onMessage.addListener((message) => {
   if (message.type === "CLOSE_POPUP") {
-    contentService.close();
+    runtimeService.closeContent();
   }
 });
 
