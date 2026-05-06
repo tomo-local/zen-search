@@ -17,6 +17,7 @@ import { MessageType, type RuntimeResponse } from "./types";
 function connectPort(
   name: string,
   onMessage?: (message: unknown) => void,
+  attemptCount = 0,
 ): void {
   const port = chrome.runtime.connect({ name });
   const interval = setInterval(
@@ -30,7 +31,8 @@ function connectPort(
 
   port.onDisconnect.addListener(() => {
     clearInterval(interval);
-    connectPort(name, onMessage);
+    const delay = Math.min(1000 * 2 ** attemptCount, 30000);
+    setTimeout(() => connectPort(name, onMessage, attemptCount + 1), delay);
   });
 }
 

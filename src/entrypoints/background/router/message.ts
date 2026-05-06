@@ -90,23 +90,41 @@ export function routeMessage(
 
     case CREATE_TAB: {
       const { url } = message;
-      tabService.create({ url }).then(() => {
-        sendResponse(CREATE_TAB, true, response);
-      });
+      tabService
+        .create({ url })
+        .then(() => {
+          sendResponse(CREATE_TAB, true, response);
+        })
+        .catch((error) => {
+          console.error("Error handling CREATE_TAB:", error);
+          sendResponse(CREATE_TAB, false, response);
+        });
       return true;
     }
     case UPDATE_TAB: {
       const { tabId, windowId } = message;
-      tabService.update({ tabId, windowId }).then(() => {
-        sendResponse(UPDATE_TAB, true, response);
-      });
+      tabService
+        .update({ tabId, windowId })
+        .then(() => {
+          sendResponse(UPDATE_TAB, true, response);
+        })
+        .catch((error) => {
+          console.error("Error handling UPDATE_TAB:", error);
+          sendResponse(UPDATE_TAB, false, response);
+        });
       return true;
     }
     case REMOVE_TAB: {
       const { tabId } = message;
-      tabService.remove({ tabId }).then(() => {
-        sendResponse(REMOVE_TAB, true, response);
-      });
+      tabService
+        .remove({ tabId })
+        .then(() => {
+          sendResponse(REMOVE_TAB, true, response);
+        })
+        .catch((error) => {
+          console.error("Error handling REMOVE_TAB:", error);
+          sendResponse(REMOVE_TAB, false, response);
+        });
       return true;
     }
 
@@ -123,12 +141,14 @@ export function routeMessage(
         .query({ filters, signal })
         .then((results) => {
           sendResponse(QUERY_RESULT, results, response);
+          queryResultControllers.delete(senderKey);
         })
         .catch((error) => {
           if (!signal.aborted) {
             console.error("Error handling QUERY_RESULT:", error);
           }
           sendResponse(QUERY_RESULT, [], response);
+          queryResultControllers.delete(senderKey);
         });
       return true;
     }
