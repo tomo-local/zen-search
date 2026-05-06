@@ -69,21 +69,20 @@ export const extractYahooJapanSuggestions = (data: unknown): string[] => {
   if (typeof data !== "object" || data === null || !("Result" in data)) {
     return [];
   }
-  const result = (data as { Result: unknown }).Result;
+  const result = (data as { Result?: unknown }).Result;
   if (typeof result !== "object" || result === null || !("Hit" in result)) {
     return [];
   }
-  const hit = (result as { Hit: unknown }).Hit;
-  if (!Array.isArray(hit)) return [];
-  return hit
-    .filter(
-      (h): h is { Key: string } =>
-        typeof h === "object" &&
-        h !== null &&
-        "Key" in h &&
-        typeof (h as { Key: unknown }).Key === "string",
-    )
-    .map((h) => h.Key);
+  const hits = (result as { Hit?: unknown }).Hit;
+  if (!Array.isArray(hits)) return [];
+  return hits.flatMap((hit) =>
+    typeof hit === "object" &&
+    hit !== null &&
+    "Key" in hit &&
+    typeof (hit as { Key?: unknown }).Key === "string"
+      ? [(hit as { Key: string }).Key]
+      : [],
+  );
 };
 
 /**
