@@ -35,7 +35,13 @@ export default defineBackground(() => {
   };
 
   // サイドパネルの初期化
-  storageService.getViewMode().then(updateViewMode);
+  storageService
+    .getViewMode()
+    .then(updateViewMode)
+    .catch((error) => {
+      console.error("Failed to initialize view mode:", error);
+      updateViewMode("popup");
+    });
 
   // viewMode変更時にキャッシュとサイドパネルの動作を更新
   storageService.subscribe(SyncStorageKey.ViewMode, (viewMode) => {
