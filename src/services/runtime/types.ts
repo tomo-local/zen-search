@@ -8,6 +8,13 @@ export interface RuntimeResponse<T = unknown> {
   result: T;
 }
 
+/**
+ * 値が RuntimeResponse 型の構造を持っているかを確認する型ガード関数。
+ * chrome.runtime.sendMessage のレスポンスを安全にナローイングするために使用する。
+ *
+ * @param value 検証する値
+ * @returns `{ type: string, result: T }` の構造を持つ場合は true
+ */
 export function isRuntimeResponse<T>(
   value: unknown,
 ): value is RuntimeResponse<T> {

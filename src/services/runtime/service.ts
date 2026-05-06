@@ -92,7 +92,7 @@ const queryResults = async ({
   filters,
 }: QueryResultsRequest): Promise<Result<Kind>[]> => {
   try {
-    const raw = await chrome.runtime.sendMessage({
+    const raw: unknown = await chrome.runtime.sendMessage({
       type: MessageType.QUERY_RESULT,
       filters,
     });
