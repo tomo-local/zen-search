@@ -47,7 +47,11 @@ const notify = () => {
 };
 
 const updateSnapshot = (theme: ThemeValue) => {
-  snapshot = buildSnapshot(theme);
+  const next = buildSnapshot(theme);
+  // 値が変わっていない場合は通知をスキップし、不要な再レンダリングを防ぐ
+  if (snapshot.theme === next.theme && snapshot.isDarkMode === next.isDarkMode)
+    return;
+  snapshot = next;
   notify();
 };
 
