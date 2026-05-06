@@ -24,6 +24,12 @@ interface UseNavigationKeyReturn {
   handleNavigationKey: (e: React.KeyboardEvent) => void;
 }
 
+/**
+ * Arrow / Vim / Emacs キーによるナビゲーションを管理するhook
+ * @param params パラメータ（結果件数、IME状態）
+ * @param opts キーボードオプション
+ * @returns selectedIndex、listRef、ナビゲーション操作関数
+ */
 export default function useNavigationKey(
   params: UseNavigationKeyParams,
   opts: Required<UseSearchKeyboardOptions>,
@@ -52,7 +58,13 @@ export default function useNavigationKey(
       if (opts.disableOnComposing && isComposing) return;
 
       // Vim風のgg（最初に移動）の処理
-      if (opts.enableVimBindings && e.key === "g") {
+      if (
+        opts.enableVimBindings &&
+        e.key === "g" &&
+        !e.ctrlKey &&
+        !e.altKey &&
+        !e.metaKey
+      ) {
         if (vimGStateRef.current === "g_pending") {
           e.preventDefault();
           setSelectedIndex(0);

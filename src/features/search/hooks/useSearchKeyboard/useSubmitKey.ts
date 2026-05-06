@@ -21,6 +21,12 @@ interface UseSubmitKeyReturn {
   handleBackspaceKey: (e: React.KeyboardEvent) => void;
 }
 
+/**
+ * Enter / Tab / Backspace キーによる選択・補完を管理するhook
+ * @param params パラメータ（結果リスト、選択インデックス、コールバック）
+ * @param opts キーボードオプション
+ * @returns Enter / Tab / Backspace キーハンドラー
+ */
 export default function useSubmitKey(
   params: UseSubmitKeyParams,
   opts: Pick<Required<UseSearchKeyboardOptions>, "disableOnComposing">,

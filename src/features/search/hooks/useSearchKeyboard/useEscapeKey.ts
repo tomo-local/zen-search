@@ -12,6 +12,11 @@ interface UseEscapeKeyReturn {
   handleEscapeKey: (e: React.KeyboardEvent) => void;
 }
 
+/**
+ * Escape キーによるクローズ・クリアを管理するhook
+ * @param params パラメータ（Escape 押下時のコールバック）
+ * @returns Escape キーハンドラー
+ */
 export default function useEscapeKey(
   params: UseEscapeKeyParams,
 ): UseEscapeKeyReturn {
