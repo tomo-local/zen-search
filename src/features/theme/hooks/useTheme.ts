@@ -38,6 +38,7 @@ const buildSnapshot = (theme: ThemeValue): ThemeSnapshot => ({
   isDarkMode: theme === "system" ? isWindowDarkMode() : theme === "dark",
 });
 
+/** useSyncExternalStore パターン用のモジュールレベル状態（上記 listeners と同様）。 */
 let snapshot: ThemeSnapshot = buildSnapshot("system");
 
 export const initialState: ThemeState = {
