@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useSyncExternalStore } from "react";
 import {
+  getDefaultTheme,
+  isValidTheme,
   SyncStorageKey,
   storageService,
   type ThemeValue,
@@ -69,7 +71,7 @@ const hydrateTheme = async () => {
 };
 
 storageService.subscribe(SyncStorageKey.Theme, (newTheme) => {
-  updateSnapshot(newTheme ?? "system");
+  updateSnapshot(isValidTheme(newTheme) ? newTheme : getDefaultTheme());
 });
 
 const handleColorSchemeChange = () => {
