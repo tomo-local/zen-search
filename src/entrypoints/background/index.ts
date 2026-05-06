@@ -35,6 +35,7 @@ export default defineBackground(() => {
   };
 
   // サイドパネルの初期化
+  // getViewMode() は内部でエラーをキャッチしデフォルト値を返すため .catch() は不要
   storageService.getViewMode().then(updateViewMode);
 
   // viewMode変更時にキャッシュとサイドパネルの動作を更新
