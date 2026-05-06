@@ -3,6 +3,7 @@ import type { Kind, Result } from "@/services/result";
 import NotFoundItem from "../NotFoundItem/NotFoundItem";
 import ItemComponent from "./part/ResultItem/ResultItem";
 
+/** Props for the ResultList component. */
 export interface ResultListProps {
   items: Result<Kind>[];
   selectedIndex?: number;
@@ -11,8 +12,12 @@ export interface ResultListProps {
   listClassName?: string;
 }
 
+/** 検索結果のリストを描画するコンポーネント。`forwardRef` で `ul` 要素を公開する。 */
 const ResultList = React.forwardRef<HTMLUListElement, ResultListProps>(
-  ({ items, onClick, selectedIndex, className, listClassName = "max-h-56" }, ref) => {
+  (
+    { items, onClick, selectedIndex, className, listClassName = "max-h-56" },
+    ref,
+  ) => {
     const hasItems = items.length > 0;
 
     return (
