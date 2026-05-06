@@ -2,7 +2,11 @@ import {
   type InvalidateCacheKind,
   MessageType,
 } from "@/services/runtime/types";
-import { storageService } from "@/services/storage";
+import {
+  getDefaultViewMode,
+  isValidViewMode,
+  storageService,
+} from "@/services/storage";
 import { SyncStorageKey, type ViewModeValue } from "@/services/storage/types";
 import { routeCommand, routeMessage } from "./router";
 
@@ -40,7 +44,7 @@ export default defineBackground(() => {
 
   // viewMode変更時にキャッシュとサイドパネルの動作を更新
   storageService.subscribe(SyncStorageKey.ViewMode, (viewMode) => {
-    updateViewMode(viewMode ?? "popup");
+    updateViewMode(isValidViewMode(viewMode) ? viewMode : getDefaultViewMode());
   });
 
   // ポート接続の処理:

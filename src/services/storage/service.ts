@@ -10,6 +10,7 @@ import {
   getDefaultTheme,
   getDefaultViewMode,
   isValidSearchEngines,
+  isValidTheme,
   isValidViewMode,
 } from "./helper";
 import type { StorageService } from "./interface";
@@ -67,7 +68,7 @@ const setStorage = async <K extends Type.SyncStorageKey>({
 const getTheme = async (): Promise<Type.ThemeValue> => {
   try {
     const theme = await chromeStorageGet(SyncStorageKey.Theme);
-    return theme || getDefaultTheme();
+    return isValidTheme(theme) ? theme : getDefaultTheme();
   } catch (error) {
     logger.warn("getTheme failed", { error });
     return getDefaultTheme();
