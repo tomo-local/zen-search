@@ -1,5 +1,7 @@
 import { useCallback, useSyncExternalStore } from "react";
 import {
+  getDefaultViewMode,
+  isValidViewMode,
   SyncStorageKey,
   storageService,
   type ViewModeValue,
@@ -35,15 +37,17 @@ const getSnapshot = () => snapshot;
 const hydrateViewMode = async () => {
   try {
     const stored = await storageService.getViewMode();
-    updateSnapshot(stored ?? "popup");
+    updateSnapshot(stored ?? getDefaultViewMode());
   } catch (error) {
     console.error("Failed to hydrate viewMode", error);
-    updateSnapshot("popup");
+    updateSnapshot(getDefaultViewMode());
   }
 };
 
 storageService.subscribe(SyncStorageKey.ViewMode, (newViewMode) => {
-  updateSnapshot(newViewMode ?? "popup");
+  updateSnapshot(
+    isValidViewMode(newViewMode) ? newViewMode : getDefaultViewMode(),
+  );
 });
 
 void hydrateViewMode();
