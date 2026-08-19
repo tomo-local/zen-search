@@ -1,7 +1,7 @@
 [tools]
 node = "20.20.2"
 "npm:pnpm" = "10.34.5"
-go = "1.26.5"
+go = "1.27.0"
 
 [tasks.service]
 description = "Create a new service"
