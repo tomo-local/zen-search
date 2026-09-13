@@ -30,7 +30,7 @@
     "@wxt-dev/auto-icons": "^1.1.0",
     "@wxt-dev/i18n": "^0.2.4",
     "clsx": "^2.1.1",
-    "mathjs": "^14.9.1",
+    "mathjs": "^15.0.0",
     "react": "^19.1.1",
     "react-dom": "^19.1.1"
   },
