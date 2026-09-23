@@ -1,6 +1,6 @@
 [tools]
 node = "20.20.2"
-"npm:pnpm" = "10.34.5"
+"npm:pnpm" = "12.6.0"
 go = "1.27.1"
 
 [tasks.service]
